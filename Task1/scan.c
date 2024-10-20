@@ -81,7 +81,13 @@ int scan(void) {
     /* Handle strings */
     if (current_char == '\'') {
         printf("Processing string literal starting at line %d\n", line_number);
-        return process_string_literal();
+        int token = process_string_literal();
+        // After processing the string, immediately return the string token
+        if (token == TSTRING) {
+            return token;
+        } else {
+            return -1;
+        }
     }
 
     /* Handle keywords and identifiers */
@@ -112,7 +118,6 @@ int scan(void) {
     return -1;
 }
 
-
 /* Skip separators like whitespace, comments, etc. */
 int skip_whitespace_and_comments(void) {
     while (isspace(current_char)) {  // Using isspace() from <ctype.h>
@@ -140,9 +145,10 @@ int error(char *mes) {
 
 /* Check if the character is a special symbol */
 int is_special_symbol(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == ':' || c == ';');
+    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == ':' || c == ';' || c == ',');
 }
 
+/* End scan: Close the file */
 void end_scan(void) {
     if (fp != NULL) {
         fclose(fp);
@@ -179,24 +185,27 @@ int process_number(const char *token_str) {
 int process_string_literal(void) {
     int i = 0;
     char tempbuf[MAXSTRSIZE];
-    
+
     while ((current_char = fgetc(fp)) != EOF) {
-        if (i >= MAXSTRSIZE - 1) {
-            error("String literal too long.");
+        if (check_token_size(i + 1) == -1) {
             return -1;
         }
         if (current_char == '\'') {
             current_char = fgetc(fp);
             if (current_char != '\'') {
-                tempbuf[i] = '\0';
+                // The string literal is now complete
+                tempbuf[i] = '\0';  // Null-terminate the string
                 strncpy(string_attr, tempbuf, MAXSTRSIZE);
-                return TSTRING;
+                
+                // If the next character is not a quote, return the string token
+                return TSTRING;  // Assuming TSTRING is the token for strings
             }
-            tempbuf[i++] = '\'';  // Handle escaped quotes
+            tempbuf[i++] = '\'';  // Handle escaped single quotes
         } else {
             tempbuf[i++] = current_char;
         }
     }
+    
     error("Unterminated string literal.");
     return -1;
 }
@@ -214,9 +223,9 @@ int process_symbol(char *token_str) {
             }
             return TCOLON;
         case ';': return TSEMI;
+        case ',': return TCOMMA;  // Added comma case
         default:
             error("Unrecognized symbol.");
             return -1;
     }
 }
-
