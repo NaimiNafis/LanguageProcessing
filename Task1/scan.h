@@ -77,6 +77,12 @@ extern int scan(void);
 extern int get_linenum(void);
 extern void end_scan(void);
 
+extern int match_keyword(const char *token_str);
+extern int process_identifier(const char *token_str);
+extern int process_number(const char *token_str);
+extern int process_string_literal(void);
+extern int process_symbol(char *token_str);
+
 extern int num_attr;
 extern char string_attr[MAXSTRSIZE];
 
