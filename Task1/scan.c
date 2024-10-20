@@ -145,7 +145,8 @@ int error(char *mes) {
 
 /* Check if the character is a special symbol */
 int is_special_symbol(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == ':' || c == ';' || c == ',');
+    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || 
+            c == ':' || c == ';' || c == ',' || c == '>' || c == '<');
 }
 
 /* End scan: Close the file */
@@ -216,6 +217,7 @@ int process_symbol(char *token_str) {
         case ')': return TRPAREN;
         case '+': return TPLUS;
         case '-': return TMINUS;
+        case '*': return TSTAR;  // Handle the '*' symbol
         case ':':
             if (current_char == '=') {
                 current_char = fgetc(fp);
@@ -223,9 +225,26 @@ int process_symbol(char *token_str) {
             }
             return TCOLON;
         case ';': return TSEMI;
-        case ',': return TCOMMA;  // Added comma case
+        case ',': return TCOMMA;
+        case '>':
+            if (current_char == '=') {
+                current_char = fgetc(fp);  // Read '='
+                return TGREQ;  // Token for >=
+            }
+            return TGR;  // Token for >
+        case '<':
+            if (current_char == '=') {
+                current_char = fgetc(fp);  // Read '='
+                return TLEEQ;  // Token for <=
+            } else if (current_char == '>') {
+                current_char = fgetc(fp);  // Read '>'
+                return TNOTEQ;  // Token for <>
+            }
+            return TLE;  // Token for <
         default:
             error("Unrecognized symbol.");
             return -1;
     }
 }
+
+
