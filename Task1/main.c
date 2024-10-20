@@ -40,16 +40,29 @@ int main(int nc, char *np[]) {
 	  end_scan();
     return 0;
   }
-  /* 作成する部分：トークンカウント用の配列？を初期化する */
-  while ((token = scan()) >= 0) {
-    /* 作成する部分：トークンをカウントする */
-  }
-  end_scan();
-  /* 作成する部分:カウントした結果を出力する */
-  return 0;
-}
 
-int error(char *mes) { 
-	fprintf(stderr, "\nERROR: %s\n", mes); 
-  return S_ERROR;
+  /* 作成する部分：トークンカウント用の配列？を初期化する */
+
+  for (i = 0; i <= NUMOFTOKEN; i++) {
+    numtoken[i] = 0;
+  }
+
+  while ((token = scan()) >= 0) {
+      if (token >= 0 && token <= NUMOFTOKEN) {
+          numtoken[token]++;  // Count the token
+      }
+      // Additional debugging info: print each token if needed
+      printf("Scanned token: %d\n", token);
+  }
+
+  end_scan();
+
+  /* 作成する部分:カウントした結果を出力する */
+  printf("Token counts:\n");
+  for (i = 0; i <= NUMOFTOKEN; i++) {
+      if (numtoken[i] > 0) {
+          printf("%s: %d\n", tokenstr[i], numtoken[i]);
+      }
+  }
+  return 0;
 }

@@ -3,6 +3,9 @@
 FILE *input_file;
 int line_number = 0;
 
+int num_attr;
+char string_attr[MAXSTRSIZE];
+
 int init_scan(char *filename) {
     input_file = fopen(filename, "r");
     if (input_file == NULL) {
