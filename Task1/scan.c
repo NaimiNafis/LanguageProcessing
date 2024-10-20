@@ -8,7 +8,7 @@ FILE *fp;  // Global file pointer to access across functions
 
 char string_attr[MAXSTRSIZE];
 int num_attr;
-char cbuf = '\0';
+char cbuf = '\0';  // Renamed from current_char to cbuf
 int linenum = 1;
 
 /* Helper function declarations */
@@ -52,70 +52,75 @@ int scan(void) {
     /* Debugging: Print the current character */
     printf("Current character: %c (Line: %d)\n", cbuf, linenum);
 
-    /* Handle symbols */
-    if (is_special_symbol(cbuf)) {
-        buffer[0] = cbuf;
-        cbuf = (char) fgetc(fp);  // Read the next character
-        printf("Processing symbol: %c\n", buffer[0]);
-        return process_symbol(buffer);
-    }
+    /* Main switch to handle different character types */
+    switch (cbuf) {
+        case ' ':
+        case '\t':
+        case '\n':
+            // Whitespace is already handled by skip_whitespace_and_comments(), so this case is unnecessary.
+            // This is a safeguard if whitespace appears unexpectedly.
+            cbuf = (char) fgetc(fp);  // Read the next character
+            return scan();  // Recur to process the next token
 
-    /* Handle numbers */
-    if (isdigit(cbuf)) {
-        buffer[0] = cbuf;
-        for (i = 1; (cbuf = (char) fgetc(fp)) != EOF; i++) {
-            if (check_token_size(i) == -1) {
-                error("Token too long");
-                return -1;
+        case '+': case '-': case '*': case '=': case '<': case '>': case '(': case ')':
+        case '[': case ']': case ':': case '.': case ',': case ';':
+            // Handle symbols
+            buffer[0] = cbuf;
+            cbuf = (char) fgetc(fp);  // Move to next character
+            return process_symbol(buffer);
+
+        case '\'':
+            // Handle strings
+            printf("Processing string literal starting at line %d\n", linenum);
+            return process_string_literal();
+
+        default:
+            if (isalpha(cbuf)) {
+                // Handle keywords and identifiers
+                buffer[0] = cbuf;
+                for (i = 1; (cbuf = (char) fgetc(fp)) != EOF; i++) {
+                    if (check_token_size(i) == -1) {
+                        error("Token too long");
+                        return -1;
+                    }
+                    if (isalpha(cbuf) || isdigit(cbuf)) {
+                        buffer[i] = cbuf;
+                    } else {
+                        break;
+                    }
+                }
+                printf("Processing identifier/keyword: %s\n", buffer);
+                int temp = match_keyword(buffer);
+                if (temp != -1) {
+                    return temp;  // It's a keyword
+                } else {
+                    return process_identifier(buffer);  // It's an identifier (NAME)
+                }
             }
+
             if (isdigit(cbuf)) {
-                buffer[i] = cbuf;
-            } else {
-                break;
+                // Handle numbers
+                buffer[0] = cbuf;
+                for (i = 1; (cbuf = (char) fgetc(fp)) != EOF; i++) {
+                    if (check_token_size(i) == -1) {
+                        error("Token too long");
+                        return -1;
+                    }
+                    if (isdigit(cbuf)) {
+                        buffer[i] = cbuf;
+                    } else {
+                        break;
+                    }
+                }
+                printf("Processing number: %s\n", buffer);
+                return process_number(buffer);
             }
-        }
-        printf("Processing number: %s\n", buffer);
-        return process_number(buffer);
-    }
 
-    /* Handle strings */
-    if (cbuf == '\'') {
-        printf("Processing string literal starting at line %d\n", linenum);
-        int token = process_string_literal();
-        // After processing the string, immediately return the string token
-        if (token == TSTRING) {
-            return token;
-        } else {
+            // If no valid token is detected, return an error
+            printf("Unexpected token: %c at line %d\n", cbuf, linenum);
+            error("Unexpected token encountered");
             return -1;
-        }
     }
-
-    /* Handle keywords and identifiers */
-    if (isalpha(cbuf)) {
-        buffer[0] = cbuf;
-        for (i = 1; (cbuf = (char) fgetc(fp)) != EOF; i++) {
-            if (check_token_size(i) == -1) {
-                return -1;
-            }
-            if (isalpha(cbuf) || isdigit(cbuf)) {
-                buffer[i] = cbuf;
-            } else {
-                break;
-            }
-        }
-        printf("Processing identifier/keyword: %s\n", buffer);
-        int temp = match_keyword(buffer);
-        if (temp != -1) {
-            return temp;  // It's a keyword
-        } else {
-            return process_identifier(buffer);  // It's an identifier (NAME)
-        }
-    }
-
-    /* If no valid token is detected */
-    printf("Unexpected token: %c at line %d\n", cbuf, linenum);
-    error("Unexpected token encountered");
-    return -1;
 }
 
 /* Skip separators like whitespace, comments, etc. */
@@ -145,16 +150,9 @@ int error(char *mes) {
 
 /* Check if the character is a special symbol */
 int is_special_symbol(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '=' || c == '>' || c == '<' ||
-            c == '(' || c == ')' || c == '[' || c == ']' || c == ':' || c == '.' ||
-            c == ',' || c == ';');
+    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == ':' || c == ';');
 }
 
-int get_linenum(void) {
-    return linenum;  // Returns the current line number being processed
-}
-
-/* End scan: Close the file */
 void end_scan(void) {
     if (fp != NULL) {
         fclose(fp);
@@ -218,35 +216,35 @@ int process_string_literal(void) {
 
 int process_symbol(char *token_str) {
     switch (token_str[0]) {
+        case '(': return TLPAREN;
+        case ')': return TRPAREN;
         case '+': return TPLUS;
         case '-': return TMINUS;
         case '*': return TSTAR;
         case '=': return TEQUAL;
+        case '<':
+            if (cbuf == '>') {
+                cbuf = fgetc(fp);
+                return TNOTEQ;
+            } else if (cbuf == '=') {
+                cbuf = fgetc(fp);
+                return TLEEQ;
+            } else {
+                return TLE;
+            }
         case '>':
             if (cbuf == '=') {
-                cbuf = fgetc(fp);  // Handle >=
+                cbuf = fgetc(fp);
                 return TGREQ;
+            } else {
+                return TGR;
             }
-            return TGR;  // Handle >
-        case '<':
-            if (cbuf == '=') {
-                cbuf = fgetc(fp);  // Handle <=
-                return TLEEQ;
-            } else if (cbuf == '>') {
-                cbuf = fgetc(fp);  // Handle <>
-                return TNOTEQ;
-            }
-            return TLE;  // Handle <
-        case '(': return TLPAREN;
-        case ')': return TRPAREN;
-        case '[': return TLSQPAREN;
-        case ']': return TRSQPAREN;
         case ':':
             if (cbuf == '=') {
-                cbuf = fgetc(fp);  // Handle :=
+                cbuf = fgetc(fp);
                 return TASSIGN;
             }
-            return TCOLON;  // Handle :
+            return TCOLON;
         case '.': return TDOT;
         case ',': return TCOMMA;
         case ';': return TSEMI;
@@ -255,6 +253,3 @@ int process_symbol(char *token_str) {
             return -1;
     }
 }
-
-
-
