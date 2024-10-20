@@ -8,8 +8,8 @@ FILE *fp;  // Global file pointer to access across functions
 
 char string_attr[MAXSTRSIZE];
 int num_attr;
-char current_char = '\0';
-int line_number = 1;
+char cbuf = '\0';
+int linenum = 1;
 
 /* Helper function declarations */
 int is_special_symbol(char c);
@@ -29,8 +29,8 @@ int init_scan(char *filename) {
         return -1;
     }
 
-    line_number = 1;
-    current_char = (char) fgetc(fp);
+    linenum = 1;
+    cbuf = (char) fgetc(fp);
     return 0;
 }
 
@@ -43,33 +43,33 @@ int scan(void) {
 
     /* Skip any separators or whitespace */
     while (skip_whitespace_and_comments()) {
-        if (current_char == EOF) {
-            printf("End of file reached at line %d\n", line_number);
+        if (cbuf == EOF) {
+            printf("End of file reached at line %d\n", linenum);
             return -1;  // Return EOF if reached
         }
     }
 
     /* Debugging: Print the current character */
-    printf("Current character: %c (Line: %d)\n", current_char, line_number);
+    printf("Current character: %c (Line: %d)\n", cbuf, linenum);
 
     /* Handle symbols */
-    if (is_special_symbol(current_char)) {
-        buffer[0] = current_char;
-        current_char = (char) fgetc(fp);  // Read the next character
+    if (is_special_symbol(cbuf)) {
+        buffer[0] = cbuf;
+        cbuf = (char) fgetc(fp);  // Read the next character
         printf("Processing symbol: %c\n", buffer[0]);
         return process_symbol(buffer);
     }
 
     /* Handle numbers */
-    if (isdigit(current_char)) {
-        buffer[0] = current_char;
-        for (i = 1; (current_char = (char) fgetc(fp)) != EOF; i++) {
+    if (isdigit(cbuf)) {
+        buffer[0] = cbuf;
+        for (i = 1; (cbuf = (char) fgetc(fp)) != EOF; i++) {
             if (check_token_size(i) == -1) {
                 error("Token too long");
                 return -1;
             }
-            if (isdigit(current_char)) {
-                buffer[i] = current_char;
+            if (isdigit(cbuf)) {
+                buffer[i] = cbuf;
             } else {
                 break;
             }
@@ -79,8 +79,8 @@ int scan(void) {
     }
 
     /* Handle strings */
-    if (current_char == '\'') {
-        printf("Processing string literal starting at line %d\n", line_number);
+    if (cbuf == '\'') {
+        printf("Processing string literal starting at line %d\n", linenum);
         int token = process_string_literal();
         // After processing the string, immediately return the string token
         if (token == TSTRING) {
@@ -91,14 +91,14 @@ int scan(void) {
     }
 
     /* Handle keywords and identifiers */
-    if (isalpha(current_char)) {
-        buffer[0] = current_char;
-        for (i = 1; (current_char = (char) fgetc(fp)) != EOF; i++) {
+    if (isalpha(cbuf)) {
+        buffer[0] = cbuf;
+        for (i = 1; (cbuf = (char) fgetc(fp)) != EOF; i++) {
             if (check_token_size(i) == -1) {
                 return -1;
             }
-            if (isalpha(current_char) || isdigit(current_char)) {
-                buffer[i] = current_char;
+            if (isalpha(cbuf) || isdigit(cbuf)) {
+                buffer[i] = cbuf;
             } else {
                 break;
             }
@@ -113,18 +113,18 @@ int scan(void) {
     }
 
     /* If no valid token is detected */
-    printf("Unexpected token: %c at line %d\n", current_char, line_number);
+    printf("Unexpected token: %c at line %d\n", cbuf, linenum);
     error("Unexpected token encountered");
     return -1;
 }
 
 /* Skip separators like whitespace, comments, etc. */
 int skip_whitespace_and_comments(void) {
-    while (isspace(current_char)) {  // Using isspace() from <ctype.h>
-        if (current_char == '\n') line_number++;
-        current_char = (char) fgetc(fp);
+    while (isspace(cbuf)) {  // Using isspace() from <ctype.h>
+        if (cbuf == '\n') linenum++;
+        cbuf = (char) fgetc(fp);
     }
-    return (current_char == EOF) ? 1 : 0;
+    return (cbuf == EOF) ? 1 : 0;
 }
 
 /* Check if the token exceeds maximum size */
@@ -138,15 +138,20 @@ int check_token_size(int length) {
 
 /* Error function */
 int error(char *mes) {
-    fprintf(stderr, "Error: %s at line %d\n", mes, line_number);
+    fprintf(stderr, "Error: %s at line %d\n", mes, linenum);
     exit(EXIT_FAILURE);
     return -1;
 }
 
 /* Check if the character is a special symbol */
 int is_special_symbol(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || 
-            c == ':' || c == ';' || c == ',' || c == '>' || c == '<');
+    return (c == '+' || c == '-' || c == '*' || c == '=' || c == '>' || c == '<' ||
+            c == '(' || c == ')' || c == '[' || c == ']' || c == ':' || c == '.' ||
+            c == ',' || c == ';');
+}
+
+int get_linenum(void) {
+    return linenum;  // Returns the current line number being processed
 }
 
 /* End scan: Close the file */
@@ -187,13 +192,13 @@ int process_string_literal(void) {
     int i = 0;
     char tempbuf[MAXSTRSIZE];
 
-    while ((current_char = fgetc(fp)) != EOF) {
+    while ((cbuf = fgetc(fp)) != EOF) {
         if (check_token_size(i + 1) == -1) {
             return -1;
         }
-        if (current_char == '\'') {
-            current_char = fgetc(fp);
-            if (current_char != '\'') {
+        if (cbuf == '\'') {
+            cbuf = fgetc(fp);
+            if (cbuf != '\'') {
                 // The string literal is now complete
                 tempbuf[i] = '\0';  // Null-terminate the string
                 strncpy(string_attr, tempbuf, MAXSTRSIZE);
@@ -203,7 +208,7 @@ int process_string_literal(void) {
             }
             tempbuf[i++] = '\'';  // Handle escaped single quotes
         } else {
-            tempbuf[i++] = current_char;
+            tempbuf[i++] = cbuf;
         }
     }
     
@@ -213,38 +218,43 @@ int process_string_literal(void) {
 
 int process_symbol(char *token_str) {
     switch (token_str[0]) {
-        case '(': return TLPAREN;
-        case ')': return TRPAREN;
         case '+': return TPLUS;
         case '-': return TMINUS;
-        case '*': return TSTAR;  // Handle the '*' symbol
+        case '*': return TSTAR;
+        case '=': return TEQUAL;
+        case '>':
+            if (cbuf == '=') {
+                cbuf = fgetc(fp);  // Handle >=
+                return TGREQ;
+            }
+            return TGR;  // Handle >
+        case '<':
+            if (cbuf == '=') {
+                cbuf = fgetc(fp);  // Handle <=
+                return TLEEQ;
+            } else if (cbuf == '>') {
+                cbuf = fgetc(fp);  // Handle <>
+                return TNOTEQ;
+            }
+            return TLE;  // Handle <
+        case '(': return TLPAREN;
+        case ')': return TRPAREN;
+        case '[': return TLSQPAREN;
+        case ']': return TRSQPAREN;
         case ':':
-            if (current_char == '=') {
-                current_char = fgetc(fp);
+            if (cbuf == '=') {
+                cbuf = fgetc(fp);  // Handle :=
                 return TASSIGN;
             }
-            return TCOLON;
-        case ';': return TSEMI;
+            return TCOLON;  // Handle :
+        case '.': return TDOT;
         case ',': return TCOMMA;
-        case '>':
-            if (current_char == '=') {
-                current_char = fgetc(fp);  // Read '='
-                return TGREQ;  // Token for >=
-            }
-            return TGR;  // Token for >
-        case '<':
-            if (current_char == '=') {
-                current_char = fgetc(fp);  // Read '='
-                return TLEEQ;  // Token for <=
-            } else if (current_char == '>') {
-                current_char = fgetc(fp);  // Read '>'
-                return TNOTEQ;  // Token for <>
-            }
-            return TLE;  // Token for <
+        case ';': return TSEMI;
         default:
             error("Unrecognized symbol.");
             return -1;
     }
 }
+
 
 
