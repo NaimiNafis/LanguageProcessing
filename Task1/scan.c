@@ -12,7 +12,6 @@ char cbuf = '\0';  // Renamed from current_char to cbuf
 int linenum = 1;
 
 /* Helper function declarations */
-int is_special_symbol(char c);
 int match_keyword(const char *token_str);
 int process_identifier(const char *token_str);
 int process_symbol(char *token_str);
@@ -146,11 +145,6 @@ int error(char *mes) {
     fprintf(stderr, "Error: %s at line %d\n", mes, linenum);
     exit(EXIT_FAILURE);
     return -1;
-}
-
-/* Check if the character is a special symbol */
-int is_special_symbol(char c) {
-    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == ':' || c == ';');
 }
 
 void end_scan(void) {
