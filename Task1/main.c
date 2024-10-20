@@ -49,7 +49,6 @@ int main(int nc, char *np[]) {
 
   while ((token = scan()) >= 0) {
     if (token >= 0 && token <= NUMOFTOKEN) {
-        printf("Scanned token: %s\n", tokenstr[token]);  // Use tokenstr[] to print token names
         numtoken[token]++;  // Count the token
     }
   }
@@ -57,11 +56,13 @@ int main(int nc, char *np[]) {
   end_scan();
 
   /* 作成する部分:カウントした結果を出力する */
-  printf("Token counts:\n");
+  printf("Program %s Output:\n", np[1]);  // Display the file name
   for (i = 0; i <= NUMOFTOKEN; i++) {
       if (numtoken[i] > 0) {
-          printf("%s: %d\n", tokenstr[i], numtoken[i]);
+          printf("\"%-10s\" %4d\n", tokenstr[i], numtoken[i]);  // Format the output
       }
   }
+
   return 0;
+  
 }
