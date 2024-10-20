@@ -48,11 +48,10 @@ int main(int nc, char *np[]) {
   }
 
   while ((token = scan()) >= 0) {
-      if (token >= 0 && token <= NUMOFTOKEN) {
-          numtoken[token]++;  // Count the token
-      }
-      // Additional debugging info: print each token if needed
-      printf("Scanned token: %d\n", token);
+    if (token >= 0 && token <= NUMOFTOKEN) {
+        printf("Scanned token: %s\n", tokenstr[token]);  // Use tokenstr[] to print token names
+        numtoken[token]++;  // Count the token
+    }
   }
 
   end_scan();
