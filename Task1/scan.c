@@ -272,6 +272,8 @@ int process_symbol(char *token_str) {
         case ')': return TRPAREN;
         case '{': return TLBRACE;  // New: Handle '{'
         case '}': return TRBRACE;
+        case '[': return TLSQPAREN;  // Handle '['
+        case ']': return TRSQPAREN; 
         case '+': return TPLUS;
         case '-': return TMINUS;
         case '*': return TSTAR;
