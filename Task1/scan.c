@@ -124,12 +124,57 @@ int scan(void) {
 
 /* Skip separators like whitespace, comments, etc. */
 int skip_whitespace_and_comments(void) {
-    while (isspace(cbuf)) {  // Using isspace() from <ctype.h>
-        if (cbuf == '\n') linenum++;
-        cbuf = (char) fgetc(fp);
+    while (1) {
+        // Skip whitespace
+        while (isspace(cbuf)) {
+            if (cbuf == '\n') {
+                linenum++;  // Increment line number for newlines
+            }
+            cbuf = (char) fgetc(fp);  // Read next character
+        }
+
+        // Handle single-line comments (//)
+        if (cbuf == '/') {
+            cbuf = (char) fgetc(fp);  // Check the next character
+            if (cbuf == '/') {
+                // Skip the single-line comment till end of line
+                while (cbuf != '\n' && cbuf != EOF) {
+                    cbuf = (char) fgetc(fp);
+                }
+                linenum++;  // Increment line number at the end of the line
+                cbuf = (char) fgetc(fp);  // Move to the next character
+                continue;  // Continue skipping
+            }
+            // Handle multi-line comments (/* ... */)
+            else if (cbuf == '*') {
+                while (1) {
+                    cbuf = (char) fgetc(fp);  // Get the next character
+                    if (cbuf == '*' && (cbuf = (char) fgetc(fp)) == '/') {
+                        // Found the closing */
+                        cbuf = (char) fgetc(fp);  // Move past the end of comment
+                        break;
+                    }
+                    if (cbuf == '\n') {
+                        linenum++;  // Track new lines inside the comment
+                    }
+                    if (cbuf == EOF) {
+                        error("Unterminated multi-line comment.");
+                        return -1;
+                    }
+                }
+                continue;  // Continue skipping after the comment
+            } else {
+                // It's not a comment, handle this character in scan()
+                break;
+            }
+        } else {
+            // If it's not whitespace or a comment, break the loop
+            break;
+        }
     }
-    return (cbuf == EOF) ? 1 : 0;
+    return (cbuf == EOF) ? 1 : 0;  // Return 1 if EOF, otherwise 0
 }
+
 
 /* Check if the token exceeds maximum size */
 int check_token_size(int length) {
