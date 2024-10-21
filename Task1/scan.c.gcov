@@ -206,8 +206,8 @@ branch  1 taken 0%
       386:  139:                    if (cbuf == EOF) {
 branch  0 taken 0%
 branch  1 taken 100%
-    #####:  140:                        error("Unterminated multi-line comment.");
-    #####:  141:                        return -1;
+    #####:  140:                        printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
+    #####:  141:                        return 1;
         -:  142:                    }
         -:  143:                }
        18:  144:                continue;

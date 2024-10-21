@@ -58,8 +58,6 @@
 #define	TREAD		47	/* read : Keyword */
 #define	TWRITE		48	/* write : Keyword */
 #define	TBREAK		49	/* break : Keyword */
-#define TLBRACE     50  // Token for '{'
-#define TRBRACE     51  // Token for '}'
 
 #define NUMOFTOKEN	49
 

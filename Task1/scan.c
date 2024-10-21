@@ -209,8 +209,6 @@ int process_symbol(char *token_str) {
     switch (token_str[0]) {
         case '(': return TLPAREN;
         case ')': return TRPAREN;
-        case '{': return TLBRACE;
-        case '}': return TRBRACE;
         case '[': return TLSQPAREN;
         case ']': return TRSQPAREN;
         case '+': return TPLUS;
