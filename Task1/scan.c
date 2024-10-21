@@ -46,7 +46,7 @@ int scan(void) {
         }
     }
 
-    printf("Current character: %c (Line: %d)\n", cbuf, linenum);
+    //printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
 
     switch (cbuf) {
         // Handle symbols directly
@@ -58,7 +58,7 @@ int scan(void) {
 
         // Handle string literals
         case '\'':
-            printf("Processing string literal starting at line %d\n", linenum);
+            //printf("Processing string literal starting at line %d\n", get_linenum());
             return process_string_literal();
 
         // Handle keywords, identifiers, and numbers
@@ -73,7 +73,7 @@ int scan(void) {
                         break;
                     }
                 }
-                printf("Processing identifier/keyword: %s\n", buffer);
+                //printf("Processing identifier/keyword: %s at line %d\n", buffer, get_linenum());
                 int temp = match_keyword(buffer);
                 return (temp != -1) ? temp : process_identifier(buffer);
             }
@@ -88,7 +88,7 @@ int scan(void) {
                         break;
                     }
                 }
-                printf("Processing number: %s\n", buffer);
+                //printf("Processing number: %s at line %d\n", buffer, get_linenum());
                 return process_number(buffer);
             }
 
@@ -250,6 +250,11 @@ int error(char *mes) {
     fprintf(stderr, "Error: %s at line %d\n", mes, linenum);
     exit(EXIT_FAILURE);
     return -1;
+}
+
+// Used for error-reporting function (parser or error handler)
+int get_linenum(void) {
+    return linenum;
 }
 
 // Clean up after scanning
