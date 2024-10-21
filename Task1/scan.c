@@ -137,8 +137,8 @@ int skip_whitespace_and_comments(void) {
                     }
                     if (cbuf == '\n') linenum++;
                     if (cbuf == EOF) {
-                        error("Unterminated multi-line comment.");
-                        return -1;
+                        printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
+                        return 1;
                     }
                 }
                 continue;

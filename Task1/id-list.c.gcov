@@ -1,7 +1,7 @@
         -:    0:Source:id-list.c
         -:    0:Graph:id-list.gcno
         -:    0:Data:id-list.gcda
-        -:    0:Runs:1
+        -:    0:Runs:2
         -:    0:Programs:1
         -:    1:#include "scan.h"
         -:    2:
