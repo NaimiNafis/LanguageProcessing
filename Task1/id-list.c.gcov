@@ -1,0 +1,90 @@
+        -:    0:Source:id-list.c
+        -:    0:Graph:id-list.gcno
+        -:    0:Data:id-list.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include "scan.h"
+        -:    2:
+        -:    3:struct ID {
+        -:    4:  char *name;
+        -:    5:  int count;
+        -:    6:  struct ID *nextp;
+        -:    7:} *idroot;
+        -:    8:
+function init_idtab called 0 returned 0% blocks executed 0%
+    #####:    9:void init_idtab() { /* Initialise the table */
+    #####:   10:  idroot = NULL;
+    #####:   11:}
+        -:   12:
+function search_idtab called 0 returned 0% blocks executed 0%
+    #####:   13:struct ID *search_idtab(char *np) { /* search the name pointed by np */
+        -:   14:  struct ID *p;
+        -:   15:
+    #####:   16:  for (p = idroot; p != NULL; p = p->nextp) {
+branch  0 never executed
+branch  1 never executed
+    #####:   17:    if (!strcmp(np, p->name))
+branch  0 never executed
+branch  1 never executed
+    #####:   18:      return (p);
+    #####:   19:  }
+    #####:   20:  return (NULL);
+    #####:   21:}
+        -:   22:
+function id_countup called 0 returned 0% blocks executed 0%
+    #####:   23:void id_countup(char *np) { /* Register and count up the name pointed by np */
+        -:   24:  struct ID *p;
+        -:   25:  char *cp;
+        -:   26:
+    #####:   27:  if ((p = search_idtab(np)) != NULL)
+branch  0 never executed
+branch  1 never executed
+    #####:   28:    p->count++;
+        -:   29:  else {
+    #####:   30:    if ((p = (struct ID *)malloc(sizeof(struct ID))) == NULL) {
+branch  0 never executed
+branch  1 never executed
+    #####:   31:      error("Cannot malloc for p in id_countup");
+    #####:   32:      return;
+        -:   33:    }
+    #####:   34:    if ((cp = (char *)malloc(strlen(np) + 1)) == NULL) {
+branch  0 never executed
+branch  1 never executed
+    #####:   35:      error("Cannot malloc for cp in id_countup");
+    #####:   36:      return;
+        -:   37:    }
+    #####:   38:    strcpy(cp, np);
+    #####:   39:    p->name = cp;
+    #####:   40:    p->count = 1;
+    #####:   41:    p->nextp = idroot;
+    #####:   42:    idroot = p;
+        -:   43:  }
+    #####:   44:}
+        -:   45:
+function print_idtab called 0 returned 0% blocks executed 0%
+    #####:   46:void print_idtab() { /* Output the registered data */
+        -:   47:  struct ID *p;
+        -:   48:
+    #####:   49:  for (p = idroot; p != NULL; p = p->nextp) {
+branch  0 never executed
+branch  1 never executed
+    #####:   50:    if (p->count != 0)
+branch  0 never executed
+branch  1 never executed
+    #####:   51:      printf("\t\"Identifier\" \"%s\"\t%d\n", p->name, p->count);
+    #####:   52:  }
+    #####:   53:}
+        -:   54:
+function release_idtab called 0 returned 0% blocks executed 0%
+    #####:   55:void release_idtab() { /* Release tha data structure */
+    #####:   56:  struct ID *p, *q = NULL;
+        -:   57:
+    #####:   58:  for (p = idroot; p != NULL; p = q) {
+branch  0 never executed
+branch  1 never executed
+    #####:   59:    free(p->name);
+    #####:   60:    q = p->nextp;
+    #####:   61:    free(p);
+    #####:   62:  }
+    #####:   63:  init_idtab();
+    #####:   64:}
