@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <ctype.h>
-#include <string.h>
 #include "scan.h"
 
 FILE *fp;  // File pointer to handle input
@@ -51,7 +48,7 @@ int scan(void) {
     switch (cbuf) {
         // Handle symbols directly
         case '+': case '-': case '*': case '=': case '<': case '>': case '(': case ')':
-        case '[': case ']': case '{': case '}': case ':': case '.': case ',': case ';': case '!':
+        case '[': case ']': case ':': case '.': case ',': case ';': case '!':
             buffer[0] = cbuf;
             cbuf = (char) fgetc(fp);
             return process_symbol(buffer);
