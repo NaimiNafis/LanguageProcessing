@@ -62,7 +62,7 @@ int scan(void) {
             return scan();  // Recur to process the next token
 
         case '+': case '-': case '*': case '=': case '<': case '>': case '(': case ')':
-        case '[': case ']': case ':': case '.': case ',': case ';':
+        case '[': case ']': case '{': case '}': case ':': case '.': case ',': case ';': case '!':
             // Handle symbols
             buffer[0] = cbuf;
             cbuf = (char) fgetc(fp);  // Move to next character
@@ -131,6 +131,19 @@ int skip_whitespace_and_comments(void) {
                 linenum++;  // Increment line number for newlines
             }
             cbuf = (char) fgetc(fp);  // Read next character
+        }
+
+        // Handle block comments starting with '{' and ending with '}'
+        if (cbuf == '{') {
+            // Skip characters until closing '}'
+            while (cbuf != '}' && cbuf != EOF) {
+                cbuf = (char) fgetc(fp);
+                if (cbuf == '\n') linenum++;  // Track new lines in comments
+            }
+            if (cbuf == '}') {
+                cbuf = (char) fgetc(fp);  // Move past the closing '}'
+            }
+            return skip_whitespace_and_comments();  // Continue skipping
         }
 
         // Handle single-line comments (//)
@@ -257,6 +270,8 @@ int process_symbol(char *token_str) {
     switch (token_str[0]) {
         case '(': return TLPAREN;
         case ')': return TRPAREN;
+        case '{': return TLBRACE;  // New: Handle '{'
+        case '}': return TRBRACE;
         case '+': return TPLUS;
         case '-': return TMINUS;
         case '*': return TSTAR;
