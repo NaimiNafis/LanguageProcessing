@@ -49,17 +49,17 @@ int main(int nc, char *np[]) {
 
   while ((token = scan()) >= 0) {
     if (token >= 0 && token <= NUMOFTOKEN) {
-        numtoken[token]++;  // Count the token
+        numtoken[token]++;
     }
   }
 
   end_scan();
 
   /* 作成する部分:カウントした結果を出力する */
-  printf("Program %s Output:\n", np[1]);  // Display the file name
+  printf("Program %s Output:\n", np[1]);
   for (i = 0; i <= NUMOFTOKEN; i++) {
       if (numtoken[i] > 0) {
-          printf("\"%-10s\" %4d\n", tokenstr[i], numtoken[i]);  // Format the output
+          printf("\"%-10s\" %4d\n", tokenstr[i], numtoken[i]);
       }
   }
 
