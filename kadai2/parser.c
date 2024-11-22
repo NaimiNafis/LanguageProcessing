@@ -36,7 +36,6 @@ bool is_binary_operator(int tok) {
            tok == TPLUS || tok == TMINUS || tok == TSTAR || tok == TDIV || tok == TOR || tok == TAND;
 }
 
-
 /* --- Core Parsing Functions --- */
 // Parse the main program structure
 int parse_program(void) {
@@ -62,13 +61,10 @@ int parse_program(void) {
 }
 
 int parse_block(void) {
-    printf("DEBUG: Starting block parsing at line %d\n", get_linenum());
-
     // Handle variable declarations
     while (token == TVAR) {
         token = scan();  // Consume 'var'
         while (token == TNAME) {
-            printf("DEBUG: Found variable declaration at line %d\n", get_linenum());
             if (parse_variable_declaration() == ERROR) return ERROR;
         }
     }
@@ -91,10 +87,13 @@ int parse_block(void) {
     print_with_indent("end\n");
     token = scan();  // Consume 'end'
 
-    printf("DEBUG: Completed block parsing, next token: %s at line %d\n", tokenstr[token], get_linenum());
+    // Check for semicolon after 'end'
+    if (token == TSEMI) {
+        token = scan();  // Consume the semicolon
+    }
+
     return NORMAL;
 }
-
 
 // Parse a single variable declaration
 int parse_variable_declaration(void) {
@@ -171,13 +170,15 @@ int parse_assignment_statement(void) {
         return error("Invalid expression in assignment statement");
     }
 
-    // Check for semicolon at the end of the statement
-    if (token != TSEMI) {
-        printf("DEBUG: Current token='%s' (%d) at line %d\n", tokenstr[token], token, get_linenum());
+    // Handle semicolon or `end` after the assignment
+    if (token == TSEMI) {
+        printf(";\n");  // Print the semicolon
+        token = scan();  // Consume the semicolon
+    } else if (token == TEND) {
+        printf("\n");  // No semicolon, just a newline
+    } else {
         return error("Missing ';' after assignment statement");
     }
-    printf(";\n");  // Print the semicolon
-    token = scan();  // Consume the semicolon
 
     return NORMAL;
 }
@@ -205,10 +206,8 @@ int parse_if_statement(void) {
         current_indent--;
     }
 
-    printf("DEBUG: Completed if statement, token: %s at line %d\n", tokenstr[token], get_linenum());
     return NORMAL;
 }
-
 
 // Parse a while statement
 int parse_while_statement(void) {
@@ -230,8 +229,6 @@ int parse_while_statement(void) {
 
 // Parse an expression
 int parse_expression(void) {
-    printf("DEBUG: Parsing expression, token=%d (%s) at line %d\n", token, tokenstr[token], get_linenum());
-
     // Handle literals, identifiers, and grouped expressions
     if (is_literal_or_identifier()) {
         print_literal_or_identifier();
@@ -265,11 +262,8 @@ int parse_expression(void) {
         }
     }
 
-    printf("DEBUG: Finished parsing expression, current token='%s' (%d) at line %d\n", tokenstr[token], token, get_linenum());
     return NORMAL;
 }
-
-
 
 // Parse a write or writeln statement
 int parse_write_statement(void) {
@@ -300,14 +294,15 @@ int parse_write_statement(void) {
     printf(");\n");  // Print closing parenthesis and semicolon
     token = scan();  // Move past ')'
 
-    if (token != TSEMI) {
+    // Check for semicolon or `end`
+    if (token == TSEMI) {
+        token = scan();  // Consume the semicolon
+    } else if (token != TEND) {
         return error("Missing ';' after writeln or write statement");
     }
 
-    token = scan();  // Move past ';'
     return NORMAL;
 }
-
 
 // Parse a read or readln statement
 int parse_read_statement(void) {
@@ -357,5 +352,3 @@ int parse_read_statement(void) {
 
     return NORMAL;
 }
-
-

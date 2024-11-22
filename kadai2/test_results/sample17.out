@@ -1,25 +1,19 @@
-End of file reached at line 19
-Program /usr/local/lib/python3.10/dist-packages/lpp_collector/testcases/input01/sample17.mpl Output:
-"NAME      "   32
-"program   "    1
-"var       "    1
-"begin     "    2
-"end       "    2
-"while     "    1
-"do        "    1
-"div       "    2
-"integer   "    2
-"readln    "    1
-"writeln   "    2
-"NUMBER    "    1
-"STRING    "    3
-"-         "    1
-"*         "    2
-"<>        "    1
-"(         "    5
-")         "    5
-":=        "    7
-".         "    1
-",         "    9
-":         "    2
-";         "   12
+program GCMLCM;
+var m, n, a, b, r : integer;
+var gcm, lcm : integer;
+begin
+writeln('Input two integers');
+readln((m, n);
+a := m;
+b := n;
+    while b <> 0 do
+        begin
+r := a - (a div b) * b;
+a := b;
+b := r
+        end
+gcm := a;
+lcm := (m div gcm) * n;
+writeln('GCM = ', gcm, '   LCM = ', lcm);
+end
+.

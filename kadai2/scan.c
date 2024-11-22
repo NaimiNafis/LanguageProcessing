@@ -12,7 +12,7 @@ char cbuf = '\0';               // Current character buffer
 int linenum = 1;                // Line number tracker
 int token = -1;                 // Current token
 
-// Helper function declarations
+/* Helper function declarations */
 int match_keyword(const char *token_str);
 int process_identifier(const char *token_str);
 int process_symbol(char *token_str);
@@ -60,28 +60,20 @@ int scan(void) {
 
     // Initial EOF check
     if (cbuf == EOF) {
-        printf("DEBUG: End of file reached at line %d\n", linenum);
         return -1;
     }
-
-    printf("DEBUG: Skipping whitespace at line %d\n", linenum);
 
     // Skip whitespace and comments
     while (skip_whitespace_and_comments()) {
         if (cbuf == EOF) {
-            printf("DEBUG: End of file reached at line %d\n", linenum);
             return -1;
         }
     }
-
-    printf("DEBUG: Current character: '%c' at line %d\n", cbuf, linenum);
-    printf("DEBUG: Current character after skipping: '%c' at line %d\n", cbuf, linenum);
 
     // Ensure no whitespace tokens are returned
     while (isspace(cbuf)) {
         cbuf = (char)fgetc(fp);
         if (cbuf == EOF) {
-            printf("DEBUG: End of file reached at line %d\n", linenum);
             return -1;
         }
     }
@@ -96,7 +88,6 @@ int scan(void) {
 
         // Handle string literals
         case '\'':
-            printf("DEBUG: Processing string literal at line %d\n", linenum);
             return process_string_literal();
 
         // Handle keywords, identifiers, and numbers
@@ -111,7 +102,6 @@ int scan(void) {
                         break;
                     }
                 }
-                printf("DEBUG: Processing identifier/keyword: '%s' at line %d\n", buffer, linenum);
                 int temp = match_keyword(buffer);
                 return (temp != -1) ? temp : process_identifier(buffer);
             }
@@ -126,12 +116,10 @@ int scan(void) {
                         break;
                     }
                 }
-                printf("DEBUG: Processed number: '%s' at line %d\n", buffer, linenum);
                 return process_number(buffer);
             }
 
             // Handle unexpected tokens
-            printf("DEBUG: Unexpected token '%c' at line %d\n", cbuf, linenum);
             error("Unexpected token encountered");
             return -1;
     }

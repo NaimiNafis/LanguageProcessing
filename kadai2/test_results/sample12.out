@@ -1,30 +1,4 @@
-DEBUG: Skipping whitespace at line 1
-DEBUG: Current character: 'p' at line 2
-DEBUG: Current character after skipping: 'p' at line 2
-DEBUG: Processing identifier/keyword: 'program' at line 2
-program DEBUG: Skipping whitespace at line 2
-DEBUG: Current character: 'S' at line 2
-DEBUG: Current character after skipping: 'S' at line 2
-DEBUG: Processing identifier/keyword: 'S' at line 2
-SDEBUG: Skipping whitespace at line 2
-DEBUG: Current character: ';' at line 2
-DEBUG: Current character after skipping: ';' at line 2
-;
-DEBUG: Skipping whitespace at line 2
-DEBUG: Current character: 'b' at line 2
-DEBUG: Current character after skipping: 'b' at line 2
-DEBUG: Processing identifier/keyword: 'begin' at line 2
-DEBUG: Starting block parsing at line 2
+program S;
 begin
-DEBUG: Skipping whitespace at line 2
-DEBUG: Current character: 'e' at line 2
-DEBUG: Current character after skipping: 'e' at line 2
-DEBUG: Processing identifier/keyword: 'end' at line 2
 end
-DEBUG: Skipping whitespace at line 2
-DEBUG: Current character: '.' at line 2
-DEBUG: Current character after skipping: '.' at line 2
-DEBUG: Completed block parsing, next token: . at line 2
 .
-DEBUG: Skipping whitespace at line 2
-DEBUG: End of file reached at line 3
