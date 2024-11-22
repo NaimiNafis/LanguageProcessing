@@ -54,11 +54,12 @@ int parse_program(void) {
     if (parse_block() == ERROR) return ERROR;
 
     if (token != TDOT) return error("Period is missing at the end of the program");
-    print_with_indent(".\n");
+    printf(".\n");  // Print the period at the end
     token = scan();
 
     return NORMAL;
 }
+
 
 int parse_block(void) {
     // Handle variable declarations
@@ -157,31 +158,31 @@ int parse_statement(void) {
 
 // Parse an assignment statement
 int parse_assignment_statement(void) {
-    printf("%s := ", string_attr);  // Print the identifier (e.g., x)
+    printf("%s := ", string_attr);  // Print the identifier
     token = scan();  // Consume the identifier
 
     if (token != TASSIGN) {
         return error("Missing ':=' in assignment statement");
     }
+
     token = scan();  // Consume ':='
 
-    // Parse the expression
     if (parse_expression() == ERROR) {
         return error("Invalid expression in assignment statement");
     }
 
-    // Handle semicolon or `end` after the assignment
     if (token == TSEMI) {
         printf(";\n");  // Print the semicolon
         token = scan();  // Consume the semicolon
-    } else if (token == TEND) {
-        printf("\n");  // No semicolon, just a newline
-    } else {
+    } else if (token != TEND && token != TDOT) {
         return error("Missing ';' after assignment statement");
+    } else {
+        printf("\n");  // Print a newline if semicolon is omitted before `end` or `.`
     }
 
     return NORMAL;
 }
+
 
 // Parse an if statement
 int parse_if_statement(void) {
@@ -307,13 +308,12 @@ int parse_write_statement(void) {
 // Parse a read or readln statement
 int parse_read_statement(void) {
     printf("%s(", tokenstr[token]);  // Print `readln` or `read`
-    token = scan();  // Move past `readln` or `read`
+    token = scan();  // Consume `readln` or `read`
 
     if (token != TLPAREN) {
         return error("Missing '(' after readln or read");
     }
 
-    printf("(");  // Print the opening parenthesis
     token = scan();  // Move past '('
 
     // Expect at least one variable name
@@ -321,12 +321,12 @@ int parse_read_statement(void) {
         return error("Invalid or missing variable name in readln or read");
     }
 
-    printf("%s", string_attr);  // Print the first variable name
+    printf("%s", string_attr);  // Print the variable name
     token = scan();  // Move past the variable
 
-    while (token == TCOMMA) {  // Handle multiple variable names separated by commas
+    while (token == TCOMMA) {  // Handle multiple variables
         printf(", ");
-        token = scan();  // Move past the comma
+        token = scan();  // Consume the comma
 
         if (token != TNAME) {
             return error("Invalid or missing variable name after ',' in readln or read");
@@ -348,7 +348,8 @@ int parse_read_statement(void) {
     }
 
     printf(";\n");  // Print the semicolon
-    token = scan();  // Move past ';'
+    token = scan();  // Move past the semicolon
 
     return NORMAL;
 }
+
