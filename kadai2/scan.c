@@ -1,16 +1,13 @@
 #include <ctype.h>
 #include "scan.h"
 
-#define ERROR -1
-#define NORMAL 0
+FILE *fp;  // File pointer to handle input
+char string_attr[MAXSTRSIZE];  // Store string attributes
+int num_attr;  // Store numerical attributes
+char cbuf = '\0';  // Buffer for the current character being read
+int linenum = 1;  // Line number tracker
 
-FILE *fp;
-char string_attr[MAXSTRSIZE];
-int num_attr;
-char cbuf = '\0';
-int linenum = 1;
-extern char *tokenstr[];
-
+// Helper function declarations
 int match_keyword(const char *token_str);
 int process_identifier(const char *token_str);
 int process_symbol(char *token_str);
@@ -18,83 +15,37 @@ int process_number(const char *token_str);
 int process_string_literal(void);
 int skip_whitespace_and_comments(void);
 int check_token_size(int length);
-int parse_program(void);
-int parse_block(void);
-int parse_variable_declaration(void);
-int parse_subprogram_declaration(void);
-int parse_statement(void);
-int parse_expression(void);
-int parse_simple_expression(void);
-int parse_term(void);
-int parse_factor(void);
-int parse_type(void);
-int parse_array_type(void);
-int parse_assignment_statement(void);
-int parse_condition_statement(void);
-int parse_iteration_statement(void);
-int parse_exit_statement(void);
-int parse_compound_statement(void);
-int parse_variable_names(void);
 
-int parse_program() {
-    if (token != TPROGRAM) return error("Keyword 'program' is missing");
-    token = scan();
-    if (token != TNAME) return error("Program name is missing");
-    token = scan();
-    if (token != TSEMI) return error("Semicolon is missing");
-    token = scan();
-    if (parse_block() == ERROR) return ERROR;
-    if (token != TDOT) return error("Period is missing at the end of the program");
-    token = scan();
-    return NORMAL;
-}
+char *tokenstr[NUMOFTOKEN + 1] = {
+    "",        "NAME",    "program", "var",     "array",     "of",
+    "begin",   "end",     "if",      "then",    "else",      "procedure",
+    "return",  "call",    "while",   "do",      "not",       "or",
+    "div",     "and",     "char",    "integer", "boolean",   "readln",
+    "writeln", "true",    "false",   "NUMBER",  "STRING",    "+",
+    "-",       "*",       "=",       "<>",      "<",         "<=",
+    ">",       ">=",      "(",       ")",       "[",         "]",
+    ":=",      ".",       ",",       ":",       ";",         "read",
+    "write",   "break"
+};
 
 
-int parse_block(void) {
-    if (scan() == TVAR) {
-        while (scan() == TNAME) {
-            if (scan() != TCOLON) return error("Expected ':' in variable declaration");
-            if (scan() != TINTEGER && scan() != TBOOLEAN && scan() != TCHAR)
-                return error("Expected a valid type (integer, boolean, char)");
-            if (scan() != TSEMI) return error("Expected ';' after variable declaration");
-        }
-    }
-    if (scan() != TBEGIN) return error("Expected 'begin' to start the block");
-    if (scan() != TEND) return error("Expected 'end' to close the block");
-    return 0;
-}
-
-void pretty_print(void) {
-    int token;
-    int indentation_level = 0;
-
-    rewind(fp);
-
-    while ((token = scan()) != -1) {
-        switch (token) {
-            case TPROGRAM:
-            case TVAR:
-            case TBEGIN:
-                printf("%*s%s\n", indentation_level * 4, "", tokenstr[token]);
-                indentation_level++;
-                break;
-            case TEND:
-                indentation_level--;
-                printf("%*s%s\n", indentation_level * 4, "", tokenstr[token]);
-                break;
-            case TSEMI:
-                printf(";\n");
-                break;
-            case TDOT:
-                printf(".\n");
-                break;
-            default:
-                printf("%*s%s ", indentation_level * 4, "", tokenstr[token]);
-                break;
-        }
+// Rewind the input file
+void rewind_scan_file(void) {
+    if (fp != NULL) {
+        rewind(fp);
     }
 }
 
+// Get string representation of a token
+const char *get_token_string(int token) {
+    if (token >= 0 && token <= NUMOFTOKEN) {
+        return tokenstr[token];
+    }
+    return "UNKNOWN";
+}
+
+
+// Initialize file reading
 int init_scan(char *filename) {
     fp = fopen(filename, "r");
     if (fp == NULL) {
@@ -106,12 +57,14 @@ int init_scan(char *filename) {
     return 0;
 }
 
+// Main scan function: identifies and processes tokens
 int scan(void) {
     char buffer[MAXSTRSIZE];
     int i = 0;
 
     memset(buffer, '\0', MAXSTRSIZE);
 
+    // Skip whitespace and comments
     while (skip_whitespace_and_comments()) {
         if (cbuf == EOF) {
             printf("End of file reached at line %d\n", linenum);
@@ -119,18 +72,24 @@ int scan(void) {
         }
     }
 
+    //printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
+
     switch (cbuf) {
+        // Handle symbols directly
         case '+': case '-': case '*': case '=': case '<': case '>': case '(': case ')':
         case '[': case ']': case ':': case '.': case ',': case ';': case '!':
             buffer[0] = cbuf;
             cbuf = (char) fgetc(fp);
             return process_symbol(buffer);
 
+        // Handle string literals
         case '\'':
+            //printf("Processing string literal starting at line %d\n", get_linenum());
             return process_string_literal();
 
+        // Handle keywords, identifiers, and numbers
         default:
-            if (isalpha(cbuf)) {
+            if (isalpha(cbuf)) {  // Keyword/Identifier
                 buffer[0] = cbuf;
                 for (i = 1; (cbuf = (char) fgetc(fp)) != EOF; i++) {
                     if (check_token_size(i) == -1) return -1;
@@ -140,11 +99,12 @@ int scan(void) {
                         break;
                     }
                 }
+                //printf("Processing identifier/keyword: %s at line %d\n", buffer, get_linenum());
                 int temp = match_keyword(buffer);
                 return (temp != -1) ? temp : process_identifier(buffer);
             }
 
-            if (isdigit(cbuf)) {
+            if (isdigit(cbuf)) {  // Number
                 buffer[0] = cbuf;
                 for (i = 1; (cbuf = (char) fgetc(fp)) != EOF; i++) {
                     if (check_token_size(i) == -1) return -1;
@@ -154,21 +114,26 @@ int scan(void) {
                         break;
                     }
                 }
+                //printf("Processing number: %s at line %d\n", buffer, get_linenum());
                 return process_number(buffer);
             }
 
+            // Handle unexpected tokens
             printf("Unexpected token: %c at line %d\n", cbuf, linenum);
             error("Unexpected token encountered");
             return -1;
     }
 }
 
+// Skip over whitespace and comments
 int skip_whitespace_and_comments(void) {
     while (1) {
         while (isspace(cbuf)) {
-            if (cbuf == '\n') linenum++;
+            if (cbuf == '\n') linenum++;  // Track line breaks
             cbuf = (char) fgetc(fp);
         }
+
+        // Handle block comments
         if (cbuf == '{') {
             while (cbuf != '}' && cbuf != EOF) {
                 cbuf = (char) fgetc(fp);
@@ -177,6 +142,8 @@ int skip_whitespace_and_comments(void) {
             if (cbuf == '}') cbuf = (char) fgetc(fp);
             continue;
         }
+
+        // Handle single-line comments
         if (cbuf == '/') {
             cbuf = (char) fgetc(fp);
             if (cbuf == '/') {
@@ -185,6 +152,8 @@ int skip_whitespace_and_comments(void) {
                 cbuf = (char) fgetc(fp);
                 continue;
             }
+
+            // Handle multi-line comments
             if (cbuf == '*') {
                 while (1) {
                     cbuf = (char) fgetc(fp);
@@ -200,7 +169,7 @@ int skip_whitespace_and_comments(void) {
                 }
                 continue;
             } else {
-                break;
+                break;  // Not a comment, return control to scan
             }
         }
         break;
@@ -208,6 +177,7 @@ int skip_whitespace_and_comments(void) {
     return (cbuf == EOF) ? 1 : 0;
 }
 
+// Match keywords in the source
 int match_keyword(const char *token_str) {
     for (int i = 0; i < KEYWORDSIZE; i++) {
         if (strcmp(token_str, key[i].keyword) == 0) {
@@ -217,12 +187,14 @@ int match_keyword(const char *token_str) {
     return -1;
 }
 
+// Process identifiers
 int process_identifier(const char *token_str) {
     strncpy(string_attr, token_str, MAXSTRSIZE - 1);
     string_attr[MAXSTRSIZE - 1] = '\0';
-    return TNAME;
+    return TNAME;  // Identifier token
 }
 
+// Process numbers
 int process_number(const char *token_str) {
     long value = strtol(token_str, NULL, 10);
     if (value <= 32767) {
@@ -234,6 +206,7 @@ int process_number(const char *token_str) {
     return TNUMBER;
 }
 
+// Handle string literals
 int process_string_literal(void) {
     int i = 0;
     char tempbuf[MAXSTRSIZE];
@@ -247,15 +220,17 @@ int process_string_literal(void) {
                 strncpy(string_attr, tempbuf, MAXSTRSIZE);
                 return TSTRING;
             }
-            tempbuf[i++] = '\'';
+            tempbuf[i++] = '\'';  // Handle escaped quotes
         } else {
             tempbuf[i++] = cbuf;
         }
     }
+    
     error("Unterminated string literal.");
     return -1;
 }
 
+// Handle symbol tokens
 int process_symbol(char *token_str) {
     switch (token_str[0]) {
         case '(': return TLPAREN;
@@ -285,6 +260,7 @@ int process_symbol(char *token_str) {
     }
 }
 
+// Check if token size exceeds limits
 int check_token_size(int length) {
     if (length >= MAXSTRSIZE) {
         error("Token exceeds maximum size.");
@@ -293,175 +269,22 @@ int check_token_size(int length) {
     return 1;
 }
 
-int error(char *mes) {
+// Error handling
+int error(const char *mes) {
     fprintf(stderr, "Error: %s at line %d\n", mes, linenum);
     exit(EXIT_FAILURE);
     return -1;
 }
 
+// Used for error-reporting function (parser or error handler)
 int get_linenum(void) {
     return linenum;
 }
 
+// Clean up after scanning
 void end_scan(void) {
     if (fp != NULL) {
         fclose(fp);
         fp = NULL;
     }
-}
-
-int token = 0;
-int indentation_level = 0;
-
-void print_token(void) {
-    printf("%*s%s ", indentation_level * 4, "", tokenstr[token]);
-}
-
-void expect(int expected, char *error_message) {
-    if (token != expected) {
-        error(error_message);
-    }
-    print_token();
-    token = scan();
-}
-
-int parse_variable_declaration(void) {
-    expect(TVAR, "Expected 'var'");
-    do {
-        parse_variable_names();
-        expect(TCOLON, "Expected ':'");
-        parse_type();
-        expect(TSEMI, "Expected ';'");
-    } while (token == TNAME);
-    return NORMAL;
-}
-
-int parse_variable_names(void) {
-    expect(TNAME, "Expected variable name");
-    while (token == TCOMMA) {
-        print_token();
-        token = scan();
-        expect(TNAME, "Expected variable name after ','");
-    }
-    return NORMAL;
-}
-
-int parse_type(void) {
-    if (token == TINTEGER || token == TBOOLEAN || token == TCHAR) {
-        print_token();
-        token = scan();
-    } else if (token == TARRAY) {
-        parse_array_type();
-    } else {
-        return error("Expected a valid type");
-    }
-    return NORMAL;
-}
-
-int parse_array_type(void) {
-    expect(TARRAY, "Expected 'array'");
-    expect(TLSQPAREN, "Expected '['");
-    expect(TNUMBER, "Expected array size");
-    expect(TRSQPAREN, "Expected ']'");
-    expect(TOF, "Expected 'of'");
-    return parse_type();
-}
-
-int parse_compound_statement(void) {
-    expect(TBEGIN, "Expected 'begin'");
-    indentation_level++;
-    while (token != TEND) {
-        parse_statement();
-        if (token == TSEMI) {
-            print_token();
-            token = scan();
-        }
-    }
-    indentation_level--;
-    expect(TEND, "Expected 'end'");
-    return NORMAL;
-}
-
-int parse_statement(void) {
-    switch (token) {
-        case TNAME: return parse_assignment_statement();
-        case TIF: return parse_condition_statement();
-        case TWHILE: return parse_iteration_statement();
-        case TBREAK: return parse_exit_statement();
-        case TBEGIN: return parse_compound_statement();
-        default: return NORMAL;
-    }
-}
-
-int parse_assignment_statement(void) {
-    expect(TNAME, "Expected variable name");
-    expect(TASSIGN, "Expected ':='");
-    return parse_expression();
-}
-
-int parse_condition_statement(void) {
-    expect(TIF, "Expected 'if'");
-    if (parse_expression() == ERROR) return ERROR;
-    expect(TTHEN, "Expected 'then'");
-    parse_statement();
-    if (token == TELSE) {
-        print_token();
-        token = scan();
-        parse_statement();
-    }
-    return NORMAL;
-}
-
-int parse_iteration_statement(void) {
-    expect(TWHILE, "Expected 'while'");
-    if (parse_expression() == ERROR) return ERROR;
-    expect(TDO, "Expected 'do'");
-    return parse_statement();
-}
-
-int parse_exit_statement(void) {
-    expect(TBREAK, "Expected 'break'");
-    return NORMAL;
-}
-
-int parse_expression(void) {
-    if (parse_simple_expression() == ERROR) return ERROR;
-    while (token == TEQUAL || token == TNOTEQ || token == TLE || token == TLEEQ || token == TGR || token == TGREQ) {
-        print_token();
-        token = scan();
-        if (parse_simple_expression() == ERROR) return ERROR;
-    }
-    return NORMAL;
-}
-
-int parse_simple_expression(void) {
-    if (token == TPLUS || token == TMINUS) {
-        print_token();
-        token = scan();
-    }
-    return parse_term();
-}
-
-int parse_term(void) {
-    if (parse_factor() == ERROR) return ERROR;
-    while (token == TSTAR || token == TDIV || token == TAND) {
-        print_token();
-        token = scan();
-        if (parse_factor() == ERROR) return ERROR;
-    }
-    return NORMAL;
-}
-
-int parse_factor(void) {
-    if (token == TNAME || token == TNUMBER || token == TSTRING || token == TTRUE || token == TFALSE) {
-        print_token();
-        token = scan();
-    } else if (token == TLPAREN) {
-        expect(TLPAREN, "Expected '('");
-        if (parse_expression() == ERROR) return ERROR;
-        expect(TRPAREN, "Expected ')'");
-    } else {
-        return error("Expected a valid factor");
-    }
-    return NORMAL;
 }

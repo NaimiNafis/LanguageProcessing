@@ -1,48 +1,34 @@
+#include <stdio.h>
 #include "scan.h"
 
-/* keyword list */
+// External keyword list and token string array
 struct KEY key[KEYWORDSIZE] = {
-  {"and", TAND},         {"array", TARRAY},     {"begin", TBEGIN},
-  {"boolean", TBOOLEAN}, {"break", TBREAK},     {"call", TCALL},
-  {"char", TCHAR},       {"div", TDIV},         {"do", TDO},
-  {"else", TELSE},       {"end", TEND},         {"false", TFALSE},
-  {"if", TIF},           {"integer", TINTEGER}, {"not", TNOT},
-  {"of", TOF},           {"or", TOR},           {"procedure", TPROCEDURE},
-  {"program", TPROGRAM}, {"read", TREAD},       {"readln", TREADLN},
-  {"return", TRETURN},   {"then", TTHEN},       {"true", TTRUE},
-  {"var", TVAR},         {"while", TWHILE},     {"write", TWRITE},
-  {"writeln", TWRITELN}};
-
-/* Token counter */
-int numtoken[NUMOFTOKEN + 1];
-
-/* string of each token */
-char *tokenstr[NUMOFTOKEN + 1] = {
-  "",        "NAME",    "program", "var",     "array",     "of",     
-  "begin",   "end",     "if",      "then",    "else",      "procedure",
-  "return",  "call",    "while",   "do",      "not",       "or",
-  "div",     "and",     "char",    "integer", "boolean",   "readln",
-  "writeln", "true",    "false",   "NUMBER",  "STRING",    "+",
-  "-",       "*",       "=",       "<>",      "<",         "<=",
-  ">",       ">=",      "(",       ")",       "[",         "]",
-  ":=",      ".",       ",",       ":",       ";",         "read",   
-  "write",   "break"};
-
-#include "scan.h"
+    {"and", TAND},         {"array", TARRAY},     {"begin", TBEGIN},
+    {"boolean", TBOOLEAN}, {"break", TBREAK},     {"call", TCALL},
+    {"char", TCHAR},       {"div", TDIV},         {"do", TDO},
+    {"else", TELSE},       {"end", TEND},         {"false", TFALSE},
+    {"if", TIF},           {"integer", TINTEGER}, {"not", TNOT},
+    {"of", TOF},           {"or", TOR},           {"procedure", TPROCEDURE},
+    {"program", TPROGRAM}, {"read", TREAD},       {"readln", TREADLN},
+    {"return", TRETURN},   {"then", TTHEN},       {"true", TTRUE},
+    {"var", TVAR},         {"while", TWHILE},     {"write", TWRITE},
+    {"writeln", TWRITELN}
+};
 
 // Function prototypes
-int parse_program(void);  // Parsing logic will be in scan.c
-void pretty_print(void);  // Handles pretty printing
+int parse_program(void);   // Parsing logic
+void pretty_print(void);   // Pretty-printing logic
 
 int main(int argc, char *argv[]) {
+    // Check for input file argument
     if (argc < 2) {
-        error("File name is not given.");
+        fprintf(stderr, "Error: File name is not provided.\n");
         return 1;
     }
 
     // Initialize the scanner with the input file
     if (init_scan(argv[1]) < 0) {
-        error("Cannot open input file.");
+        fprintf(stderr, "Error: Cannot open input file '%s'.\n", argv[1]);
         return 1;
     }
 
@@ -57,8 +43,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Parsing failed. Check the errors above.\n");
     }
 
-    // Cleanup
+    // Cleanup resources
     end_scan();
     return 0;
 }
-

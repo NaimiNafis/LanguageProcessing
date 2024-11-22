@@ -57,6 +57,7 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
-    "scan.h": "c"
+    "scan.h": "c",
+    "pretty-print.h": "c"
   }
 }
