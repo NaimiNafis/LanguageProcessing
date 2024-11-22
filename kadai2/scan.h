@@ -66,26 +66,21 @@
 #define S_ERROR  -1
 
 extern struct KEY {
-    char *keyword;
-    int keytoken;
+	char * keyword;
+	int keytoken;
 } key[KEYWORDSIZE];
 
-extern FILE *fp;                     // File pointer
-extern int num_attr;                 // Numerical attributes
-extern char string_attr[MAXSTRSIZE]; // String attributes
-extern char *tokenstr[];             // Token strings
-
-// Function declarations
 extern int error(const char *mes);
+extern int init_scan(char *filename);
+extern int scan(void);
 extern int get_linenum(void);
+extern void end_scan(void);
 
-// Scanning functions
-int init_scan(char *filename);
-int scan(void);
-void end_scan(void);
-
-// Helper functions
-void rewind_scan_file(void);
-const char *get_token_string(int token);
+/* External variables */
+extern int numtoken[NUMOFTOKEN + 1];
+extern char *tokenstr[NUMOFTOKEN + 1];
+extern int num_attr;
+extern char string_attr[MAXSTRSIZE];
+extern int token;
 
 #endif

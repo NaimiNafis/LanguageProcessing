@@ -1,0 +1,13 @@
+End of file reached at line 3
+Program /usr/local/lib/python3.10/dist-packages/lpp_collector/testcases/input02/sample21.mpl Output:
+"NAME      "    3
+"program   "    1
+"var       "    1
+"begin     "    1
+"end       "    1
+"integer   "    1
+"NUMBER    "    1
+":=        "    1
+".         "    1
+":         "    1
+";         "    2

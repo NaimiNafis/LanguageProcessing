@@ -1,0 +1,91 @@
+DEBUG: Skipping whitespace at line 1
+DEBUG: Current character: 'p' at line 1
+DEBUG: Current character after skipping: 'p' at line 1
+DEBUG: Processing identifier/keyword: 'program' at line 1
+program DEBUG: Skipping whitespace at line 1
+DEBUG: Current character: 'a' at line 1
+DEBUG: Current character after skipping: 'a' at line 1
+DEBUG: Processing identifier/keyword: 'assignboolean' at line 1
+assignbooleanDEBUG: Skipping whitespace at line 1
+DEBUG: Current character: ';' at line 1
+DEBUG: Current character after skipping: ';' at line 1
+;
+DEBUG: Skipping whitespace at line 1
+DEBUG: Current character: 'v' at line 2
+DEBUG: Current character after skipping: 'v' at line 2
+DEBUG: Processing identifier/keyword: 'var' at line 2
+DEBUG: Starting block parsing at line 2
+DEBUG: Skipping whitespace at line 2
+DEBUG: Current character: 'x' at line 3
+DEBUG: Current character after skipping: 'x' at line 3
+DEBUG: Processing identifier/keyword: 'x' at line 3
+DEBUG: Found variable declaration at line 3
+var xDEBUG: Skipping whitespace at line 3
+DEBUG: Current character: ',' at line 3
+DEBUG: Current character after skipping: ',' at line 3
+, DEBUG: Skipping whitespace at line 3
+DEBUG: Current character: 'y' at line 3
+DEBUG: Current character after skipping: 'y' at line 3
+DEBUG: Processing identifier/keyword: 'y' at line 3
+yDEBUG: Skipping whitespace at line 3
+DEBUG: Current character: ':' at line 4
+DEBUG: Current character after skipping: ':' at line 4
+ : DEBUG: Skipping whitespace at line 4
+DEBUG: Current character: 'b' at line 5
+DEBUG: Current character after skipping: 'b' at line 5
+DEBUG: Processing identifier/keyword: 'boolean' at line 5
+booleanDEBUG: Skipping whitespace at line 5
+DEBUG: Current character: ';' at line 5
+DEBUG: Current character after skipping: ';' at line 5
+;
+DEBUG: Skipping whitespace at line 5
+DEBUG: Current character: 'b' at line 8
+DEBUG: Current character after skipping: 'b' at line 8
+DEBUG: Processing identifier/keyword: 'begin' at line 8
+begin
+DEBUG: Skipping whitespace at line 8
+DEBUG: Current character: 'x' at line 9
+DEBUG: Current character after skipping: 'x' at line 9
+DEBUG: Processing identifier/keyword: 'x' at line 9
+x := DEBUG: Skipping whitespace at line 9
+DEBUG: Current character: ':' at line 9
+DEBUG: Current character after skipping: ':' at line 9
+DEBUG: Skipping whitespace at line 9
+DEBUG: Current character: 't' at line 9
+DEBUG: Current character after skipping: 't' at line 9
+DEBUG: Processing identifier/keyword: 'true' at line 9
+DEBUG: Parsing expression, token=25 (true) at line 9
+xDEBUG: Skipping whitespace at line 9
+DEBUG: Current character: ';' at line 9
+DEBUG: Current character after skipping: ';' at line 9
+DEBUG: Finished parsing expression, current token=';' (46) at line 9
+;
+DEBUG: Skipping whitespace at line 9
+DEBUG: Current character: 'y' at line 10
+DEBUG: Current character after skipping: 'y' at line 10
+DEBUG: Processing identifier/keyword: 'y' at line 10
+y := DEBUG: Skipping whitespace at line 10
+DEBUG: Current character: ':' at line 10
+DEBUG: Current character after skipping: ':' at line 10
+DEBUG: Skipping whitespace at line 10
+DEBUG: Current character: 'f' at line 10
+DEBUG: Current character after skipping: 'f' at line 10
+DEBUG: Processing identifier/keyword: 'false' at line 10
+DEBUG: Parsing expression, token=26 (false) at line 10
+yDEBUG: Skipping whitespace at line 10
+DEBUG: Current character: ';' at line 10
+DEBUG: Current character after skipping: ';' at line 10
+DEBUG: Finished parsing expression, current token=';' (46) at line 10
+;
+DEBUG: Skipping whitespace at line 10
+DEBUG: Current character: 'e' at line 11
+DEBUG: Current character after skipping: 'e' at line 11
+DEBUG: Processing identifier/keyword: 'end' at line 11
+end
+DEBUG: Skipping whitespace at line 11
+DEBUG: Current character: '.' at line 11
+DEBUG: Current character after skipping: '.' at line 11
+DEBUG: Completed block parsing, next token: . at line 11
+.
+DEBUG: Skipping whitespace at line 11
+DEBUG: End of file reached at line 12

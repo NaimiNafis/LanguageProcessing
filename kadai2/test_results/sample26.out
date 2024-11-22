@@ -1,0 +1,24 @@
+End of file reached at line 14
+Program /usr/local/lib/python3.10/dist-packages/lpp_collector/testcases/input02/sample26.mpl Output:
+"NAME      "   16
+"program   "    1
+"var       "    1
+"begin     "    2
+"end       "    2
+"while     "    1
+"do        "    1
+"integer   "    1
+"readln    "    1
+"writeln   "    1
+"NUMBER    "    3
+"STRING    "    2
+"+         "    1
+"-         "    1
+">         "    1
+"(         "    2
+")         "    2
+":=        "    4
+".         "    1
+",         "    5
+":         "    1
+";         "    7

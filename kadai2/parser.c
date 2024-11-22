@@ -1,213 +1,361 @@
-#include "parser.h"
 #include "scan.h"
+#include "parser.h"
+#include <stdbool.h>
 
-int token = 0;                // Token variable
-int indentation_level = 0;    // Indentation level for pretty printing
+/* --- Global Variables --- */
+static int current_indent = 0;  // Tracks current indentation level for pretty-printing
 
-void expect(int expected, const char *error_message) {
-    if (token != expected) {
-        error(error_message);
+/* --- Helper Functions --- */
+// Print with current indentation level
+void print_with_indent(const char *str) {
+    for (int i = 0; i < current_indent; i++) {
+        printf("    ");
     }
-    print_token();
-    token = scan();
+    printf("%s", str);
 }
 
-void print_token(void) {
-    printf("%*s%s ", indentation_level * 4, "", get_token_string(token));
+// Utility function to check if the token is a literal or identifier
+bool is_literal_or_identifier(void) {
+    return token == TNUMBER || token == TSTRING || token == TNAME || token == TTRUE || token == TFALSE;
 }
 
-void pretty_print(void) {
-    rewind_scan_file();  // Use helper function to rewind the input file
-
-    while ((token = scan()) != -1) {
-        switch (token) {
-            case TPROGRAM:
-            case TVAR:
-            case TBEGIN:
-                printf("%*s%s\n", indentation_level * 4, "", get_token_string(token));
-                indentation_level++;
-                break;
-            case TEND:
-                indentation_level--;
-                printf("%*s%s\n", indentation_level * 4, "", get_token_string(token));
-                break;
-            case TSEMI:
-                printf(";\n");
-                break;
-            case TDOT:
-                printf(".\n");
-                break;
-            default:
-                printf("%*s%s ", indentation_level * 4, "", get_token_string(token));
-                break;
-        }
+// Utility function to print literals or identifiers
+void print_literal_or_identifier(void) {
+    if (token == TNUMBER) {
+        printf("%d", num_attr);
+    } else if (token == TSTRING) {
+        printf("'%s'", string_attr);
+    } else {
+        printf("%s", string_attr);
     }
 }
 
-int parse_program() {
+// Utility function to check if the token is a binary operator
+bool is_binary_operator(int tok) {
+    return tok == TEQUAL || tok == TNOTEQ || tok == TLE || tok == TLEEQ || tok == TGR || tok == TGREQ ||
+           tok == TPLUS || tok == TMINUS || tok == TSTAR || tok == TDIV || tok == TOR || tok == TAND;
+}
+
+
+/* --- Core Parsing Functions --- */
+// Parse the main program structure
+int parse_program(void) {
     if (token != TPROGRAM) return error("Keyword 'program' is missing");
+    print_with_indent("program ");
     token = scan();
+
     if (token != TNAME) return error("Program name is missing");
+    printf("%s", string_attr);
     token = scan();
-    if (token != TSEMI) return error("Semicolon is missing");
+
+    if (token != TSEMI) return error("Semicolon is missing after program name");
+    printf(";\n");
     token = scan();
+
     if (parse_block() == ERROR) return ERROR;
+
     if (token != TDOT) return error("Period is missing at the end of the program");
+    print_with_indent(".\n");
     token = scan();
+
     return NORMAL;
 }
 
 int parse_block(void) {
-    if (scan() == TVAR) {
-        while (scan() == TNAME) {
-            if (scan() != TCOLON) return error("Expected ':' in variable declaration");
-            if (scan() != TINTEGER && scan() != TBOOLEAN && scan() != TCHAR)
-                return error("Expected a valid type (integer, boolean, char)");
-            if (scan() != TSEMI) return error("Expected ';' after variable declaration");
+    printf("DEBUG: Starting block parsing at line %d\n", get_linenum());
+
+    // Handle variable declarations
+    while (token == TVAR) {
+        token = scan();  // Consume 'var'
+        while (token == TNAME) {
+            printf("DEBUG: Found variable declaration at line %d\n", get_linenum());
+            if (parse_variable_declaration() == ERROR) return ERROR;
         }
     }
-    if (scan() != TBEGIN) return error("Expected 'begin' to start the block");
-    if (scan() != TEND) return error("Expected 'end' to close the block");
-    return 0;
-}
 
-int parse_variable_declaration(void) {
-    expect(TVAR, "Expected 'var'");
-    do {
-        parse_variable_names();
-        expect(TCOLON, "Expected ':'");
-        parse_type();
-        expect(TSEMI, "Expected ';'");
-    } while (token == TNAME);
-    return NORMAL;
-}
-
-int parse_variable_names(void) {
-    expect(TNAME, "Expected variable name");
-    while (token == TCOMMA) {
-        print_token();
-        token = scan();
-        expect(TNAME, "Expected variable name after ','");
+    // Ensure 'begin' keyword starts the block
+    if (token != TBEGIN) {
+        return error("Keyword 'begin' is missing for block");
     }
-    return NORMAL;
-}
 
-int parse_type(void) {
-    if (token == TINTEGER || token == TBOOLEAN || token == TCHAR) {
-        print_token();
-        token = scan();
-    } else if (token == TARRAY) {
-        parse_array_type();
-    } else {
-        return error("Expected a valid type");
-    }
-    return NORMAL;
-}
+    print_with_indent("begin\n");
+    current_indent++;
+    token = scan();  // Consume 'begin'
 
-int parse_array_type(void) {
-    expect(TARRAY, "Expected 'array'");
-    expect(TLSQPAREN, "Expected '['");
-    expect(TNUMBER, "Expected array size");
-    expect(TRSQPAREN, "Expected ']'");
-    expect(TOF, "Expected 'of'");
-    return parse_type();
-}
-
-int parse_compound_statement(void) {
-    expect(TBEGIN, "Expected 'begin'");
-    indentation_level++;
+    // Parse statements until 'end'
     while (token != TEND) {
-        parse_statement();
-        if (token == TSEMI) {
-            print_token();
-            token = scan();
-        }
+        if (parse_statement() == ERROR) return ERROR;
     }
-    indentation_level--;
-    expect(TEND, "Expected 'end'");
+
+    current_indent--;
+    print_with_indent("end\n");
+    token = scan();  // Consume 'end'
+
+    printf("DEBUG: Completed block parsing, next token: %s at line %d\n", tokenstr[token], get_linenum());
     return NORMAL;
 }
 
+
+// Parse a single variable declaration
+int parse_variable_declaration(void) {
+    print_with_indent("var ");
+    while (1) {
+        if (token != TNAME) return error("Variable name is missing");
+        printf("%s", string_attr);
+        token = scan();
+
+        if (token == TCOLON) {
+            printf(" : ");
+            token = scan();
+            break;
+        } else if (token == TCOMMA) {
+            printf(", ");
+            token = scan();
+        } else {
+            return error("Colon or comma is missing in variable declaration");
+        }
+    }
+
+    if (token == TINTEGER || token == TBOOLEAN || token == TCHAR) {
+        printf("%s", tokenstr[token]);
+        token = scan();
+    } else {
+        return error("Variable type is missing or invalid");
+    }
+
+    if (token != TSEMI) return error("Semicolon is missing after variable declaration");
+    printf(";\n");
+    token = scan();
+
+    return NORMAL;
+}
+
+// Parse a single statement
 int parse_statement(void) {
     switch (token) {
-        case TNAME: return parse_assignment_statement();
-        case TIF: return parse_condition_statement();
-        case TWHILE: return parse_iteration_statement();
-        case TBREAK: return parse_exit_statement();
-        case TBEGIN: return parse_compound_statement();
-        default: return NORMAL;
+        case TNAME:
+            return parse_assignment_statement();
+        case TIF:
+            return parse_if_statement();
+        case TWHILE:
+            return parse_while_statement();
+        case TBEGIN:
+            return parse_block();
+        case TWRITELN:
+        case TWRITE:
+            return parse_write_statement();
+        case TREADLN:
+        case TREAD:
+            return parse_read_statement();
+        case TBREAK:
+            print_with_indent("break;\n");
+            token = scan();
+            return NORMAL;
+        default:
+            return error("Unrecognized or missing statement");
     }
 }
 
+// Parse an assignment statement
 int parse_assignment_statement(void) {
-    expect(TNAME, "Expected variable name");
-    expect(TASSIGN, "Expected ':='");
-    return parse_expression();
+    printf("%s := ", string_attr);  // Print the identifier (e.g., x)
+    token = scan();  // Consume the identifier
+
+    if (token != TASSIGN) {
+        return error("Missing ':=' in assignment statement");
+    }
+    token = scan();  // Consume ':='
+
+    // Parse the expression
+    if (parse_expression() == ERROR) {
+        return error("Invalid expression in assignment statement");
+    }
+
+    // Check for semicolon at the end of the statement
+    if (token != TSEMI) {
+        printf("DEBUG: Current token='%s' (%d) at line %d\n", tokenstr[token], token, get_linenum());
+        return error("Missing ';' after assignment statement");
+    }
+    printf(";\n");  // Print the semicolon
+    token = scan();  // Consume the semicolon
+
+    return NORMAL;
 }
 
-int parse_condition_statement(void) {
-    expect(TIF, "Expected 'if'");
+// Parse an if statement
+int parse_if_statement(void) {
+    print_with_indent("if ");
+    token = scan();
+
     if (parse_expression() == ERROR) return ERROR;
-    expect(TTHEN, "Expected 'then'");
-    parse_statement();
+
+    if (token != TTHEN) return error("Keyword 'then' is missing in if statement");
+    printf(" then\n");
+    token = scan();
+
+    current_indent++;
+    if (parse_statement() == ERROR) return ERROR;
+    current_indent--;
+
     if (token == TELSE) {
-        print_token();
+        print_with_indent("else\n");
         token = scan();
-        parse_statement();
+        current_indent++;
+        if (parse_statement() == ERROR) return ERROR;
+        current_indent--;
     }
+
+    printf("DEBUG: Completed if statement, token: %s at line %d\n", tokenstr[token], get_linenum());
     return NORMAL;
 }
 
-int parse_iteration_statement(void) {
-    expect(TWHILE, "Expected 'while'");
+
+// Parse a while statement
+int parse_while_statement(void) {
+    print_with_indent("while ");
+    token = scan();
+
     if (parse_expression() == ERROR) return ERROR;
-    expect(TDO, "Expected 'do'");
-    return parse_statement();
-}
 
-int parse_exit_statement(void) {
-    expect(TBREAK, "Expected 'break'");
+    if (token != TDO) return error("Keyword 'do' is missing in while statement");
+    printf(" do\n");
+    token = scan();
+
+    current_indent++;
+    if (parse_statement() == ERROR) return ERROR;
+    current_indent--;
+
     return NORMAL;
 }
 
+// Parse an expression
 int parse_expression(void) {
-    if (parse_simple_expression() == ERROR) return ERROR;
-    while (token == TEQUAL || token == TNOTEQ || token == TLE || token == TLEEQ || token == TGR || token == TGREQ) {
-        print_token();
-        token = scan();
-        if (parse_simple_expression() == ERROR) return ERROR;
-    }
-    return NORMAL;
-}
+    printf("DEBUG: Parsing expression, token=%d (%s) at line %d\n", token, tokenstr[token], get_linenum());
 
-int parse_simple_expression(void) {
-    if (token == TPLUS || token == TMINUS) {
-        print_token();
+    // Handle literals, identifiers, and grouped expressions
+    if (is_literal_or_identifier()) {
+        print_literal_or_identifier();
         token = scan();
-    }
-    return parse_term();
-}
-
-int parse_term(void) {
-    if (parse_factor() == ERROR) return ERROR;
-    while (token == TSTAR || token == TDIV || token == TAND) {
-        print_token();
+    } else if (token == TNOT) {  // Handle `not` operator
+        printf("not ");
         token = scan();
-        if (parse_factor() == ERROR) return ERROR;
-    }
-    return NORMAL;
-}
-
-int parse_factor(void) {
-    if (token == TNAME || token == TNUMBER || token == TSTRING || token == TTRUE || token == TFALSE) {
-        print_token();
+        if (parse_expression() == ERROR) return error("Invalid operand for 'not'");
+    } else if (token == TLPAREN) {  // Handle grouped expressions
+        printf("(");
         token = scan();
-    } else if (token == TLPAREN) {
-        expect(TLPAREN, "Expected '('");
-        if (parse_expression() == ERROR) return ERROR;
-        expect(TRPAREN, "Expected ')'");
+        if (parse_expression() == ERROR) return error("Invalid grouped expression");
+        if (token != TRPAREN) return error("Missing ')' in expression");
+        printf(")");
+        token = scan();
     } else {
-        return error("Expected a valid factor");
+        return error("Invalid or missing expression");
     }
+
+    // Handle binary operators
+    while (is_binary_operator(token)) {
+        printf(" %s ", tokenstr[token]);  // Print the operator
+        token = scan();  // Consume operator
+
+        if (!is_literal_or_identifier() && token != TLPAREN) {
+            return error("Expected a valid operand after operator");
+        }
+
+        if (parse_expression() == ERROR) {
+            return error("Error parsing the right-hand side of the binary operator");
+        }
+    }
+
+    printf("DEBUG: Finished parsing expression, current token='%s' (%d) at line %d\n", tokenstr[token], token, get_linenum());
     return NORMAL;
 }
+
+
+
+// Parse a write or writeln statement
+int parse_write_statement(void) {
+    printf("%s(", tokenstr[token]);  // Print `writeln` or `write`
+    token = scan();  // Move past `writeln` or `write`
+
+    if (token != TLPAREN) {
+        return error("Missing '(' after writeln or write");
+    }
+
+    token = scan();  // Move past '('
+
+    // Handle arguments inside parentheses
+    if (token != TRPAREN) {  // If not immediately closing parentheses
+        if (parse_expression() == ERROR) return ERROR;
+
+        while (token == TCOMMA) {  // Handle multiple arguments separated by commas
+            printf(", ");
+            token = scan();  // Consume the comma
+            if (parse_expression() == ERROR) return ERROR;
+        }
+    }
+
+    if (token != TRPAREN) {
+        return error("Missing ')' in writeln or write statement");
+    }
+
+    printf(");\n");  // Print closing parenthesis and semicolon
+    token = scan();  // Move past ')'
+
+    if (token != TSEMI) {
+        return error("Missing ';' after writeln or write statement");
+    }
+
+    token = scan();  // Move past ';'
+    return NORMAL;
+}
+
+
+// Parse a read or readln statement
+int parse_read_statement(void) {
+    printf("%s(", tokenstr[token]);  // Print `readln` or `read`
+    token = scan();  // Move past `readln` or `read`
+
+    if (token != TLPAREN) {
+        return error("Missing '(' after readln or read");
+    }
+
+    printf("(");  // Print the opening parenthesis
+    token = scan();  // Move past '('
+
+    // Expect at least one variable name
+    if (token != TNAME) {
+        return error("Invalid or missing variable name in readln or read");
+    }
+
+    printf("%s", string_attr);  // Print the first variable name
+    token = scan();  // Move past the variable
+
+    while (token == TCOMMA) {  // Handle multiple variable names separated by commas
+        printf(", ");
+        token = scan();  // Move past the comma
+
+        if (token != TNAME) {
+            return error("Invalid or missing variable name after ',' in readln or read");
+        }
+
+        printf("%s", string_attr);  // Print the next variable name
+        token = scan();  // Move past the variable
+    }
+
+    if (token != TRPAREN) {
+        return error("Missing ')' in readln or read statement");
+    }
+
+    printf(")");  // Print the closing parenthesis
+    token = scan();  // Move past ')'
+
+    if (token != TSEMI) {
+        return error("Missing ';' after readln or read statement");
+    }
+
+    printf(";\n");  // Print the semicolon
+    token = scan();  // Move past ';'
+
+    return NORMAL;
+}
+
+
