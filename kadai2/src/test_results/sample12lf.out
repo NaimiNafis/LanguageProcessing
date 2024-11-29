@@ -74,10 +74,12 @@ Current character: S (Line: 3)
 get_linenum called, returning: 3
 Processing identifier/keyword: S at line 3
 DEBUG: No match for keyword: S
+get_linenum called, returning: 3
 DEBUG: Next token: 1
 DEBUG: Matching token: 1
 get_linenum called, returning: 3
 Current character: ; (Line: 3)
+get_linenum called, returning: 3
 DEBUG: Next token: 46
 DEBUG: Matching token: 46
 get_linenum called, returning: 6
@@ -86,6 +88,7 @@ get_linenum called, returning: 6
 Processing identifier/keyword: begin at line 6
 DEBUG: Matched keyword: begin with token: 6
 DEBUG: Keyword token: 6
+get_linenum called, returning: 6
 DEBUG: Next token: 6
 DEBUG: Matching token: 6
 get_linenum called, returning: 6
@@ -94,12 +97,14 @@ get_linenum called, returning: 6
 Processing identifier/keyword: end at line 6
 DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
+get_linenum called, returning: 6
 DEBUG: Next token: 7
 DEBUG: Entering parse_statement with token: 7
 DEBUG: Found END token in statement
 DEBUG: Matching token: 7
 get_linenum called, returning: 6
 Current character: . (Line: 6)
+get_linenum called, returning: 6
 DEBUG: Next token: 43
 DEBUG: Matching token: 43
 Line number incremented to: 7
@@ -112,6 +117,7 @@ Line number incremented to: 8
 Line number incremented to: 8
 Warning: Unterminated multi-line comment at line 8, skipping...
 End of file reached at line 8
+get_linenum called, returning: 8
 DEBUG: Next token: -1
 Parsing successful. Cleaning up scanner...
 Reinitializing scanner for pretty printing...

@@ -5,6 +5,7 @@
 #include "parser.h"
 #include "scan.h"
 #include "token.h"
+#include "debug.h" 
 
 // Define a constant for EOF
 #define EOF_TOKEN -1
@@ -62,10 +63,10 @@ void parse() {
 
 static void match(int expected_token) {
     if (parser.current_token == expected_token) {
-        printf("DEBUG: Matching token: %d\n", parser.current_token); // Debug statement
+        debug_printf("DEBUG: Matching token: %d\n", parser.current_token);
         parser.current_token = scan();
         parser.line_number = get_linenum();
-        printf("DEBUG: Next token: %d\n", parser.current_token); // Debug statement
+        debug_printf("DEBUG: Next token: %d\n", parser.current_token);
     } else {
         parse_error("Unexpected token");
     }
@@ -204,16 +205,16 @@ static void parse_statement_list(void) {
 }
 
 static void parse_statement(void) {
-    printf("DEBUG: Entering parse_statement with token: %d\n", parser.current_token);
+    debug_printf("DEBUG: Entering parse_statement with token: %d\n", parser.current_token);
 
     switch (parser.current_token) {
         case TNAME:
             parse_assignment();
             break;
         case TIF:
-            printf("DEBUG: Found IF token\n");
+            debug_printf("DEBUG: Found IF token\n");
             parser.current_token = scan();
-            printf("DEBUG: After IF scan, token is: %d\n", parser.current_token);
+            debug_printf("DEBUG: After IF scan, token is: %d\n", parser.current_token);
             parse_if_statement();
             break;
         case TWHILE:
@@ -237,7 +238,7 @@ static void parse_statement(void) {
             parse_write_statement();
             break;
         case TEND:  // Add END token handling
-            printf("DEBUG: Found END token in statement\n");
+            debug_printf("DEBUG: Found END token in statement\n");
             return;  // Let parent handle END token
         default:
             parse_error("Invalid statement");
@@ -246,20 +247,20 @@ static void parse_statement(void) {
 }
 
 static void parse_if_statement(void) {
-    printf("DEBUG: Entering parse_if_statement\n");
+    debug_printf("DEBUG: Entering parse_if_statement\n");
     
     parse_condition();
     
-    printf("DEBUG: Condition parsed, looking for THEN\n");
+    debug_printf("DEBUG: Condition parsed, looking for THEN\n");
     
     if (parser.current_token == TTHEN) {
         match(TTHEN);
         
         if (parser.current_token == TBEGIN) {
-            printf("DEBUG: Found BEGIN block\n");
+            debug_printf("DEBUG: Found BEGIN block\n");
             match(TBEGIN);
             parse_statement_list();
-            printf("DEBUG: Looking for END token\n");
+            debug_printf("DEBUG: Looking for END token\n");
             match(TEND);
         } else {
             parse_statement();
@@ -267,7 +268,7 @@ static void parse_if_statement(void) {
         
         // Keep ELSE clause for backward compatibility
         if (parser.current_token == TELSE) {
-            printf("DEBUG: Found ELSE clause\n");
+            debug_printf("DEBUG: Found ELSE clause\n");
             match(TELSE);
             if (parser.current_token == TBEGIN) {
                 match(TBEGIN);
@@ -299,32 +300,32 @@ static void parse_while_statement(void) {
 
 // In parser.c
 static void parse_condition(void) {
-    printf("DEBUG: Parsing condition, current token: %d\n", parser.current_token);
+    debug_printf("DEBUG: Parsing condition, current token: %d\n", parser.current_token);
     parse_comparison();
     
     while (parser.current_token == TOR || parser.current_token == TAND) {
-        printf("DEBUG: Found %s at line %d\n", 
+        debug_printf("DEBUG: Found %s at line %d\n", 
                parser.current_token == TOR ? "OR" : "AND", 
                get_linenum());
         
         parser.current_token = scan();
         
-        printf("DEBUG: Next token after OR/AND: %d at line %d\n", 
+        debug_printf("DEBUG: Next token after OR/AND: %d at line %d\n", 
                parser.current_token, 
                get_linenum());
         
         if (parser.current_token == TLPAREN) {
-            printf("DEBUG: Found opening parenthesis\n");
+            debug_printf("DEBUG: Found opening parenthesis\n");
             parser.current_token = scan();
             parse_comparison();
             if (parser.current_token == TRPAREN) {
-                printf("DEBUG: Found closing parenthesis\n");
+                debug_printf("DEBUG: Found closing parenthesis\n");
                 parser.current_token = scan();
             } else {
                 error("Missing closing parenthesis");
             }
         } else {
-            printf("DEBUG: No parenthesis found, continuing with comparison\n");
+            debug_printf("DEBUG: No parenthesis found, continuing with comparison\n");
             parse_comparison();
         }
     }
@@ -374,7 +375,7 @@ static void parse_variable(void) {
 static void parse_term(void) {
     parse_factor();
     while (parser.current_token == TSTAR || parser.current_token == TDIV) {
-        printf("DEBUG: Current token in parse_term (multiplication/division): %d\n", parser.current_token); // Debug statement
+        debug_printf("DEBUG: Current token in parse_term (multiplication/division): %d\n", parser.current_token);
         match(parser.current_token);
         parse_factor();
     }
@@ -384,7 +385,7 @@ static void parse_term(void) {
 static void parse_expression(void) {
     parse_term();
     while (parser.current_token == TPLUS || parser.current_token == TMINUS) {
-        printf("DEBUG: Current token in parse_expression (addition/subtraction): %d\n", parser.current_token); // Debug statement
+        debug_printf("DEBUG: Current token in parse_expression (addition/subtraction): %d\n", parser.current_token);
         match(parser.current_token);
         parse_term();
     }
@@ -396,14 +397,14 @@ static void parse_expression(void) {
         parser.current_token == TGREQ ||
         parser.current_token == TLE ||
         parser.current_token == TLEEQ) {
-        printf("DEBUG: Current token in parse_expression (comparison): %d\n", parser.current_token); // Debug statement
+        debug_printf("DEBUG: Current token in parse_expression (comparison): %d\n", parser.current_token);
         match(parser.current_token);
         parse_expression();
     }
 }
 
 static void parse_factor(void) {
-    printf("DEBUG: Entering parse_factor with token: %d\n", parser.current_token); // Debug statement
+    debug_printf("DEBUG: Entering parse_factor with token: %d\n", parser.current_token);
     switch (parser.current_token) {
         case TLPAREN:
             match(TLPAREN);

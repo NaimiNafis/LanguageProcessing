@@ -3,6 +3,7 @@
 #include "scan.h"
 #include "pretty.h"
 #include "token.h"
+#include "debug.h" 
 
 static int current_indent = 0;
 static int need_space = 0;

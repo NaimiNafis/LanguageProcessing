@@ -1,5 +1,10 @@
 #include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "scan.h"
+#include "token.h"
+#include "debug.h" 
 
 FILE *fp;  // File pointer to handle input
 char string_attr[MAXSTRSIZE];  // Store string attributes
@@ -45,12 +50,12 @@ int scan(void) {
     // Skip whitespace and comments
     while (skip_whitespace_and_comments()) {
         if (cbuf == EOF) {
-            printf("End of file reached at line %d\n", linenum);
+            debug_printf("End of file reached at line %d\n", linenum);
             return -1;
         }
     }
 
-    printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
+    debug_printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
 
     switch (cbuf) {
         // Handle symbols directly
@@ -62,7 +67,7 @@ int scan(void) {
 
         // Handle string literals
         case '\'':
-            printf("Processing string literal starting at line %d\n", get_linenum());
+            debug_printf("Processing string literal starting at line %d\n", get_linenum());
             return process_string_literal();
 
         // Handle keywords, identifiers, and numbers
@@ -78,11 +83,11 @@ int scan(void) {
                     }
                 }
                 buffer[i] = '\0';  // Null-terminate the buffer
-                printf("Processing identifier/keyword: %s at line %d\n", buffer, get_linenum());
+                debug_printf("Processing identifier/keyword: %s at line %d\n", buffer, get_linenum());
                 int temp = match_keyword(buffer);
                 if (temp != -1) {
                     // Keyword matched
-                    printf("DEBUG: Keyword token: %d\n", temp); // Debug statement
+                    debug_printf("DEBUG: Keyword token: %d\n", temp);
                     return temp;
                 } else {
                     // Not a keyword, process as identifier
@@ -101,12 +106,12 @@ int scan(void) {
                     }
                 }
                 buffer[i] = '\0';  // Null-terminate the buffer
-                printf("Processing number: %s at line %d\n", buffer, get_linenum());
+                debug_printf("Processing number: %s at line %d\n", buffer, get_linenum());
                 return process_number(buffer);
             }
 
             // Handle unexpected tokens
-            printf("Unexpected token: %c at line %d\n", cbuf, linenum);
+            debug_printf("Unexpected token: %c at line %d\n", cbuf, linenum);
             return -1;
     }
 }
@@ -147,9 +152,9 @@ int skip_whitespace_and_comments(void) {
                         cbuf = (char) fgetc(fp);
                         break;
                     }
-                    if (cbuf == '\n') linenum++; printf("Line number incremented to: %d\n", linenum);
+                    if (cbuf == '\n') linenum++; debug_printf("Line number incremented to: %d\n", linenum);
                     if (cbuf == EOF) {
-                        printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
+                        debug_printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
                         return 1;
                     }
                 }
@@ -167,11 +172,11 @@ int skip_whitespace_and_comments(void) {
 int match_keyword(const char *token_str) {
     for (int i = 0; i < KEYWORDSIZE; i++) {
         if (strcmp(token_str, key[i].keyword) == 0) {
-             printf("DEBUG: Matched keyword: %s with token: %d\n", token_str, key[i].keytoken); // Debug statement
+            debug_printf("DEBUG: Matched keyword: %s with token: %d\n", token_str, key[i].keytoken);
             return key[i].keytoken;
         }
     }
-    printf("DEBUG: No match for keyword: %s\n", token_str); // Debug statement
+    debug_printf("DEBUG: No match for keyword: %s\n", token_str);
     return -1;  // Return -1 if not a keyword
 }
 
@@ -260,13 +265,13 @@ int check_token_size(int length) {
 // Error handling
 void error(const char *msg) {
     fprintf(stderr, "Error: %s at line %d\n", msg, linenum);
-    printf("Error reported at line: %d\n", linenum);  // Print line number
+    debug_printf("Error reported at line: %d\n", linenum);
     exit(EXIT_FAILURE);
 }
 
 // Used for error-reporting function (parser or error handler)
 int get_linenum(void) {
-    printf("get_linenum called, returning: %d\n", linenum);
+    debug_printf("get_linenum called, returning: %d\n", linenum);
     return linenum;
 }
 

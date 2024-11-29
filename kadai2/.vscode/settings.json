@@ -59,6 +59,7 @@
   "files.associations": {
     "stdlib.h": "c",
     "stdio.h": "c",
-    "token.h": "c"
+    "token.h": "c",
+    "pretty.h": "c"
   }
 }

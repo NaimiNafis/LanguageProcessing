@@ -1,4 +1,8 @@
+#include <stdarg.h> 
 #include "scan.h"
+#include "parser.h"
+#include "pretty.h"
+#include "debug.h" 
 
 struct ID {
   char *name;
