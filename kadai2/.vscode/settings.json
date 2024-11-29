@@ -60,6 +60,7 @@
     "stdlib.h": "c",
     "stdio.h": "c",
     "token.h": "c",
-    "pretty.h": "c"
+    "pretty.h": "c",
+    "scan.h": "c"
   }
 }

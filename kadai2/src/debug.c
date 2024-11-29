@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include "debug.h"
 
-int debug_mode = 0;  // 0 off 1 on
+int debug_mode = 1;  // 0 off 1 on
 
 void debug_printf(const char *format, ...) {
     if (debug_mode) {
