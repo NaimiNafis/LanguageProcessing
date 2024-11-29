@@ -113,7 +113,6 @@ get_linenum called, returning: 5
 Current character: ( (Line: 5)
 get_linenum called, returning: 5
 Next token: 38 at line: 5
-Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 5
 get_linenum called, returning: 5
 Current character: ' (Line: 5)
@@ -695,7 +694,6 @@ get_linenum called, returning: 13
 Current character: ( (Line: 13)
 get_linenum called, returning: 13
 Next token: 38 at line: 13
-Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 13
 get_linenum called, returning: 13
 Current character: ' (Line: 13)
@@ -1026,7 +1024,6 @@ get_linenum called, returning: 18
 Current character: ( (Line: 18)
 get_linenum called, returning: 18
 Next token: 38 at line: 18
-Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 18
 get_linenum called, returning: 18
 Current character: ' (Line: 18)
@@ -1357,7 +1354,6 @@ get_linenum called, returning: 23
 Current character: ( (Line: 23)
 get_linenum called, returning: 23
 Next token: 38 at line: 23
-Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 23
 get_linenum called, returning: 23
 Current character: ' (Line: 23)
@@ -1688,7 +1684,6 @@ get_linenum called, returning: 32
 Current character: ( (Line: 32)
 get_linenum called, returning: 32
 Next token: 38 at line: 32
-Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 32
 get_linenum called, returning: 32
 Current character: ' (Line: 32)
@@ -2019,7 +2014,6 @@ get_linenum called, returning: 37
 Current character: ( (Line: 37)
 get_linenum called, returning: 37
 Next token: 38 at line: 37
-Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 37
 get_linenum called, returning: 37
 Current character: ' (Line: 37)

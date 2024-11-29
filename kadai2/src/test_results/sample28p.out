@@ -73,7 +73,6 @@ get_linenum called, returning: 2
 Current character: ( (Line: 2)
 get_linenum called, returning: 2
 Next token: 38 at line: 2
-Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 2
 get_linenum called, returning: 2
 Current character: ' (Line: 2)
@@ -159,7 +158,6 @@ get_linenum called, returning: 3
 Current character: ( (Line: 3)
 get_linenum called, returning: 3
 Next token: 38 at line: 3
-Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 3
 get_linenum called, returning: 3
 Current character: ' (Line: 3)

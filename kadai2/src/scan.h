@@ -10,6 +10,13 @@
 #define MAXSTRSIZE 1024
 #define S_ERROR -1
 
+typedef struct {
+    FILE *fp;
+    int line_number;
+    int has_error;
+} Scanner;
+
+extern Scanner scanner;
 extern int num_attr;
 extern char string_attr[MAXSTRSIZE];
 

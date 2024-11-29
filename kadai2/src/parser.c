@@ -325,15 +325,26 @@ static void parse_write_statement(void) {
         return;
     }
     
-    debug_printf("Parsing writeln parameters\n");
     match(TLPAREN);
+    
+    // Parse first expression with optional format
     parse_expression();
+    if (parser.current_token == TCOLON) {
+        match(TCOLON);
+        parse_expression();  // Parse width specifier
+    }
+    
+    // Parse remaining expressions
     while (parser.current_token == TCOMMA) {
         match(TCOMMA);
         parse_expression();
+        if (parser.current_token == TCOLON) {
+            match(TCOLON);
+            parse_expression();  // Parse width specifier
+        }
     }
+
     match(TRPAREN);
-    
     debug_printf("Exiting parse_write_statement with token: %d\n", parser.current_token);
 }
 
@@ -395,23 +406,45 @@ static void parse_factor(void) {
 
 static void parse_comparison(void) {
     debug_printf("Entering parse_comparison with token: %d\n", parser.current_token);
-    parse_expression();
-    if (parser.current_token == TEQUAL || 
-        parser.current_token == TNOTEQ ||
-        parser.current_token == TGR ||
-        parser.current_token == TGREQ ||
-        parser.current_token == TLE ||
-        parser.current_token == TLEEQ) {
-        int op = parser.current_token;
-        match(parser.current_token);
-        // Handle character literals in comparisons
-        if (parser.current_token == TSTRING || 
-            parser.current_token == TCHAR) {
+    
+    if (parser.current_token == TLPAREN) {
+        match(TLPAREN);
+        parse_expression();
+        
+        // Handle comparison operators
+        if (parser.current_token == TEQUAL || 
+            parser.current_token == TNOTEQ ||
+            parser.current_token == TGR ||
+            parser.current_token == TGREQ ||
+            parser.current_token == TLE ||
+            parser.current_token == TLEEQ) {
             match(parser.current_token);
-        } else {
-            parse_expression();
+            // Handle character literals after operator
+            if (parser.current_token == TSTRING || parser.current_token == TCHAR) {
+                match(parser.current_token);
+            } else {
+                parse_expression();
+            }
+        }
+        match(TRPAREN);
+    } else {
+        parse_expression();
+        // Handle same operators outside parentheses
+        if (parser.current_token == TEQUAL || 
+            parser.current_token == TNOTEQ ||
+            parser.current_token == TGR ||
+            parser.current_token == TGREQ ||
+            parser.current_token == TLE ||
+            parser.current_token == TLEEQ) {
+            match(parser.current_token);
+            if (parser.current_token == TSTRING || parser.current_token == TCHAR) {
+                match(parser.current_token);
+            } else {
+                parse_expression();
+            }
         }
     }
+    
     debug_printf("Exiting parse_comparison with token: %d\n", parser.current_token);
 }
 
@@ -426,15 +459,14 @@ static void parse_condition(void) {
 void parse_error(const char* message) {
     int current_line = get_linenum();
     
-    // Store first error line
     if (parser.first_error_line == 0) {
         parser.first_error_line = current_line;
+        scanner.has_error = 1;  // Signal scanner to stop
     }
     
     fprintf(stderr, "Syntax error at line %d: %s (token: %d)\n", 
             current_line, message, parser.current_token);
 
-    // Jump back to parse_program with error line
     longjmp(parser.error_jmp, parser.first_error_line);
 }
 

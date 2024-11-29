@@ -22,8 +22,12 @@ int process_string_literal(void);
 int skip_whitespace_and_comments(void);
 int check_token_size(int length);
 
+// Define the scanner variable
+Scanner scanner = {0};  // Initialize all fields to 0
+
 // Initialize file reading
 int init_scan(char *filename) {
+    scanner.has_error = 0;  // Reset error flag
     fp = fopen(filename, "r");
     if (fp == NULL) {
         error("Unable to open file.");
@@ -42,6 +46,12 @@ static void update_line_number(char c) {
 
 // Main scan function: identifies and processes tokens
 int scan(void) {
+
+    // Stop scanning if error occurred
+    if (scanner.has_error) {
+        return -1;
+    }
+
     char buffer[MAXSTRSIZE];
     int i = 0;
 
