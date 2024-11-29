@@ -9,15 +9,20 @@ DEBUG: Keyword token: 2
 get_linenum called, returning: 1
 Initializing pretty printer...
 Starting parsing...
+Matching token: 2, expected token: 2 at line: 1
 get_linenum called, returning: 1
 Current character: a (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: assignchar at line 1
 DEBUG: No match for keyword: assignchar
 get_linenum called, returning: 1
+Next token: 1 at line: 1
+Matching token: 1, expected token: 1 at line: 1
 get_linenum called, returning: 1
 Current character: ; (Line: 1)
 get_linenum called, returning: 1
+Next token: 46 at line: 1
+Matching token: 46, expected token: 46 at line: 1
 get_linenum called, returning: 2
 Current character: v (Line: 2)
 get_linenum called, returning: 2
@@ -25,24 +30,35 @@ Processing identifier/keyword: var at line 2
 DEBUG: Matched keyword: var with token: 3
 DEBUG: Keyword token: 3
 get_linenum called, returning: 2
+Next token: 3 at line: 2
+Entering parse_block with token: 3 at line: 2
+Matching token: 3, expected token: 3 at line: 2
 get_linenum called, returning: 2
 Current character: x (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: x at line 2
 DEBUG: No match for keyword: x
 get_linenum called, returning: 2
+Next token: 1 at line: 2
+Matching token: 1, expected token: 1 at line: 2
 get_linenum called, returning: 2
 Current character: , (Line: 2)
 get_linenum called, returning: 2
+Next token: 44 at line: 2
+Matching token: 44, expected token: 44 at line: 2
 get_linenum called, returning: 2
 Current character: y (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: y at line 2
 DEBUG: No match for keyword: y
 get_linenum called, returning: 2
+Next token: 1 at line: 2
+Matching token: 1, expected token: 1 at line: 2
 get_linenum called, returning: 2
 Current character: : (Line: 2)
 get_linenum called, returning: 2
+Next token: 45 at line: 2
+Matching token: 45, expected token: 45 at line: 2
 get_linenum called, returning: 2
 Current character: c (Line: 2)
 get_linenum called, returning: 2
@@ -50,9 +66,13 @@ Processing identifier/keyword: char at line 2
 DEBUG: Matched keyword: char with token: 20
 DEBUG: Keyword token: 20
 get_linenum called, returning: 2
+Next token: 20 at line: 2
+Matching token: 20, expected token: 20 at line: 2
 get_linenum called, returning: 2
 Current character: ; (Line: 2)
 get_linenum called, returning: 2
+Next token: 46 at line: 2
+Matching token: 46, expected token: 46 at line: 2
 get_linenum called, returning: 3
 Current character: b (Line: 3)
 get_linenum called, returning: 3
@@ -60,37 +80,60 @@ Processing identifier/keyword: begin at line 3
 DEBUG: Matched keyword: begin with token: 6
 DEBUG: Keyword token: 6
 get_linenum called, returning: 3
+Next token: 6 at line: 3
+Matching token: 6, expected token: 6 at line: 3
 get_linenum called, returning: 4
 Current character: x (Line: 4)
 get_linenum called, returning: 4
 Processing identifier/keyword: x at line 4
 DEBUG: No match for keyword: x
 get_linenum called, returning: 4
+Next token: 1 at line: 4
+Entering parse_statement_list with token: 1 at line: 4
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 4
+Matching token: 1, expected token: 1 at line: 4
 get_linenum called, returning: 4
 Current character: : (Line: 4)
 get_linenum called, returning: 4
+Next token: 42 at line: 4
+Matching token: 42, expected token: 42 at line: 4
 get_linenum called, returning: 4
 Current character: ' (Line: 4)
 get_linenum called, returning: 4
 Processing string literal starting at line 4
 get_linenum called, returning: 4
+Next token: 28 at line: 4
+Matching token: 28, expected token: 28 at line: 4
 get_linenum called, returning: 4
 Current character: ; (Line: 4)
 get_linenum called, returning: 4
+Next token: 46 at line: 4
+Exiting parse_statement with token: 46 at line: 4
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 4
 get_linenum called, returning: 4
 Current character: y (Line: 4)
 get_linenum called, returning: 4
 Processing identifier/keyword: y at line 4
 DEBUG: No match for keyword: y
 get_linenum called, returning: 4
+Next token: 1 at line: 4
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 4
+Matching token: 1, expected token: 1 at line: 4
 get_linenum called, returning: 4
 Current character: : (Line: 4)
 get_linenum called, returning: 4
+Next token: 42 at line: 4
+Matching token: 42, expected token: 42 at line: 4
 get_linenum called, returning: 4
 Current character: ' (Line: 4)
 get_linenum called, returning: 4
 Processing string literal starting at line 4
 get_linenum called, returning: 4
+Next token: 28 at line: 4
+Matching token: 28, expected token: 28 at line: 4
 get_linenum called, returning: 4
 Current character: e (Line: 4)
 get_linenum called, returning: 4
@@ -98,11 +141,20 @@ Processing identifier/keyword: end at line 4
 DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
 get_linenum called, returning: 4
+Next token: 7 at line: 4
+Exiting parse_statement with token: 7 at line: 4
+Found end of statement list
+Exiting parse_statement_list with token: 7 at line: 4
+Matching token: 7, expected token: 7 at line: 4
 get_linenum called, returning: 4
 Current character: . (Line: 4)
 get_linenum called, returning: 4
+Next token: 43 at line: 4
+Exiting parse_block with token: 43 at line: 4
+Matching token: 43, expected token: 43 at line: 4
 End of file reached at line 5
 get_linenum called, returning: 5
+Next token: -1 at line: 5
 Parsing successful. Cleaning up scanner...
 Reinitializing scanner for pretty printing...
 Starting pretty printing...

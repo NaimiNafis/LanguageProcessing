@@ -9,18 +9,20 @@ DEBUG: Keyword token: 2
 get_linenum called, returning: 1
 Initializing pretty printer...
 Starting parsing...
-DEBUG: Matching token: 2
+Matching token: 2, expected token: 2 at line: 1
 get_linenum called, returning: 1
 Current character: c (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: change at line 1
 DEBUG: No match for keyword: change
-DEBUG: Next token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 1
+Next token: 1 at line: 1
+Matching token: 1, expected token: 1 at line: 1
 get_linenum called, returning: 1
 Current character: ; (Line: 1)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 1
+Next token: 46 at line: 1
+Matching token: 46, expected token: 46 at line: 1
 Line number incremented to: 1
 Line number incremented to: 1
 Line number incremented to: 1
@@ -41,1461 +43,1699 @@ get_linenum called, returning: 3
 Processing identifier/keyword: var at line 3
 DEBUG: Matched keyword: var with token: 3
 DEBUG: Keyword token: 3
-DEBUG: Next token: 3
-DEBUG: Matching token: 3
+get_linenum called, returning: 3
+Next token: 3 at line: 3
+Entering parse_block with token: 3 at line: 3
+Matching token: 3, expected token: 3 at line: 3
 get_linenum called, returning: 3
 Current character: n (Line: 3)
 get_linenum called, returning: 3
 Processing identifier/keyword: n at line 3
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 3
+Next token: 1 at line: 3
+Matching token: 1, expected token: 1 at line: 3
 get_linenum called, returning: 3
 Current character: , (Line: 3)
-DEBUG: Next token: 44
-DEBUG: Matching token: 44
+get_linenum called, returning: 3
+Next token: 44 at line: 3
+Matching token: 44, expected token: 44 at line: 3
 get_linenum called, returning: 3
 Current character: c (Line: 3)
 get_linenum called, returning: 3
 Processing identifier/keyword: count at line 3
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 3
+Next token: 1 at line: 3
+Matching token: 1, expected token: 1 at line: 3
 get_linenum called, returning: 3
 Current character: : (Line: 3)
-DEBUG: Next token: 45
-DEBUG: Matching token: 45
+get_linenum called, returning: 3
+Next token: 45 at line: 3
+Matching token: 45, expected token: 45 at line: 3
 get_linenum called, returning: 3
 Current character: i (Line: 3)
 get_linenum called, returning: 3
 Processing identifier/keyword: integer at line 3
 DEBUG: Matched keyword: integer with token: 21
 DEBUG: Keyword token: 21
-DEBUG: Next token: 21
-DEBUG: Matching token: 21
+get_linenum called, returning: 3
+Next token: 21 at line: 3
+Matching token: 21, expected token: 21 at line: 3
 get_linenum called, returning: 3
 Current character: ; (Line: 3)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 3
+Next token: 46 at line: 3
+Matching token: 46, expected token: 46 at line: 3
 get_linenum called, returning: 4
 Current character: b (Line: 4)
 get_linenum called, returning: 4
 Processing identifier/keyword: begin at line 4
 DEBUG: Matched keyword: begin with token: 6
 DEBUG: Keyword token: 6
-DEBUG: Next token: 6
-DEBUG: Matching token: 6
+get_linenum called, returning: 4
+Next token: 6 at line: 4
+Matching token: 6, expected token: 6 at line: 4
 get_linenum called, returning: 5
 Current character: w (Line: 5)
 get_linenum called, returning: 5
 Processing identifier/keyword: writeln at line 5
 DEBUG: Matched keyword: writeln with token: 24
 DEBUG: Keyword token: 24
-DEBUG: Next token: 24
-DEBUG: Entering parse_statement with token: 24
-DEBUG: Matching token: 24
+get_linenum called, returning: 5
+Next token: 24 at line: 5
+Entering parse_statement_list with token: 24 at line: 5
+Processing statement with token: 24
+Entering parse_statement with token: 24 at line: 5
+Matching token: 24, expected token: 24 at line: 5
 get_linenum called, returning: 5
 Current character: ( (Line: 5)
-DEBUG: Next token: 38
-DEBUG: Matching token: 38
+get_linenum called, returning: 5
+Next token: 38 at line: 5
+Matching token: 38, expected token: 38 at line: 5
 get_linenum called, returning: 5
 Current character: ' (Line: 5)
 get_linenum called, returning: 5
 Processing string literal starting at line 5
-DEBUG: Next token: 28
-DEBUG: Entering parse_factor with token: 28
-DEBUG: Matching token: 28
+get_linenum called, returning: 5
+Next token: 28 at line: 5
+Matching token: 28, expected token: 28 at line: 5
 get_linenum called, returning: 5
 Current character: ) (Line: 5)
-DEBUG: Next token: 39
-DEBUG: Matching token: 39
+get_linenum called, returning: 5
+Next token: 39 at line: 5
+Matching token: 39, expected token: 39 at line: 5
 get_linenum called, returning: 5
 Current character: ; (Line: 5)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 5
+Next token: 46 at line: 5
+Matching token: 46, expected token: 46 at line: 5
 get_linenum called, returning: 5
 Current character: r (Line: 5)
 get_linenum called, returning: 5
 Processing identifier/keyword: readln at line 5
 DEBUG: Matched keyword: readln with token: 23
 DEBUG: Keyword token: 23
-DEBUG: Next token: 23
-DEBUG: Entering parse_statement with token: 23
-DEBUG: Matching token: 23
+get_linenum called, returning: 5
+Next token: 23 at line: 5
+Exiting parse_statement with token: 23 at line: 5
+Processing statement with token: 23
+Entering parse_statement with token: 23 at line: 5
+Matched TREAD or TREADLN with token: 23 at line: 5
+Entering parse_read_statement with token: 23 at line: 5
+About to match TREADLN, current token: 23 at line: 5
+Matching token: 23, expected token: 23 at line: 5
 get_linenum called, returning: 5
 Current character: ( (Line: 5)
-DEBUG: Next token: 38
-DEBUG: Matching token: 38
+get_linenum called, returning: 5
+Next token: 38 at line: 5
+About to match TLPAREN, current token: 38 at line: 5
+Matching token: 38, expected token: 38 at line: 5
 get_linenum called, returning: 5
 Current character: n (Line: 5)
 get_linenum called, returning: 5
 Processing identifier/keyword: n at line 5
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
+get_linenum called, returning: 5
+Next token: 1 at line: 5
+Matching token: 1, expected token: 1 at line: 5
 get_linenum called, returning: 5
 Current character: ) (Line: 5)
-DEBUG: Matching token: 39
+get_linenum called, returning: 5
+Next token: 39 at line: 5
+Matching token: 39, expected token: 39 at line: 5
 get_linenum called, returning: 5
 Current character: ; (Line: 5)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 5
+Next token: 46 at line: 5
+Matching token: 46, expected token: 46 at line: 5
 get_linenum called, returning: 5
 Current character: c (Line: 5)
 get_linenum called, returning: 5
 Processing identifier/keyword: count at line 5
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 5
+Next token: 1 at line: 5
+Exiting parse_read_statement with token: 1 at line: 5
+Exiting parse_statement with token: 1 at line: 5
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 5
+Matching token: 1, expected token: 1 at line: 5
 get_linenum called, returning: 5
 Current character: : (Line: 5)
-DEBUG: Matching token: 42
+get_linenum called, returning: 5
+Next token: 42 at line: 5
+Matching token: 42, expected token: 42 at line: 5
 get_linenum called, returning: 5
 Current character: 0 (Line: 5)
 get_linenum called, returning: 5
 Processing number: 0 at line 5
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 5
+Next token: 27 at line: 5
+Matching token: 27, expected token: 27 at line: 5
 get_linenum called, returning: 5
 Current character: ; (Line: 5)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 5
+Next token: 46 at line: 5
+Exiting parse_statement with token: 46 at line: 5
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 5
 get_linenum called, returning: 6
 Current character: w (Line: 6)
 get_linenum called, returning: 6
 Processing identifier/keyword: while at line 6
 DEBUG: Matched keyword: while with token: 14
 DEBUG: Keyword token: 14
-DEBUG: Next token: 14
-DEBUG: Entering parse_statement with token: 14
-DEBUG: Matching token: 14
+get_linenum called, returning: 6
+Next token: 14 at line: 6
+Processing statement with token: 14
+Entering parse_statement with token: 14 at line: 6
+Matching token: 14, expected token: 14 at line: 6
 get_linenum called, returning: 6
 Current character: n (Line: 6)
 get_linenum called, returning: 6
 Processing identifier/keyword: n at line 6
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 6
+Next token: 1 at line: 6
+Matching token: 1, expected token: 1 at line: 6
 get_linenum called, returning: 6
 Current character: > (Line: 6)
-DEBUG: Next token: 36
-DEBUG: Current token in parse_expression (comparison): 36
-DEBUG: Matching token: 36
+get_linenum called, returning: 6
+Next token: 36 at line: 6
+Matching token: 36, expected token: 36 at line: 6
 get_linenum called, returning: 6
 Current character: 0 (Line: 6)
 get_linenum called, returning: 6
 Processing number: 0 at line 6
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 6
+Next token: 27 at line: 6
+Matching token: 27, expected token: 27 at line: 6
 get_linenum called, returning: 6
 Current character: d (Line: 6)
 get_linenum called, returning: 6
 Processing identifier/keyword: do at line 6
 DEBUG: Matched keyword: do with token: 15
 DEBUG: Keyword token: 15
-DEBUG: Next token: 15
-DEBUG: Matching token: 15
+get_linenum called, returning: 6
+Next token: 15 at line: 6
+Matching token: 15, expected token: 15 at line: 6
 get_linenum called, returning: 6
 Current character: b (Line: 6)
 get_linenum called, returning: 6
 Processing identifier/keyword: begin at line 6
 DEBUG: Matched keyword: begin with token: 6
 DEBUG: Keyword token: 6
-DEBUG: Next token: 6
-DEBUG: Matching token: 6
+get_linenum called, returning: 6
+Next token: 6 at line: 6
+Matching token: 6, expected token: 6 at line: 6
 get_linenum called, returning: 7
 Current character: w (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: while at line 7
 DEBUG: Matched keyword: while with token: 14
 DEBUG: Keyword token: 14
-DEBUG: Next token: 14
-DEBUG: Entering parse_statement with token: 14
-DEBUG: Matching token: 14
+get_linenum called, returning: 7
+Next token: 14 at line: 7
+Entering parse_statement_list with token: 14 at line: 7
+Processing statement with token: 14
+Entering parse_statement with token: 14 at line: 7
+Matching token: 14, expected token: 14 at line: 7
 get_linenum called, returning: 7
 Current character: n (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: n at line 7
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 7
+Next token: 1 at line: 7
+Matching token: 1, expected token: 1 at line: 7
 get_linenum called, returning: 7
 Current character: > (Line: 7)
-DEBUG: Next token: 37
-DEBUG: Current token in parse_expression (comparison): 37
-DEBUG: Matching token: 37
+get_linenum called, returning: 7
+Next token: 37 at line: 7
+Matching token: 37, expected token: 37 at line: 7
 get_linenum called, returning: 7
 Current character: 1 (Line: 7)
 get_linenum called, returning: 7
 Processing number: 10 at line 7
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 7
+Next token: 27 at line: 7
+Matching token: 27, expected token: 27 at line: 7
 get_linenum called, returning: 7
 Current character: d (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: do at line 7
 DEBUG: Matched keyword: do with token: 15
 DEBUG: Keyword token: 15
-DEBUG: Next token: 15
-DEBUG: Matching token: 15
+get_linenum called, returning: 7
+Next token: 15 at line: 7
+Matching token: 15, expected token: 15 at line: 7
 get_linenum called, returning: 7
 Current character: b (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: begin at line 7
 DEBUG: Matched keyword: begin with token: 6
 DEBUG: Keyword token: 6
-DEBUG: Next token: 6
-DEBUG: Matching token: 6
+get_linenum called, returning: 7
+Next token: 6 at line: 7
+Matching token: 6, expected token: 6 at line: 7
 get_linenum called, returning: 8
 Current character: w (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: while at line 8
 DEBUG: Matched keyword: while with token: 14
 DEBUG: Keyword token: 14
-DEBUG: Next token: 14
-DEBUG: Entering parse_statement with token: 14
-DEBUG: Matching token: 14
+get_linenum called, returning: 8
+Next token: 14 at line: 8
+Entering parse_statement_list with token: 14 at line: 8
+Processing statement with token: 14
+Entering parse_statement with token: 14 at line: 8
+Matching token: 14, expected token: 14 at line: 8
 get_linenum called, returning: 8
 Current character: n (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: n at line 8
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 8
+Next token: 1 at line: 8
+Matching token: 1, expected token: 1 at line: 8
 get_linenum called, returning: 8
 Current character: > (Line: 8)
-DEBUG: Next token: 37
-DEBUG: Current token in parse_expression (comparison): 37
-DEBUG: Matching token: 37
+get_linenum called, returning: 8
+Next token: 37 at line: 8
+Matching token: 37, expected token: 37 at line: 8
 get_linenum called, returning: 8
 Current character: 1 (Line: 8)
 get_linenum called, returning: 8
 Processing number: 100 at line 8
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 8
+Next token: 27 at line: 8
+Matching token: 27, expected token: 27 at line: 8
 get_linenum called, returning: 8
 Current character: d (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: do at line 8
 DEBUG: Matched keyword: do with token: 15
 DEBUG: Keyword token: 15
-DEBUG: Next token: 15
-DEBUG: Matching token: 15
+get_linenum called, returning: 8
+Next token: 15 at line: 8
+Matching token: 15, expected token: 15 at line: 8
 get_linenum called, returning: 8
 Current character: b (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: begin at line 8
 DEBUG: Matched keyword: begin with token: 6
 DEBUG: Keyword token: 6
-DEBUG: Next token: 6
-DEBUG: Matching token: 6
+get_linenum called, returning: 8
+Next token: 6 at line: 8
+Matching token: 6, expected token: 6 at line: 8
 get_linenum called, returning: 9
 Current character: w (Line: 9)
 get_linenum called, returning: 9
 Processing identifier/keyword: while at line 9
 DEBUG: Matched keyword: while with token: 14
 DEBUG: Keyword token: 14
-DEBUG: Next token: 14
-DEBUG: Entering parse_statement with token: 14
-DEBUG: Matching token: 14
+get_linenum called, returning: 9
+Next token: 14 at line: 9
+Entering parse_statement_list with token: 14 at line: 9
+Processing statement with token: 14
+Entering parse_statement with token: 14 at line: 9
+Matching token: 14, expected token: 14 at line: 9
 get_linenum called, returning: 9
 Current character: n (Line: 9)
 get_linenum called, returning: 9
 Processing identifier/keyword: n at line 9
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 9
+Next token: 1 at line: 9
+Matching token: 1, expected token: 1 at line: 9
 get_linenum called, returning: 9
 Current character: > (Line: 9)
-DEBUG: Next token: 37
-DEBUG: Current token in parse_expression (comparison): 37
-DEBUG: Matching token: 37
+get_linenum called, returning: 9
+Next token: 37 at line: 9
+Matching token: 37, expected token: 37 at line: 9
 get_linenum called, returning: 9
 Current character: 1 (Line: 9)
 get_linenum called, returning: 9
 Processing number: 1000 at line 9
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 9
+Next token: 27 at line: 9
+Matching token: 27, expected token: 27 at line: 9
 get_linenum called, returning: 9
 Current character: d (Line: 9)
 get_linenum called, returning: 9
 Processing identifier/keyword: do at line 9
 DEBUG: Matched keyword: do with token: 15
 DEBUG: Keyword token: 15
-DEBUG: Next token: 15
-DEBUG: Matching token: 15
+get_linenum called, returning: 9
+Next token: 15 at line: 9
+Matching token: 15, expected token: 15 at line: 9
 get_linenum called, returning: 9
 Current character: b (Line: 9)
 get_linenum called, returning: 9
 Processing identifier/keyword: begin at line 9
 DEBUG: Matched keyword: begin with token: 6
 DEBUG: Keyword token: 6
-DEBUG: Next token: 6
-DEBUG: Matching token: 6
+get_linenum called, returning: 9
+Next token: 6 at line: 9
+Matching token: 6, expected token: 6 at line: 9
 get_linenum called, returning: 10
 Current character: w (Line: 10)
 get_linenum called, returning: 10
 Processing identifier/keyword: while at line 10
 DEBUG: Matched keyword: while with token: 14
 DEBUG: Keyword token: 14
-DEBUG: Next token: 14
-DEBUG: Entering parse_statement with token: 14
-DEBUG: Matching token: 14
+get_linenum called, returning: 10
+Next token: 14 at line: 10
+Entering parse_statement_list with token: 14 at line: 10
+Processing statement with token: 14
+Entering parse_statement with token: 14 at line: 10
+Matching token: 14, expected token: 14 at line: 10
 get_linenum called, returning: 10
 Current character: n (Line: 10)
 get_linenum called, returning: 10
 Processing identifier/keyword: n at line 10
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 10
+Next token: 1 at line: 10
+Matching token: 1, expected token: 1 at line: 10
 get_linenum called, returning: 10
 Current character: > (Line: 10)
-DEBUG: Next token: 37
-DEBUG: Current token in parse_expression (comparison): 37
-DEBUG: Matching token: 37
+get_linenum called, returning: 10
+Next token: 37 at line: 10
+Matching token: 37, expected token: 37 at line: 10
 get_linenum called, returning: 10
 Current character: 1 (Line: 10)
 get_linenum called, returning: 10
 Processing number: 10000 at line 10
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 10
+Next token: 27 at line: 10
+Matching token: 27, expected token: 27 at line: 10
 get_linenum called, returning: 10
 Current character: d (Line: 10)
 get_linenum called, returning: 10
 Processing identifier/keyword: do at line 10
 DEBUG: Matched keyword: do with token: 15
 DEBUG: Keyword token: 15
-DEBUG: Next token: 15
-DEBUG: Matching token: 15
+get_linenum called, returning: 10
+Next token: 15 at line: 10
+Matching token: 15, expected token: 15 at line: 10
 get_linenum called, returning: 10
 Current character: b (Line: 10)
 get_linenum called, returning: 10
 Processing identifier/keyword: begin at line 10
 DEBUG: Matched keyword: begin with token: 6
 DEBUG: Keyword token: 6
-DEBUG: Next token: 6
-DEBUG: Matching token: 6
+get_linenum called, returning: 10
+Next token: 6 at line: 10
+Matching token: 6, expected token: 6 at line: 10
 get_linenum called, returning: 11
 Current character: c (Line: 11)
 get_linenum called, returning: 11
 Processing identifier/keyword: count at line 11
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 11
+Next token: 1 at line: 11
+Entering parse_statement_list with token: 1 at line: 11
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 11
+Matching token: 1, expected token: 1 at line: 11
 get_linenum called, returning: 11
 Current character: : (Line: 11)
-DEBUG: Matching token: 42
+get_linenum called, returning: 11
+Next token: 42 at line: 11
+Matching token: 42, expected token: 42 at line: 11
 get_linenum called, returning: 11
 Current character: c (Line: 11)
 get_linenum called, returning: 11
 Processing identifier/keyword: count at line 11
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 11
+Next token: 1 at line: 11
+Matching token: 1, expected token: 1 at line: 11
 get_linenum called, returning: 11
 Current character: + (Line: 11)
-DEBUG: Next token: 29
-DEBUG: Current token in parse_expression (addition/subtraction): 29
-DEBUG: Matching token: 29
+get_linenum called, returning: 11
+Next token: 29 at line: 11
+Matching token: 29, expected token: 29 at line: 11
 get_linenum called, returning: 11
 Current character: 1 (Line: 11)
 get_linenum called, returning: 11
 Processing number: 1 at line 11
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 11
+Next token: 27 at line: 11
+Matching token: 27, expected token: 27 at line: 11
 get_linenum called, returning: 11
 Current character: ; (Line: 11)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 11
+Next token: 46 at line: 11
+Exiting parse_statement with token: 46 at line: 11
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 11
 get_linenum called, returning: 11
 Current character: n (Line: 11)
 get_linenum called, returning: 11
 Processing identifier/keyword: n at line 11
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 11
+Next token: 1 at line: 11
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 11
+Matching token: 1, expected token: 1 at line: 11
 get_linenum called, returning: 11
 Current character: : (Line: 11)
-DEBUG: Matching token: 42
+get_linenum called, returning: 11
+Next token: 42 at line: 11
+Matching token: 42, expected token: 42 at line: 11
 get_linenum called, returning: 11
 Current character: n (Line: 11)
 get_linenum called, returning: 11
 Processing identifier/keyword: n at line 11
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 11
+Next token: 1 at line: 11
+Matching token: 1, expected token: 1 at line: 11
 get_linenum called, returning: 11
 Current character: - (Line: 11)
-DEBUG: Next token: 30
-DEBUG: Current token in parse_expression (addition/subtraction): 30
-DEBUG: Matching token: 30
+get_linenum called, returning: 11
+Next token: 30 at line: 11
+Matching token: 30, expected token: 30 at line: 11
 get_linenum called, returning: 11
 Current character: 1 (Line: 11)
 get_linenum called, returning: 11
 Processing number: 10000 at line 11
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 11
+Next token: 27 at line: 11
+Matching token: 27, expected token: 27 at line: 11
 get_linenum called, returning: 11
 Current character: ; (Line: 11)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 11
+Next token: 46 at line: 11
+Exiting parse_statement with token: 46 at line: 11
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 11
 get_linenum called, returning: 12
 Current character: e (Line: 12)
 get_linenum called, returning: 12
 Processing identifier/keyword: end at line 12
 DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
-DEBUG: Next token: 7
-DEBUG: Entering parse_statement with token: 7
-DEBUG: Found END token in statement
-DEBUG: Matching token: 7
+get_linenum called, returning: 12
+Next token: 7 at line: 12
+Exiting parse_statement_list with token: 7 at line: 12
+Matching token: 7, expected token: 7 at line: 12
 get_linenum called, returning: 12
 Current character: ; (Line: 12)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 12
+Next token: 46 at line: 12
+Exiting parse_statement with token: 46 at line: 12
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 12
 get_linenum called, returning: 13
 Current character: i (Line: 13)
 get_linenum called, returning: 13
 Processing identifier/keyword: if at line 13
 DEBUG: Matched keyword: if with token: 8
 DEBUG: Keyword token: 8
-DEBUG: Next token: 8
-DEBUG: Entering parse_statement with token: 8
-DEBUG: Found IF token
+get_linenum called, returning: 13
+Next token: 8 at line: 13
+Processing statement with token: 8
+Entering parse_statement with token: 8 at line: 13
+Matching token: 8, expected token: 8 at line: 13
 get_linenum called, returning: 13
 Current character: c (Line: 13)
 get_linenum called, returning: 13
 Processing identifier/keyword: count at line 13
 DEBUG: No match for keyword: count
-DEBUG: After IF scan, token is: 1
-DEBUG: Entering parse_if_statement
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 13
+Next token: 1 at line: 13
+Matching token: 1, expected token: 1 at line: 13
 get_linenum called, returning: 13
 Current character: > (Line: 13)
-DEBUG: Next token: 36
-DEBUG: Current token in parse_expression (comparison): 36
-DEBUG: Matching token: 36
+get_linenum called, returning: 13
+Next token: 36 at line: 13
+Matching token: 36, expected token: 36 at line: 13
 get_linenum called, returning: 13
 Current character: 0 (Line: 13)
 get_linenum called, returning: 13
 Processing number: 0 at line 13
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 13
+Next token: 27 at line: 13
+Matching token: 27, expected token: 27 at line: 13
 get_linenum called, returning: 13
 Current character: t (Line: 13)
 get_linenum called, returning: 13
 Processing identifier/keyword: then at line 13
 DEBUG: Matched keyword: then with token: 9
 DEBUG: Keyword token: 9
-DEBUG: Next token: 9
-DEBUG: Condition parsed, looking for THEN
-DEBUG: Matching token: 9
+get_linenum called, returning: 13
+Next token: 9 at line: 13
+Matching token: 9, expected token: 9 at line: 13
 get_linenum called, returning: 13
 Current character: w (Line: 13)
 get_linenum called, returning: 13
 Processing identifier/keyword: writeln at line 13
 DEBUG: Matched keyword: writeln with token: 24
 DEBUG: Keyword token: 24
-DEBUG: Next token: 24
-DEBUG: Entering parse_statement with token: 24
-DEBUG: Matching token: 24
+get_linenum called, returning: 13
+Next token: 24 at line: 13
+Entering parse_statement with token: 24 at line: 13
+Matching token: 24, expected token: 24 at line: 13
 get_linenum called, returning: 13
 Current character: ( (Line: 13)
-DEBUG: Next token: 38
-DEBUG: Matching token: 38
+get_linenum called, returning: 13
+Next token: 38 at line: 13
+Matching token: 38, expected token: 38 at line: 13
 get_linenum called, returning: 13
 Current character: ' (Line: 13)
 get_linenum called, returning: 13
 Processing string literal starting at line 13
-DEBUG: Next token: 28
-DEBUG: Entering parse_factor with token: 28
-DEBUG: Matching token: 28
+get_linenum called, returning: 13
+Next token: 28 at line: 13
+Matching token: 28, expected token: 28 at line: 13
 get_linenum called, returning: 13
 Current character: , (Line: 13)
-DEBUG: Next token: 44
-DEBUG: Matching token: 44
+get_linenum called, returning: 13
+Next token: 44 at line: 13
+Matching token: 44, expected token: 44 at line: 13
 get_linenum called, returning: 13
 Current character: c (Line: 13)
 get_linenum called, returning: 13
 Processing identifier/keyword: count at line 13
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 13
+Next token: 1 at line: 13
+Matching token: 1, expected token: 1 at line: 13
 get_linenum called, returning: 13
 Current character: ) (Line: 13)
-DEBUG: Next token: 39
-DEBUG: Matching token: 39
+get_linenum called, returning: 13
+Next token: 39 at line: 13
+Matching token: 39, expected token: 39 at line: 13
 get_linenum called, returning: 13
 Current character: ; (Line: 13)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 13
+Next token: 46 at line: 13
+Matching token: 46, expected token: 46 at line: 13
 get_linenum called, returning: 14
 Current character: c (Line: 14)
 get_linenum called, returning: 14
 Processing identifier/keyword: count at line 14
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 14
+Next token: 1 at line: 14
+Exiting parse_statement with token: 1 at line: 14
+Exiting parse_statement with token: 1 at line: 14
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 14
+Matching token: 1, expected token: 1 at line: 14
 get_linenum called, returning: 14
 Current character: : (Line: 14)
-DEBUG: Matching token: 42
+get_linenum called, returning: 14
+Next token: 42 at line: 14
+Matching token: 42, expected token: 42 at line: 14
 get_linenum called, returning: 14
 Current character: 0 (Line: 14)
 get_linenum called, returning: 14
 Processing number: 0 at line 14
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 14
+Next token: 27 at line: 14
+Matching token: 27, expected token: 27 at line: 14
 get_linenum called, returning: 14
 Current character: ; (Line: 14)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 14
+Next token: 46 at line: 14
+Exiting parse_statement with token: 46 at line: 14
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 14
 get_linenum called, returning: 15
 Current character: i (Line: 15)
 get_linenum called, returning: 15
 Processing identifier/keyword: if at line 15
 DEBUG: Matched keyword: if with token: 8
 DEBUG: Keyword token: 8
-DEBUG: Next token: 8
-DEBUG: Entering parse_statement with token: 8
-DEBUG: Found IF token
+get_linenum called, returning: 15
+Next token: 8 at line: 15
+Processing statement with token: 8
+Entering parse_statement with token: 8 at line: 15
+Matching token: 8, expected token: 8 at line: 15
 get_linenum called, returning: 15
 Current character: n (Line: 15)
 get_linenum called, returning: 15
 Processing identifier/keyword: n at line 15
 DEBUG: No match for keyword: n
-DEBUG: After IF scan, token is: 1
-DEBUG: Entering parse_if_statement
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 15
+Next token: 1 at line: 15
+Matching token: 1, expected token: 1 at line: 15
 get_linenum called, returning: 15
 Current character: < (Line: 15)
-DEBUG: Next token: 34
-DEBUG: Current token in parse_expression (comparison): 34
-DEBUG: Matching token: 34
+get_linenum called, returning: 15
+Next token: 34 at line: 15
+Matching token: 34, expected token: 34 at line: 15
 get_linenum called, returning: 15
 Current character: 1 (Line: 15)
 get_linenum called, returning: 15
 Processing number: 1000 at line 15
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 15
+Next token: 27 at line: 15
+Matching token: 27, expected token: 27 at line: 15
 get_linenum called, returning: 15
 Current character: t (Line: 15)
 get_linenum called, returning: 15
 Processing identifier/keyword: then at line 15
 DEBUG: Matched keyword: then with token: 9
 DEBUG: Keyword token: 9
-DEBUG: Next token: 9
-DEBUG: Condition parsed, looking for THEN
-DEBUG: Matching token: 9
+get_linenum called, returning: 15
+Next token: 9 at line: 15
+Matching token: 9, expected token: 9 at line: 15
 get_linenum called, returning: 15
 Current character: b (Line: 15)
 get_linenum called, returning: 15
 Processing identifier/keyword: break at line 15
 DEBUG: Matched keyword: break with token: 49
 DEBUG: Keyword token: 49
-DEBUG: Next token: 49
-DEBUG: Entering parse_statement with token: 49
-DEBUG: Matching token: 49
+get_linenum called, returning: 15
+Next token: 49 at line: 15
+Entering parse_statement with token: 49 at line: 15
+Matching token: 49, expected token: 49 at line: 15
 get_linenum called, returning: 15
 Current character: ; (Line: 15)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 15
+Next token: 46 at line: 15
+Exiting parse_statement with token: 46 at line: 15
+Exiting parse_statement with token: 46 at line: 15
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 15
 get_linenum called, returning: 16
 Current character: c (Line: 16)
 get_linenum called, returning: 16
 Processing identifier/keyword: count at line 16
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 16
+Next token: 1 at line: 16
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 16
+Matching token: 1, expected token: 1 at line: 16
 get_linenum called, returning: 16
 Current character: : (Line: 16)
-DEBUG: Matching token: 42
+get_linenum called, returning: 16
+Next token: 42 at line: 16
+Matching token: 42, expected token: 42 at line: 16
 get_linenum called, returning: 16
 Current character: c (Line: 16)
 get_linenum called, returning: 16
 Processing identifier/keyword: count at line 16
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 16
+Next token: 1 at line: 16
+Matching token: 1, expected token: 1 at line: 16
 get_linenum called, returning: 16
 Current character: + (Line: 16)
-DEBUG: Next token: 29
-DEBUG: Current token in parse_expression (addition/subtraction): 29
-DEBUG: Matching token: 29
+get_linenum called, returning: 16
+Next token: 29 at line: 16
+Matching token: 29, expected token: 29 at line: 16
 get_linenum called, returning: 16
 Current character: 1 (Line: 16)
 get_linenum called, returning: 16
 Processing number: 1 at line 16
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 16
+Next token: 27 at line: 16
+Matching token: 27, expected token: 27 at line: 16
 get_linenum called, returning: 16
 Current character: ; (Line: 16)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 16
+Next token: 46 at line: 16
+Exiting parse_statement with token: 46 at line: 16
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 16
 get_linenum called, returning: 16
 Current character: n (Line: 16)
 get_linenum called, returning: 16
 Processing identifier/keyword: n at line 16
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 16
+Next token: 1 at line: 16
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 16
+Matching token: 1, expected token: 1 at line: 16
 get_linenum called, returning: 16
 Current character: : (Line: 16)
-DEBUG: Matching token: 42
+get_linenum called, returning: 16
+Next token: 42 at line: 16
+Matching token: 42, expected token: 42 at line: 16
 get_linenum called, returning: 16
 Current character: n (Line: 16)
 get_linenum called, returning: 16
 Processing identifier/keyword: n at line 16
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 16
+Next token: 1 at line: 16
+Matching token: 1, expected token: 1 at line: 16
 get_linenum called, returning: 16
 Current character: - (Line: 16)
-DEBUG: Next token: 30
-DEBUG: Current token in parse_expression (addition/subtraction): 30
-DEBUG: Matching token: 30
+get_linenum called, returning: 16
+Next token: 30 at line: 16
+Matching token: 30, expected token: 30 at line: 16
 get_linenum called, returning: 16
 Current character: 1 (Line: 16)
 get_linenum called, returning: 16
 Processing number: 1000 at line 16
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 16
+Next token: 27 at line: 16
+Matching token: 27, expected token: 27 at line: 16
 get_linenum called, returning: 16
 Current character: ; (Line: 16)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 16
+Next token: 46 at line: 16
+Exiting parse_statement with token: 46 at line: 16
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 16
 get_linenum called, returning: 17
 Current character: e (Line: 17)
 get_linenum called, returning: 17
 Processing identifier/keyword: end at line 17
 DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
-DEBUG: Next token: 7
-DEBUG: Entering parse_statement with token: 7
-DEBUG: Found END token in statement
-DEBUG: Matching token: 7
+get_linenum called, returning: 17
+Next token: 7 at line: 17
+Exiting parse_statement_list with token: 7 at line: 17
+Matching token: 7, expected token: 7 at line: 17
 get_linenum called, returning: 17
 Current character: ; (Line: 17)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 17
+Next token: 46 at line: 17
+Exiting parse_statement with token: 46 at line: 17
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 17
 get_linenum called, returning: 18
 Current character: i (Line: 18)
 get_linenum called, returning: 18
 Processing identifier/keyword: if at line 18
 DEBUG: Matched keyword: if with token: 8
 DEBUG: Keyword token: 8
-DEBUG: Next token: 8
-DEBUG: Entering parse_statement with token: 8
-DEBUG: Found IF token
+get_linenum called, returning: 18
+Next token: 8 at line: 18
+Processing statement with token: 8
+Entering parse_statement with token: 8 at line: 18
+Matching token: 8, expected token: 8 at line: 18
 get_linenum called, returning: 18
 Current character: c (Line: 18)
 get_linenum called, returning: 18
 Processing identifier/keyword: count at line 18
 DEBUG: No match for keyword: count
-DEBUG: After IF scan, token is: 1
-DEBUG: Entering parse_if_statement
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 18
+Next token: 1 at line: 18
+Matching token: 1, expected token: 1 at line: 18
 get_linenum called, returning: 18
 Current character: > (Line: 18)
-DEBUG: Next token: 36
-DEBUG: Current token in parse_expression (comparison): 36
-DEBUG: Matching token: 36
+get_linenum called, returning: 18
+Next token: 36 at line: 18
+Matching token: 36, expected token: 36 at line: 18
 get_linenum called, returning: 18
 Current character: 0 (Line: 18)
 get_linenum called, returning: 18
 Processing number: 0 at line 18
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 18
+Next token: 27 at line: 18
+Matching token: 27, expected token: 27 at line: 18
 get_linenum called, returning: 18
 Current character: t (Line: 18)
 get_linenum called, returning: 18
 Processing identifier/keyword: then at line 18
 DEBUG: Matched keyword: then with token: 9
 DEBUG: Keyword token: 9
-DEBUG: Next token: 9
-DEBUG: Condition parsed, looking for THEN
-DEBUG: Matching token: 9
+get_linenum called, returning: 18
+Next token: 9 at line: 18
+Matching token: 9, expected token: 9 at line: 18
 get_linenum called, returning: 18
 Current character: w (Line: 18)
 get_linenum called, returning: 18
 Processing identifier/keyword: writeln at line 18
 DEBUG: Matched keyword: writeln with token: 24
 DEBUG: Keyword token: 24
-DEBUG: Next token: 24
-DEBUG: Entering parse_statement with token: 24
-DEBUG: Matching token: 24
+get_linenum called, returning: 18
+Next token: 24 at line: 18
+Entering parse_statement with token: 24 at line: 18
+Matching token: 24, expected token: 24 at line: 18
 get_linenum called, returning: 18
 Current character: ( (Line: 18)
-DEBUG: Next token: 38
-DEBUG: Matching token: 38
+get_linenum called, returning: 18
+Next token: 38 at line: 18
+Matching token: 38, expected token: 38 at line: 18
 get_linenum called, returning: 18
 Current character: ' (Line: 18)
 get_linenum called, returning: 18
 Processing string literal starting at line 18
-DEBUG: Next token: 28
-DEBUG: Entering parse_factor with token: 28
-DEBUG: Matching token: 28
+get_linenum called, returning: 18
+Next token: 28 at line: 18
+Matching token: 28, expected token: 28 at line: 18
 get_linenum called, returning: 18
 Current character: , (Line: 18)
-DEBUG: Next token: 44
-DEBUG: Matching token: 44
+get_linenum called, returning: 18
+Next token: 44 at line: 18
+Matching token: 44, expected token: 44 at line: 18
 get_linenum called, returning: 18
 Current character: c (Line: 18)
 get_linenum called, returning: 18
 Processing identifier/keyword: count at line 18
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 18
+Next token: 1 at line: 18
+Matching token: 1, expected token: 1 at line: 18
 get_linenum called, returning: 18
 Current character: ) (Line: 18)
-DEBUG: Next token: 39
-DEBUG: Matching token: 39
+get_linenum called, returning: 18
+Next token: 39 at line: 18
+Matching token: 39, expected token: 39 at line: 18
 get_linenum called, returning: 18
 Current character: ; (Line: 18)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 18
+Next token: 46 at line: 18
+Matching token: 46, expected token: 46 at line: 18
 get_linenum called, returning: 19
 Current character: c (Line: 19)
 get_linenum called, returning: 19
 Processing identifier/keyword: count at line 19
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 19
+Next token: 1 at line: 19
+Exiting parse_statement with token: 1 at line: 19
+Exiting parse_statement with token: 1 at line: 19
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 19
+Matching token: 1, expected token: 1 at line: 19
 get_linenum called, returning: 19
 Current character: : (Line: 19)
-DEBUG: Matching token: 42
+get_linenum called, returning: 19
+Next token: 42 at line: 19
+Matching token: 42, expected token: 42 at line: 19
 get_linenum called, returning: 19
 Current character: 0 (Line: 19)
 get_linenum called, returning: 19
 Processing number: 0 at line 19
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 19
+Next token: 27 at line: 19
+Matching token: 27, expected token: 27 at line: 19
 get_linenum called, returning: 19
 Current character: ; (Line: 19)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 19
+Next token: 46 at line: 19
+Exiting parse_statement with token: 46 at line: 19
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 19
 get_linenum called, returning: 20
 Current character: i (Line: 20)
 get_linenum called, returning: 20
 Processing identifier/keyword: if at line 20
 DEBUG: Matched keyword: if with token: 8
 DEBUG: Keyword token: 8
-DEBUG: Next token: 8
-DEBUG: Entering parse_statement with token: 8
-DEBUG: Found IF token
+get_linenum called, returning: 20
+Next token: 8 at line: 20
+Processing statement with token: 8
+Entering parse_statement with token: 8 at line: 20
+Matching token: 8, expected token: 8 at line: 20
 get_linenum called, returning: 20
 Current character: n (Line: 20)
 get_linenum called, returning: 20
 Processing identifier/keyword: n at line 20
 DEBUG: No match for keyword: n
-DEBUG: After IF scan, token is: 1
-DEBUG: Entering parse_if_statement
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 20
+Next token: 1 at line: 20
+Matching token: 1, expected token: 1 at line: 20
 get_linenum called, returning: 20
 Current character: < (Line: 20)
-DEBUG: Next token: 34
-DEBUG: Current token in parse_expression (comparison): 34
-DEBUG: Matching token: 34
+get_linenum called, returning: 20
+Next token: 34 at line: 20
+Matching token: 34, expected token: 34 at line: 20
 get_linenum called, returning: 20
 Current character: 1 (Line: 20)
 get_linenum called, returning: 20
 Processing number: 100 at line 20
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 20
+Next token: 27 at line: 20
+Matching token: 27, expected token: 27 at line: 20
 get_linenum called, returning: 20
 Current character: t (Line: 20)
 get_linenum called, returning: 20
 Processing identifier/keyword: then at line 20
 DEBUG: Matched keyword: then with token: 9
 DEBUG: Keyword token: 9
-DEBUG: Next token: 9
-DEBUG: Condition parsed, looking for THEN
-DEBUG: Matching token: 9
+get_linenum called, returning: 20
+Next token: 9 at line: 20
+Matching token: 9, expected token: 9 at line: 20
 get_linenum called, returning: 20
 Current character: b (Line: 20)
 get_linenum called, returning: 20
 Processing identifier/keyword: break at line 20
 DEBUG: Matched keyword: break with token: 49
 DEBUG: Keyword token: 49
-DEBUG: Next token: 49
-DEBUG: Entering parse_statement with token: 49
-DEBUG: Matching token: 49
+get_linenum called, returning: 20
+Next token: 49 at line: 20
+Entering parse_statement with token: 49 at line: 20
+Matching token: 49, expected token: 49 at line: 20
 get_linenum called, returning: 20
 Current character: ; (Line: 20)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 20
+Next token: 46 at line: 20
+Exiting parse_statement with token: 46 at line: 20
+Exiting parse_statement with token: 46 at line: 20
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 20
 get_linenum called, returning: 21
 Current character: c (Line: 21)
 get_linenum called, returning: 21
 Processing identifier/keyword: count at line 21
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 21
+Next token: 1 at line: 21
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 21
+Matching token: 1, expected token: 1 at line: 21
 get_linenum called, returning: 21
 Current character: : (Line: 21)
-DEBUG: Matching token: 42
+get_linenum called, returning: 21
+Next token: 42 at line: 21
+Matching token: 42, expected token: 42 at line: 21
 get_linenum called, returning: 21
 Current character: c (Line: 21)
 get_linenum called, returning: 21
 Processing identifier/keyword: count at line 21
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 21
+Next token: 1 at line: 21
+Matching token: 1, expected token: 1 at line: 21
 get_linenum called, returning: 21
 Current character: + (Line: 21)
-DEBUG: Next token: 29
-DEBUG: Current token in parse_expression (addition/subtraction): 29
-DEBUG: Matching token: 29
+get_linenum called, returning: 21
+Next token: 29 at line: 21
+Matching token: 29, expected token: 29 at line: 21
 get_linenum called, returning: 21
 Current character: 1 (Line: 21)
 get_linenum called, returning: 21
 Processing number: 1 at line 21
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 21
+Next token: 27 at line: 21
+Matching token: 27, expected token: 27 at line: 21
 get_linenum called, returning: 21
 Current character: ; (Line: 21)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 21
+Next token: 46 at line: 21
+Exiting parse_statement with token: 46 at line: 21
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 21
 get_linenum called, returning: 21
 Current character: n (Line: 21)
 get_linenum called, returning: 21
 Processing identifier/keyword: n at line 21
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 21
+Next token: 1 at line: 21
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 21
+Matching token: 1, expected token: 1 at line: 21
 get_linenum called, returning: 21
 Current character: : (Line: 21)
-DEBUG: Matching token: 42
+get_linenum called, returning: 21
+Next token: 42 at line: 21
+Matching token: 42, expected token: 42 at line: 21
 get_linenum called, returning: 21
 Current character: n (Line: 21)
 get_linenum called, returning: 21
 Processing identifier/keyword: n at line 21
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 21
+Next token: 1 at line: 21
+Matching token: 1, expected token: 1 at line: 21
 get_linenum called, returning: 21
 Current character: - (Line: 21)
-DEBUG: Next token: 30
-DEBUG: Current token in parse_expression (addition/subtraction): 30
-DEBUG: Matching token: 30
+get_linenum called, returning: 21
+Next token: 30 at line: 21
+Matching token: 30, expected token: 30 at line: 21
 get_linenum called, returning: 21
 Current character: 1 (Line: 21)
 get_linenum called, returning: 21
 Processing number: 100 at line 21
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 21
+Next token: 27 at line: 21
+Matching token: 27, expected token: 27 at line: 21
 get_linenum called, returning: 21
 Current character: ; (Line: 21)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 21
+Next token: 46 at line: 21
+Exiting parse_statement with token: 46 at line: 21
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 21
 get_linenum called, returning: 22
 Current character: e (Line: 22)
 get_linenum called, returning: 22
 Processing identifier/keyword: end at line 22
 DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
-DEBUG: Next token: 7
-DEBUG: Entering parse_statement with token: 7
-DEBUG: Found END token in statement
-DEBUG: Matching token: 7
+get_linenum called, returning: 22
+Next token: 7 at line: 22
+Exiting parse_statement_list with token: 7 at line: 22
+Matching token: 7, expected token: 7 at line: 22
 get_linenum called, returning: 22
 Current character: ; (Line: 22)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 22
+Next token: 46 at line: 22
+Exiting parse_statement with token: 46 at line: 22
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 22
 get_linenum called, returning: 23
 Current character: i (Line: 23)
 get_linenum called, returning: 23
 Processing identifier/keyword: if at line 23
 DEBUG: Matched keyword: if with token: 8
 DEBUG: Keyword token: 8
-DEBUG: Next token: 8
-DEBUG: Entering parse_statement with token: 8
-DEBUG: Found IF token
+get_linenum called, returning: 23
+Next token: 8 at line: 23
+Processing statement with token: 8
+Entering parse_statement with token: 8 at line: 23
+Matching token: 8, expected token: 8 at line: 23
 get_linenum called, returning: 23
 Current character: c (Line: 23)
 get_linenum called, returning: 23
 Processing identifier/keyword: count at line 23
 DEBUG: No match for keyword: count
-DEBUG: After IF scan, token is: 1
-DEBUG: Entering parse_if_statement
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 23
+Next token: 1 at line: 23
+Matching token: 1, expected token: 1 at line: 23
 get_linenum called, returning: 23
 Current character: > (Line: 23)
-DEBUG: Next token: 36
-DEBUG: Current token in parse_expression (comparison): 36
-DEBUG: Matching token: 36
+get_linenum called, returning: 23
+Next token: 36 at line: 23
+Matching token: 36, expected token: 36 at line: 23
 get_linenum called, returning: 23
 Current character: 0 (Line: 23)
 get_linenum called, returning: 23
 Processing number: 0 at line 23
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 23
+Next token: 27 at line: 23
+Matching token: 27, expected token: 27 at line: 23
 get_linenum called, returning: 23
 Current character: t (Line: 23)
 get_linenum called, returning: 23
 Processing identifier/keyword: then at line 23
 DEBUG: Matched keyword: then with token: 9
 DEBUG: Keyword token: 9
-DEBUG: Next token: 9
-DEBUG: Condition parsed, looking for THEN
-DEBUG: Matching token: 9
+get_linenum called, returning: 23
+Next token: 9 at line: 23
+Matching token: 9, expected token: 9 at line: 23
 get_linenum called, returning: 23
 Current character: w (Line: 23)
 get_linenum called, returning: 23
 Processing identifier/keyword: writeln at line 23
 DEBUG: Matched keyword: writeln with token: 24
 DEBUG: Keyword token: 24
-DEBUG: Next token: 24
-DEBUG: Entering parse_statement with token: 24
-DEBUG: Matching token: 24
+get_linenum called, returning: 23
+Next token: 24 at line: 23
+Entering parse_statement with token: 24 at line: 23
+Matching token: 24, expected token: 24 at line: 23
 get_linenum called, returning: 23
 Current character: ( (Line: 23)
-DEBUG: Next token: 38
-DEBUG: Matching token: 38
+get_linenum called, returning: 23
+Next token: 38 at line: 23
+Matching token: 38, expected token: 38 at line: 23
 get_linenum called, returning: 23
 Current character: ' (Line: 23)
 get_linenum called, returning: 23
 Processing string literal starting at line 23
-DEBUG: Next token: 28
-DEBUG: Entering parse_factor with token: 28
-DEBUG: Matching token: 28
+get_linenum called, returning: 23
+Next token: 28 at line: 23
+Matching token: 28, expected token: 28 at line: 23
 get_linenum called, returning: 23
 Current character: , (Line: 23)
-DEBUG: Next token: 44
-DEBUG: Matching token: 44
+get_linenum called, returning: 23
+Next token: 44 at line: 23
+Matching token: 44, expected token: 44 at line: 23
 get_linenum called, returning: 23
 Current character: c (Line: 23)
 get_linenum called, returning: 23
 Processing identifier/keyword: count at line 23
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 23
+Next token: 1 at line: 23
+Matching token: 1, expected token: 1 at line: 23
 get_linenum called, returning: 23
 Current character: ) (Line: 23)
-DEBUG: Next token: 39
-DEBUG: Matching token: 39
+get_linenum called, returning: 23
+Next token: 39 at line: 23
+Matching token: 39, expected token: 39 at line: 23
 get_linenum called, returning: 23
 Current character: ; (Line: 23)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 23
+Next token: 46 at line: 23
+Matching token: 46, expected token: 46 at line: 23
 get_linenum called, returning: 24
 Current character: c (Line: 24)
 get_linenum called, returning: 24
 Processing identifier/keyword: count at line 24
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 24
+Next token: 1 at line: 24
+Exiting parse_statement with token: 1 at line: 24
+Exiting parse_statement with token: 1 at line: 24
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 24
+Matching token: 1, expected token: 1 at line: 24
 get_linenum called, returning: 24
 Current character: : (Line: 24)
-DEBUG: Matching token: 42
+get_linenum called, returning: 24
+Next token: 42 at line: 24
+Matching token: 42, expected token: 42 at line: 24
 get_linenum called, returning: 24
 Current character: 0 (Line: 24)
 get_linenum called, returning: 24
 Processing number: 0 at line 24
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 24
+Next token: 27 at line: 24
+Matching token: 27, expected token: 27 at line: 24
 get_linenum called, returning: 24
 Current character: ; (Line: 24)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 24
+Next token: 46 at line: 24
+Exiting parse_statement with token: 46 at line: 24
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 24
 get_linenum called, returning: 25
 Current character: i (Line: 25)
 get_linenum called, returning: 25
 Processing identifier/keyword: if at line 25
 DEBUG: Matched keyword: if with token: 8
 DEBUG: Keyword token: 8
-DEBUG: Next token: 8
-DEBUG: Entering parse_statement with token: 8
-DEBUG: Found IF token
+get_linenum called, returning: 25
+Next token: 8 at line: 25
+Processing statement with token: 8
+Entering parse_statement with token: 8 at line: 25
+Matching token: 8, expected token: 8 at line: 25
 get_linenum called, returning: 25
 Current character: n (Line: 25)
 get_linenum called, returning: 25
 Processing identifier/keyword: n at line 25
 DEBUG: No match for keyword: n
-DEBUG: After IF scan, token is: 1
-DEBUG: Entering parse_if_statement
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 25
+Next token: 1 at line: 25
+Matching token: 1, expected token: 1 at line: 25
 get_linenum called, returning: 25
 Current character: < (Line: 25)
-DEBUG: Next token: 34
-DEBUG: Current token in parse_expression (comparison): 34
-DEBUG: Matching token: 34
+get_linenum called, returning: 25
+Next token: 34 at line: 25
+Matching token: 34, expected token: 34 at line: 25
 get_linenum called, returning: 25
 Current character: 1 (Line: 25)
 get_linenum called, returning: 25
 Processing number: 10 at line 25
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 25
+Next token: 27 at line: 25
+Matching token: 27, expected token: 27 at line: 25
 get_linenum called, returning: 25
 Current character: t (Line: 25)
 get_linenum called, returning: 25
 Processing identifier/keyword: then at line 25
 DEBUG: Matched keyword: then with token: 9
 DEBUG: Keyword token: 9
-DEBUG: Next token: 9
-DEBUG: Condition parsed, looking for THEN
-DEBUG: Matching token: 9
+get_linenum called, returning: 25
+Next token: 9 at line: 25
+Matching token: 9, expected token: 9 at line: 25
 get_linenum called, returning: 25
 Current character: b (Line: 25)
 get_linenum called, returning: 25
 Processing identifier/keyword: break at line 25
 DEBUG: Matched keyword: break with token: 49
 DEBUG: Keyword token: 49
-DEBUG: Next token: 49
-DEBUG: Entering parse_statement with token: 49
-DEBUG: Matching token: 49
+get_linenum called, returning: 25
+Next token: 49 at line: 25
+Entering parse_statement with token: 49 at line: 25
+Matching token: 49, expected token: 49 at line: 25
 get_linenum called, returning: 25
 Current character: ; (Line: 25)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 25
+Next token: 46 at line: 25
+Exiting parse_statement with token: 46 at line: 25
+Exiting parse_statement with token: 46 at line: 25
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 25
 get_linenum called, returning: 26
 Current character: c (Line: 26)
 get_linenum called, returning: 26
 Processing identifier/keyword: count at line 26
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 26
+Next token: 1 at line: 26
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 26
+Matching token: 1, expected token: 1 at line: 26
 get_linenum called, returning: 26
 Current character: : (Line: 26)
-DEBUG: Matching token: 42
+get_linenum called, returning: 26
+Next token: 42 at line: 26
+Matching token: 42, expected token: 42 at line: 26
 get_linenum called, returning: 26
 Current character: c (Line: 26)
 get_linenum called, returning: 26
 Processing identifier/keyword: count at line 26
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 26
+Next token: 1 at line: 26
+Matching token: 1, expected token: 1 at line: 26
 get_linenum called, returning: 26
 Current character: + (Line: 26)
-DEBUG: Next token: 29
-DEBUG: Current token in parse_expression (addition/subtraction): 29
-DEBUG: Matching token: 29
+get_linenum called, returning: 26
+Next token: 29 at line: 26
+Matching token: 29, expected token: 29 at line: 26
 get_linenum called, returning: 26
 Current character: 1 (Line: 26)
 get_linenum called, returning: 26
 Processing number: 1 at line 26
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 26
+Next token: 27 at line: 26
+Matching token: 27, expected token: 27 at line: 26
 get_linenum called, returning: 26
 Current character: ; (Line: 26)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 26
+Next token: 46 at line: 26
+Exiting parse_statement with token: 46 at line: 26
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 26
 get_linenum called, returning: 26
 Current character: n (Line: 26)
 get_linenum called, returning: 26
 Processing identifier/keyword: n at line 26
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 26
+Next token: 1 at line: 26
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 26
+Matching token: 1, expected token: 1 at line: 26
 get_linenum called, returning: 26
 Current character: : (Line: 26)
-DEBUG: Matching token: 42
+get_linenum called, returning: 26
+Next token: 42 at line: 26
+Matching token: 42, expected token: 42 at line: 26
 get_linenum called, returning: 26
 Current character: n (Line: 26)
 get_linenum called, returning: 26
 Processing identifier/keyword: n at line 26
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 26
+Next token: 1 at line: 26
+Matching token: 1, expected token: 1 at line: 26
 get_linenum called, returning: 26
 Current character: - (Line: 26)
-DEBUG: Next token: 30
-DEBUG: Current token in parse_expression (addition/subtraction): 30
-DEBUG: Matching token: 30
+get_linenum called, returning: 26
+Next token: 30 at line: 26
+Matching token: 30, expected token: 30 at line: 26
 get_linenum called, returning: 26
 Current character: 1 (Line: 26)
 get_linenum called, returning: 26
 Processing number: 10 at line 26
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 26
+Next token: 27 at line: 26
+Matching token: 27, expected token: 27 at line: 26
 get_linenum called, returning: 26
 Current character: ; (Line: 26)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 26
+Next token: 46 at line: 26
+Exiting parse_statement with token: 46 at line: 26
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 26
 get_linenum called, returning: 27
 Current character: e (Line: 27)
 get_linenum called, returning: 27
 Processing identifier/keyword: end at line 27
 DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
-DEBUG: Next token: 7
-DEBUG: Entering parse_statement with token: 7
-DEBUG: Found END token in statement
-DEBUG: Matching token: 7
+get_linenum called, returning: 27
+Next token: 7 at line: 27
+Exiting parse_statement_list with token: 7 at line: 27
+Matching token: 7, expected token: 7 at line: 27
 get_linenum called, returning: 27
 Current character: ; (Line: 27)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 27
+Next token: 46 at line: 27
+Exiting parse_statement with token: 46 at line: 27
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 27
 get_linenum called, returning: 32
 Current character: i (Line: 32)
 get_linenum called, returning: 32
 Processing identifier/keyword: if at line 32
 DEBUG: Matched keyword: if with token: 8
 DEBUG: Keyword token: 8
-DEBUG: Next token: 8
-DEBUG: Entering parse_statement with token: 8
-DEBUG: Found IF token
+get_linenum called, returning: 32
+Next token: 8 at line: 32
+Processing statement with token: 8
+Entering parse_statement with token: 8 at line: 32
+Matching token: 8, expected token: 8 at line: 32
 get_linenum called, returning: 32
 Current character: c (Line: 32)
 get_linenum called, returning: 32
 Processing identifier/keyword: count at line 32
 DEBUG: No match for keyword: count
-DEBUG: After IF scan, token is: 1
-DEBUG: Entering parse_if_statement
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 32
+Next token: 1 at line: 32
+Matching token: 1, expected token: 1 at line: 32
 get_linenum called, returning: 32
 Current character: > (Line: 32)
-DEBUG: Next token: 36
-DEBUG: Current token in parse_expression (comparison): 36
-DEBUG: Matching token: 36
+get_linenum called, returning: 32
+Next token: 36 at line: 32
+Matching token: 36, expected token: 36 at line: 32
 get_linenum called, returning: 32
 Current character: 0 (Line: 32)
 get_linenum called, returning: 32
 Processing number: 0 at line 32
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 32
+Next token: 27 at line: 32
+Matching token: 27, expected token: 27 at line: 32
 get_linenum called, returning: 32
 Current character: t (Line: 32)
 get_linenum called, returning: 32
 Processing identifier/keyword: then at line 32
 DEBUG: Matched keyword: then with token: 9
 DEBUG: Keyword token: 9
-DEBUG: Next token: 9
-DEBUG: Condition parsed, looking for THEN
-DEBUG: Matching token: 9
+get_linenum called, returning: 32
+Next token: 9 at line: 32
+Matching token: 9, expected token: 9 at line: 32
 get_linenum called, returning: 32
 Current character: w (Line: 32)
 get_linenum called, returning: 32
 Processing identifier/keyword: writeln at line 32
 DEBUG: Matched keyword: writeln with token: 24
 DEBUG: Keyword token: 24
-DEBUG: Next token: 24
-DEBUG: Entering parse_statement with token: 24
-DEBUG: Matching token: 24
+get_linenum called, returning: 32
+Next token: 24 at line: 32
+Entering parse_statement with token: 24 at line: 32
+Matching token: 24, expected token: 24 at line: 32
 get_linenum called, returning: 32
 Current character: ( (Line: 32)
-DEBUG: Next token: 38
-DEBUG: Matching token: 38
+get_linenum called, returning: 32
+Next token: 38 at line: 32
+Matching token: 38, expected token: 38 at line: 32
 get_linenum called, returning: 32
 Current character: ' (Line: 32)
 get_linenum called, returning: 32
 Processing string literal starting at line 32
-DEBUG: Next token: 28
-DEBUG: Entering parse_factor with token: 28
-DEBUG: Matching token: 28
+get_linenum called, returning: 32
+Next token: 28 at line: 32
+Matching token: 28, expected token: 28 at line: 32
 get_linenum called, returning: 32
 Current character: , (Line: 32)
-DEBUG: Next token: 44
-DEBUG: Matching token: 44
+get_linenum called, returning: 32
+Next token: 44 at line: 32
+Matching token: 44, expected token: 44 at line: 32
 get_linenum called, returning: 32
 Current character: c (Line: 32)
 get_linenum called, returning: 32
 Processing identifier/keyword: count at line 32
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 32
+Next token: 1 at line: 32
+Matching token: 1, expected token: 1 at line: 32
 get_linenum called, returning: 32
 Current character: ) (Line: 32)
-DEBUG: Next token: 39
-DEBUG: Matching token: 39
+get_linenum called, returning: 32
+Next token: 39 at line: 32
+Matching token: 39, expected token: 39 at line: 32
 get_linenum called, returning: 32
 Current character: ; (Line: 32)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 32
+Next token: 46 at line: 32
+Matching token: 46, expected token: 46 at line: 32
 get_linenum called, returning: 33
 Current character: c (Line: 33)
 get_linenum called, returning: 33
 Processing identifier/keyword: count at line 33
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 33
+Next token: 1 at line: 33
+Exiting parse_statement with token: 1 at line: 33
+Exiting parse_statement with token: 1 at line: 33
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 33
+Matching token: 1, expected token: 1 at line: 33
 get_linenum called, returning: 33
 Current character: : (Line: 33)
-DEBUG: Matching token: 42
+get_linenum called, returning: 33
+Next token: 42 at line: 33
+Matching token: 42, expected token: 42 at line: 33
 get_linenum called, returning: 33
 Current character: 0 (Line: 33)
 get_linenum called, returning: 33
 Processing number: 0 at line 33
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 33
+Next token: 27 at line: 33
+Matching token: 27, expected token: 27 at line: 33
 get_linenum called, returning: 33
 Current character: ; (Line: 33)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 33
+Next token: 46 at line: 33
+Exiting parse_statement with token: 46 at line: 33
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 33
 get_linenum called, returning: 34
 Current character: i (Line: 34)
 get_linenum called, returning: 34
 Processing identifier/keyword: if at line 34
 DEBUG: Matched keyword: if with token: 8
 DEBUG: Keyword token: 8
-DEBUG: Next token: 8
-DEBUG: Entering parse_statement with token: 8
-DEBUG: Found IF token
+get_linenum called, returning: 34
+Next token: 8 at line: 34
+Processing statement with token: 8
+Entering parse_statement with token: 8 at line: 34
+Matching token: 8, expected token: 8 at line: 34
 get_linenum called, returning: 34
 Current character: n (Line: 34)
 get_linenum called, returning: 34
 Processing identifier/keyword: n at line 34
 DEBUG: No match for keyword: n
-DEBUG: After IF scan, token is: 1
-DEBUG: Entering parse_if_statement
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 34
+Next token: 1 at line: 34
+Matching token: 1, expected token: 1 at line: 34
 get_linenum called, returning: 34
 Current character: < (Line: 34)
-DEBUG: Next token: 34
-DEBUG: Current token in parse_expression (comparison): 34
-DEBUG: Matching token: 34
+get_linenum called, returning: 34
+Next token: 34 at line: 34
+Matching token: 34, expected token: 34 at line: 34
 get_linenum called, returning: 34
 Current character: 1 (Line: 34)
 get_linenum called, returning: 34
 Processing number: 1 at line 34
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 34
+Next token: 27 at line: 34
+Matching token: 27, expected token: 27 at line: 34
 get_linenum called, returning: 34
 Current character: t (Line: 34)
 get_linenum called, returning: 34
 Processing identifier/keyword: then at line 34
 DEBUG: Matched keyword: then with token: 9
 DEBUG: Keyword token: 9
-DEBUG: Next token: 9
-DEBUG: Condition parsed, looking for THEN
-DEBUG: Matching token: 9
+get_linenum called, returning: 34
+Next token: 9 at line: 34
+Matching token: 9, expected token: 9 at line: 34
 get_linenum called, returning: 34
 Current character: b (Line: 34)
 get_linenum called, returning: 34
 Processing identifier/keyword: break at line 34
 DEBUG: Matched keyword: break with token: 49
 DEBUG: Keyword token: 49
-DEBUG: Next token: 49
-DEBUG: Entering parse_statement with token: 49
-DEBUG: Matching token: 49
+get_linenum called, returning: 34
+Next token: 49 at line: 34
+Entering parse_statement with token: 49 at line: 34
+Matching token: 49, expected token: 49 at line: 34
 get_linenum called, returning: 34
 Current character: ; (Line: 34)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 34
+Next token: 46 at line: 34
+Exiting parse_statement with token: 46 at line: 34
+Exiting parse_statement with token: 46 at line: 34
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 34
 get_linenum called, returning: 35
 Current character: c (Line: 35)
 get_linenum called, returning: 35
 Processing identifier/keyword: count at line 35
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 35
+Next token: 1 at line: 35
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 35
+Matching token: 1, expected token: 1 at line: 35
 get_linenum called, returning: 35
 Current character: : (Line: 35)
-DEBUG: Matching token: 42
+get_linenum called, returning: 35
+Next token: 42 at line: 35
+Matching token: 42, expected token: 42 at line: 35
 get_linenum called, returning: 35
 Current character: c (Line: 35)
 get_linenum called, returning: 35
 Processing identifier/keyword: count at line 35
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 35
+Next token: 1 at line: 35
+Matching token: 1, expected token: 1 at line: 35
 get_linenum called, returning: 35
 Current character: + (Line: 35)
-DEBUG: Next token: 29
-DEBUG: Current token in parse_expression (addition/subtraction): 29
-DEBUG: Matching token: 29
+get_linenum called, returning: 35
+Next token: 29 at line: 35
+Matching token: 29, expected token: 29 at line: 35
 get_linenum called, returning: 35
 Current character: 1 (Line: 35)
 get_linenum called, returning: 35
 Processing number: 1 at line 35
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 35
+Next token: 27 at line: 35
+Matching token: 27, expected token: 27 at line: 35
 get_linenum called, returning: 35
 Current character: ; (Line: 35)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 35
+Next token: 46 at line: 35
+Exiting parse_statement with token: 46 at line: 35
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 35
 get_linenum called, returning: 35
 Current character: n (Line: 35)
 get_linenum called, returning: 35
 Processing identifier/keyword: n at line 35
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_statement with token: 1
+get_linenum called, returning: 35
+Next token: 1 at line: 35
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 35
+Matching token: 1, expected token: 1 at line: 35
 get_linenum called, returning: 35
 Current character: : (Line: 35)
-DEBUG: Matching token: 42
+get_linenum called, returning: 35
+Next token: 42 at line: 35
+Matching token: 42, expected token: 42 at line: 35
 get_linenum called, returning: 35
 Current character: n (Line: 35)
 get_linenum called, returning: 35
 Processing identifier/keyword: n at line 35
 DEBUG: No match for keyword: n
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 35
+Next token: 1 at line: 35
+Matching token: 1, expected token: 1 at line: 35
 get_linenum called, returning: 35
 Current character: - (Line: 35)
-DEBUG: Next token: 30
-DEBUG: Current token in parse_expression (addition/subtraction): 30
-DEBUG: Matching token: 30
+get_linenum called, returning: 35
+Next token: 30 at line: 35
+Matching token: 30, expected token: 30 at line: 35
 get_linenum called, returning: 35
 Current character: 1 (Line: 35)
 get_linenum called, returning: 35
 Processing number: 1 at line 35
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 35
+Next token: 27 at line: 35
+Matching token: 27, expected token: 27 at line: 35
 get_linenum called, returning: 35
 Current character: ; (Line: 35)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 35
+Next token: 46 at line: 35
+Exiting parse_statement with token: 46 at line: 35
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 35
 get_linenum called, returning: 36
 Current character: e (Line: 36)
 get_linenum called, returning: 36
 Processing identifier/keyword: end at line 36
 DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
-DEBUG: Next token: 7
-DEBUG: Entering parse_statement with token: 7
-DEBUG: Found END token in statement
-DEBUG: Matching token: 7
+get_linenum called, returning: 36
+Next token: 7 at line: 36
+Exiting parse_statement_list with token: 7 at line: 36
+Matching token: 7, expected token: 7 at line: 36
 get_linenum called, returning: 36
 Current character: ; (Line: 36)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 36
+Next token: 46 at line: 36
+Exiting parse_statement with token: 46 at line: 36
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 36
 get_linenum called, returning: 37
 Current character: i (Line: 37)
 get_linenum called, returning: 37
 Processing identifier/keyword: if at line 37
 DEBUG: Matched keyword: if with token: 8
 DEBUG: Keyword token: 8
-DEBUG: Next token: 8
-DEBUG: Entering parse_statement with token: 8
-DEBUG: Found IF token
+get_linenum called, returning: 37
+Next token: 8 at line: 37
+Processing statement with token: 8
+Entering parse_statement with token: 8 at line: 37
+Matching token: 8, expected token: 8 at line: 37
 get_linenum called, returning: 37
 Current character: c (Line: 37)
 get_linenum called, returning: 37
 Processing identifier/keyword: count at line 37
 DEBUG: No match for keyword: count
-DEBUG: After IF scan, token is: 1
-DEBUG: Entering parse_if_statement
-DEBUG: Parsing condition, current token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 37
+Next token: 1 at line: 37
+Matching token: 1, expected token: 1 at line: 37
 get_linenum called, returning: 37
 Current character: > (Line: 37)
-DEBUG: Next token: 36
-DEBUG: Current token in parse_expression (comparison): 36
-DEBUG: Matching token: 36
+get_linenum called, returning: 37
+Next token: 36 at line: 37
+Matching token: 36, expected token: 36 at line: 37
 get_linenum called, returning: 37
 Current character: 0 (Line: 37)
 get_linenum called, returning: 37
 Processing number: 0 at line 37
-DEBUG: Next token: 27
-DEBUG: Entering parse_factor with token: 27
-DEBUG: Matching token: 27
+get_linenum called, returning: 37
+Next token: 27 at line: 37
+Matching token: 27, expected token: 27 at line: 37
 get_linenum called, returning: 37
 Current character: t (Line: 37)
 get_linenum called, returning: 37
 Processing identifier/keyword: then at line 37
 DEBUG: Matched keyword: then with token: 9
 DEBUG: Keyword token: 9
-DEBUG: Next token: 9
-DEBUG: Condition parsed, looking for THEN
-DEBUG: Matching token: 9
+get_linenum called, returning: 37
+Next token: 9 at line: 37
+Matching token: 9, expected token: 9 at line: 37
 get_linenum called, returning: 37
 Current character: w (Line: 37)
 get_linenum called, returning: 37
 Processing identifier/keyword: writeln at line 37
 DEBUG: Matched keyword: writeln with token: 24
 DEBUG: Keyword token: 24
-DEBUG: Next token: 24
-DEBUG: Entering parse_statement with token: 24
-DEBUG: Matching token: 24
+get_linenum called, returning: 37
+Next token: 24 at line: 37
+Entering parse_statement with token: 24 at line: 37
+Matching token: 24, expected token: 24 at line: 37
 get_linenum called, returning: 37
 Current character: ( (Line: 37)
-DEBUG: Next token: 38
-DEBUG: Matching token: 38
+get_linenum called, returning: 37
+Next token: 38 at line: 37
+Matching token: 38, expected token: 38 at line: 37
 get_linenum called, returning: 37
 Current character: ' (Line: 37)
 get_linenum called, returning: 37
 Processing string literal starting at line 37
-DEBUG: Next token: 28
-DEBUG: Entering parse_factor with token: 28
-DEBUG: Matching token: 28
+get_linenum called, returning: 37
+Next token: 28 at line: 37
+Matching token: 28, expected token: 28 at line: 37
 get_linenum called, returning: 37
 Current character: , (Line: 37)
-DEBUG: Next token: 44
-DEBUG: Matching token: 44
+get_linenum called, returning: 37
+Next token: 44 at line: 37
+Matching token: 44, expected token: 44 at line: 37
 get_linenum called, returning: 37
 Current character: c (Line: 37)
 get_linenum called, returning: 37
 Processing identifier/keyword: count at line 37
 DEBUG: No match for keyword: count
-DEBUG: Next token: 1
-DEBUG: Entering parse_factor with token: 1
-DEBUG: Matching token: 1
+get_linenum called, returning: 37
+Next token: 1 at line: 37
+Matching token: 1, expected token: 1 at line: 37
 get_linenum called, returning: 37
 Current character: ) (Line: 37)
-DEBUG: Next token: 39
-DEBUG: Matching token: 39
+get_linenum called, returning: 37
+Next token: 39 at line: 37
+Matching token: 39, expected token: 39 at line: 37
 get_linenum called, returning: 37
 Current character: ; (Line: 37)
-DEBUG: Next token: 46
-DEBUG: Matching token: 46
+get_linenum called, returning: 37
+Next token: 46 at line: 37
+Matching token: 46, expected token: 46 at line: 37
 Line number incremented to: 38
 Line number incremented to: 38
 Line number incremented to: 38
@@ -1526,16 +1766,22 @@ get_linenum called, returning: 39
 Processing identifier/keyword: end at line 39
 DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
-DEBUG: Next token: 7
-DEBUG: Entering parse_statement with token: 7
-DEBUG: Found END token in statement
-DEBUG: Matching token: 7
+get_linenum called, returning: 39
+Next token: 7 at line: 39
+Exiting parse_statement with token: 7 at line: 39
+Exiting parse_statement with token: 7 at line: 39
+Found end of statement list
+Exiting parse_statement_list with token: 7 at line: 39
+Matching token: 7, expected token: 7 at line: 39
 get_linenum called, returning: 39
 Current character: . (Line: 39)
-DEBUG: Next token: 43
-DEBUG: Matching token: 43
+get_linenum called, returning: 39
+Next token: 43 at line: 39
+Exiting parse_block with token: 43 at line: 39
+Matching token: 43, expected token: 43 at line: 39
 End of file reached at line 39
-DEBUG: Next token: -1
+get_linenum called, returning: 39
+Next token: -1 at line: 39
 Parsing successful. Cleaning up scanner...
 Reinitializing scanner for pretty printing...
 Starting pretty printing...
