@@ -4,49 +4,69 @@ get_linenum called, returning: 1
 Current character: p (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: program at line 1
+DEBUG: Matched keyword: program with token: 2
+DEBUG: Keyword token: 2
 get_linenum called, returning: 1
 Initializing pretty printer...
 Starting parsing...
+DEBUG: Matching token: 2
 get_linenum called, returning: 1
 Current character: W (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: Write at line 1
-get_linenum called, returning: 1
+DEBUG: No match for keyword: Write
+DEBUG: Next token: 1
+DEBUG: Matching token: 1
 get_linenum called, returning: 1
 Current character: ; (Line: 1)
-get_linenum called, returning: 1
+DEBUG: Next token: 46
+DEBUG: Matching token: 46
 get_linenum called, returning: 1
 Current character: b (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: begin at line 1
-get_linenum called, returning: 1
+DEBUG: Matched keyword: begin with token: 6
+DEBUG: Keyword token: 6
+DEBUG: Next token: 6
+DEBUG: Matching token: 6
 get_linenum called, returning: 2
 Current character: w (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: writeln at line 2
-get_linenum called, returning: 2
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
+DEBUG: Next token: 24
 DEBUG: Entering parse_statement with token: 24
+DEBUG: Matching token: 24
 get_linenum called, returning: 2
 Current character: ( (Line: 2)
-get_linenum called, returning: 2
+DEBUG: Next token: 38
+DEBUG: Matching token: 38
 get_linenum called, returning: 2
 Current character: ' (Line: 2)
 get_linenum called, returning: 2
 Processing string literal starting at line 2
-get_linenum called, returning: 2
+DEBUG: Next token: 28
+DEBUG: Entering parse_factor with token: 28
+DEBUG: Matching token: 28
 get_linenum called, returning: 2
 Current character: ) (Line: 2)
-get_linenum called, returning: 2
+DEBUG: Next token: 39
+DEBUG: Matching token: 39
 get_linenum called, returning: 2
 Current character: e (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: end at line 2
-get_linenum called, returning: 2
+DEBUG: Matched keyword: end with token: 7
+DEBUG: Keyword token: 7
+DEBUG: Next token: 7
+DEBUG: Matching token: 7
 get_linenum called, returning: 2
 Current character: . (Line: 2)
-get_linenum called, returning: 2
+DEBUG: Next token: 43
+DEBUG: Matching token: 43
 End of file reached at line 3
-get_linenum called, returning: 3
+DEBUG: Next token: -1
 Parsing successful. Cleaning up scanner...
 Reinitializing scanner for pretty printing...
 Starting pretty printing...
@@ -54,10 +74,13 @@ get_linenum called, returning: 1
 Current character: p (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: program at line 1
+DEBUG: Matched keyword: program with token: 2
+DEBUG: Keyword token: 2
 programget_linenum called, returning: 1
 Current character: W (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: Write at line 1
+DEBUG: No match for keyword: Write
 NAMEget_linenum called, returning: 1
 Current character: ; (Line: 1)
  ;
@@ -65,11 +88,15 @@ get_linenum called, returning: 1
 Current character: b (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: begin at line 1
+DEBUG: Matched keyword: begin with token: 6
+DEBUG: Keyword token: 6
  begin
     get_linenum called, returning: 2
 Current character: w (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: writeln at line 2
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
  writelnget_linenum called, returning: 2
 Current character: ( (Line: 2)
 (get_linenum called, returning: 2
@@ -82,6 +109,8 @@ Current character: ) (Line: 2)
 Current character: e (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: end at line 2
+DEBUG: Matched keyword: end with token: 7
+DEBUG: Keyword token: 7
 end
 get_linenum called, returning: 2
 Current character: . (Line: 2)

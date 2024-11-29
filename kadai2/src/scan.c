@@ -82,6 +82,7 @@ int scan(void) {
                 int temp = match_keyword(buffer);
                 if (temp != -1) {
                     // Keyword matched
+                    printf("DEBUG: Keyword token: %d\n", temp); // Debug statement
                     return temp;
                 } else {
                     // Not a keyword, process as identifier
@@ -106,7 +107,6 @@ int scan(void) {
 
             // Handle unexpected tokens
             printf("Unexpected token: %c at line %d\n", cbuf, linenum);
-            error("Unexpected token encountered");
             return -1;
     }
 }
@@ -167,9 +167,11 @@ int skip_whitespace_and_comments(void) {
 int match_keyword(const char *token_str) {
     for (int i = 0; i < KEYWORDSIZE; i++) {
         if (strcmp(token_str, key[i].keyword) == 0) {
+             printf("DEBUG: Matched keyword: %s with token: %d\n", token_str, key[i].keytoken); // Debug statement
             return key[i].keytoken;
         }
     }
+    printf("DEBUG: No match for keyword: %s\n", token_str); // Debug statement
     return -1;  // Return -1 if not a keyword
 }
 

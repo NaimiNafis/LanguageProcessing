@@ -47,34 +47,47 @@ get_linenum called, returning: 2
 Current character: p (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: program at line 2
+DEBUG: Matched keyword: program with token: 2
+DEBUG: Keyword token: 2
 get_linenum called, returning: 2
 Initializing pretty printer...
 Starting parsing...
+DEBUG: Matching token: 2
 get_linenum called, returning: 2
 Current character: S (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: S at line 2
-get_linenum called, returning: 2
+DEBUG: No match for keyword: S
+DEBUG: Next token: 1
+DEBUG: Matching token: 1
 get_linenum called, returning: 2
 Current character: ; (Line: 2)
-get_linenum called, returning: 2
+DEBUG: Next token: 46
+DEBUG: Matching token: 46
 get_linenum called, returning: 2
 Current character: b (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: begin at line 2
-get_linenum called, returning: 2
+DEBUG: Matched keyword: begin with token: 6
+DEBUG: Keyword token: 6
+DEBUG: Next token: 6
+DEBUG: Matching token: 6
 get_linenum called, returning: 2
 Current character: e (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: end at line 2
-get_linenum called, returning: 2
+DEBUG: Matched keyword: end with token: 7
+DEBUG: Keyword token: 7
+DEBUG: Next token: 7
 DEBUG: Entering parse_statement with token: 7
 DEBUG: Found END token in statement
+DEBUG: Matching token: 7
 get_linenum called, returning: 2
 Current character: . (Line: 2)
-get_linenum called, returning: 2
+DEBUG: Next token: 43
+DEBUG: Matching token: 43
 End of file reached at line 3
-get_linenum called, returning: 3
+DEBUG: Next token: -1
 Parsing successful. Cleaning up scanner...
 Reinitializing scanner for pretty printing...
 Starting pretty printing...
@@ -125,10 +138,13 @@ get_linenum called, returning: 2
 Current character: p (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: program at line 2
+DEBUG: Matched keyword: program with token: 2
+DEBUG: Keyword token: 2
 programget_linenum called, returning: 2
 Current character: S (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: S at line 2
+DEBUG: No match for keyword: S
 NAMEget_linenum called, returning: 2
 Current character: ; (Line: 2)
  ;
@@ -136,11 +152,15 @@ get_linenum called, returning: 2
 Current character: b (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: begin at line 2
+DEBUG: Matched keyword: begin with token: 6
+DEBUG: Keyword token: 6
  begin
     get_linenum called, returning: 2
 Current character: e (Line: 2)
 get_linenum called, returning: 2
 Processing identifier/keyword: end at line 2
+DEBUG: Matched keyword: end with token: 7
+DEBUG: Keyword token: 7
  end
 get_linenum called, returning: 2
 Current character: . (Line: 2)

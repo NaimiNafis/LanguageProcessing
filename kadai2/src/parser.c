@@ -6,6 +6,9 @@
 #include "scan.h"
 #include "token.h"
 
+// Define a constant for EOF
+#define EOF_TOKEN -1
+
 // Forward declarations
 static void parse_block(void);
 static void parse_var_declarations(void);
@@ -24,49 +27,13 @@ static void parse_read_statement(void);
 static void parse_write_statement(void);
 static void parse_variable(void);
 static void parse_expression(void);
+static void parse_factor(void);
+static void parse_term(void);
 static void parse_comparison(void);
-static void report_syntax_error(const char* message);
+void parse_error(const char* message);
 
 // Parser state
 static Parser parser;
-
-// // Debug configuration
-// #define DEBUG 1  // Set to 0 to disable debug output
-
-// // Debug print function
-// static void debug_print(const char* format, ...) {
-//     if (DEBUG) {
-//         va_list args;
-//         va_start(args, format);
-//         vfprintf(stderr, format, args);
-//         va_end(args);
-//     }
-// }
-
-// // Add debug prints in key parsing functions, e.g.:
-// void init_parser(void) {
-//     parser.current_token = scan();
-//     parser.line_number = get_linenum();
-//     parser.error_count = 0;
-//     debug_print("Parser initialized with first token: %d\n", parser.current_token);  // Added newline character
-//     printf("Initial line number: %d\n", parser.line_number);  // Print initial line number
-// }
-
-// // Update match function to use debug_print
-// static void match(int expected) {
-//     debug_print("Line %d: Expecting %s, got %s\n", 
-//                 parser.line_number, 
-//                 tokenstr[expected], 
-//                 tokenstr[parser.current_token]);
-
-//     if (parser.current_token == expected) {
-//         parser.current_token = scan();
-//         parser.line_number = get_linenum();
-//         printf("Line number after matching token: %d\n", parser.line_number);  // Print line number
-//     } else {
-//         report_syntax_error("Unexpected token");
-//     }
-// }
 
 void init_parser(void) {
     parser.current_token = scan();
@@ -74,18 +41,49 @@ void init_parser(void) {
     parser.error_count = 0;
 }
 
-static void match(int expected) {
-    if (parser.current_token == expected) {
+// Main parsing function
+void parse() {
+    while ((parser.current_token = scan()) != EOF_TOKEN) {
+        switch (parser.current_token) {
+            case TPROCEDURE:
+                parse_procedure();
+                break;
+            case TWRITE:
+            case TWRITELN:
+                parse_write_statement();
+                break;
+            // Add cases for other tokens as needed
+            default:
+                printf("Syntax error at line %d: Unexpected token %d\n", get_linenum(), parser.current_token);
+                exit(1);
+        }
+    }
+}
+
+static void match(int expected_token) {
+    if (parser.current_token == expected_token) {
+        printf("DEBUG: Matching token: %d\n", parser.current_token); // Debug statement
         parser.current_token = scan();
         parser.line_number = get_linenum();
+        printf("DEBUG: Next token: %d\n", parser.current_token); // Debug statement
     } else {
-        report_syntax_error("Unexpected token");
+        parse_error("Unexpected token");
     }
+}
+
+// Function to parse an assignment statement
+static void parse_assignment(void) {
+    match(TNAME); // Match the variable name
+    match(TASSIGN); // Match the := token
+    parse_expression(); // Parse the expression on the right-hand side
+    match(TSEMI); // Match the semicolon at the end of the statement
 }
 
 // Error handling
 void parse_error(const char* message) {
-    fprintf(stderr, "Syntax error at line %d: %s\n", parser.line_number, message);
+    // Use get_linenum() instead of parser.line_number
+    fprintf(stderr, "Syntax error at line %d: %s (token: %d)\n", 
+            get_linenum(), message, parser.current_token);
     parser.error_count++;
     exit(1);
 }
@@ -94,7 +92,7 @@ void parse_error(const char* message) {
 int parse_program(void) {
     // Expect program declaration
     if (parser.current_token != TPROGRAM) {
-        report_syntax_error("program expected");
+        parse_error("program expected");
         return parser.error_count;
     }
 
@@ -110,7 +108,7 @@ int parse_program(void) {
     
     // Check for extra tokens
     if (parser.current_token != -1) {
-        report_syntax_error("End of file expected");
+        parse_error("End of file expected");
     }
     
     return parser.error_count;
@@ -185,22 +183,6 @@ static void parse_type(void) {
     }
 }
 
-static void parse_procedure(void) {
-    match(TPROCEDURE);
-    match(TNAME);
-    match(TSEMI);
-    
-    // Handle procedure's local var declarations
-    if (parser.current_token == TVAR) {
-        parse_var_declarations();
-    }
-    
-    match(TBEGIN);
-    parse_statement_list();
-    match(TEND);
-    match(TSEMI);
-}
-
 static void parse_parameter_list(void) {
     parse_name_list();
     match(TCOLON);
@@ -259,23 +241,8 @@ static void parse_statement(void) {
             return;  // Let parent handle END token
         default:
             parse_error("Invalid statement");
-            report_syntax_error("Unexpected token");
             break;
     }
-}
-
-// Ensure the error reporting function uses the correct line number
-void report_syntax_error(const char* message) {
-    fprintf(stderr, "Syntax error at line %d: %s\n", get_linenum(), message);
-    printf("Line number when reporting syntax error: %d\n", parser.line_number);  // Print line number
-    parser.error_count++;
-    exit(1);
-}
-
-static void parse_assignment(void) {
-    parse_variable();
-    match(TASSIGN);
-    parse_expression();
 }
 
 static void parse_if_statement(void) {
@@ -389,35 +356,64 @@ static void parse_variable(void) {
                 error("Missing closing bracket");
             }
         }
+        // Handle parameter type declaration
+        if (parser.current_token == TCOLON) {
+            parser.current_token = scan();
+            if (parser.current_token == TINTEGER) { // Assuming only integer type for simplicity
+                parser.current_token = scan();
+            } else {
+                error("Expected type after ':'");
+            }
+        }
     } else {
         error("Expected variable name");
     }
 }
 
-// In parser.c
+// Function to parse a term (handles multiplication and division)
+static void parse_term(void) {
+    parse_factor();
+    while (parser.current_token == TSTAR || parser.current_token == TDIV) {
+        printf("DEBUG: Current token in parse_term (multiplication/division): %d\n", parser.current_token); // Debug statement
+        match(parser.current_token);
+        parse_factor();
+    }
+}
+
+// Function to parse an expression (handles addition and subtraction)
 static void parse_expression(void) {
-
-    if (parser.current_token == TLPAREN) {
-        match(TLPAREN);
-        parse_expression();
-        match(TRPAREN);
-        
-        if (parser.current_token == TOR || parser.current_token == TAND) {
-            match(parser.current_token);
-            parse_expression();
-        }
-        return;
+    parse_term();
+    while (parser.current_token == TPLUS || parser.current_token == TMINUS) {
+        printf("DEBUG: Current token in parse_expression (addition/subtraction): %d\n", parser.current_token); // Debug statement
+        match(parser.current_token);
+        parse_term();
     }
 
-    // Handle NOT operator
-    if (parser.current_token == TNOT) {
-        match(TNOT);
+    // Handle comparison operators
+    if (parser.current_token == TEQUAL || 
+        parser.current_token == TNOTEQ ||
+        parser.current_token == TGR ||
+        parser.current_token == TGREQ ||
+        parser.current_token == TLE ||
+        parser.current_token == TLEEQ) {
+        printf("DEBUG: Current token in parse_expression (comparison): %d\n", parser.current_token); // Debug statement
+        match(parser.current_token);
         parse_expression();
-        return;
     }
+}
 
-    // Parse terms
+static void parse_factor(void) {
+    printf("DEBUG: Entering parse_factor with token: %d\n", parser.current_token); // Debug statement
     switch (parser.current_token) {
+        case TLPAREN:
+            match(TLPAREN);
+            parse_expression();
+            match(TRPAREN);
+            break;
+        case TNOT:
+            match(TNOT);
+            parse_factor();
+            break;
         case TNAME:
         case TNUMBER:
         case TSTRING:
@@ -428,26 +424,34 @@ static void parse_expression(void) {
         default:
             parse_error("Invalid expression");
     }
-    
-    // Handle comparison operators
-    if (parser.current_token == TEQUAL || 
-        parser.current_token == TNOTEQ ||
-        parser.current_token == TGR ||
-        parser.current_token == TGREQ ||
-        parser.current_token == TLE ||
-        parser.current_token == TLEEQ) {
-        match(parser.current_token);
-        parse_expression();
-    }
+}
 
-    // Handle arithmetic operators
-    while (parser.current_token == TPLUS || 
-           parser.current_token == TMINUS || 
-           parser.current_token == TSTAR || 
-           parser.current_token == TDIV) {
-        match(parser.current_token);
-        parse_expression();
+static void parse_procedure(void) {
+    match(TPROCEDURE);
+    match(TNAME);
+    
+    // Handle procedure parameters
+    if (parser.current_token == TLPAREN) {
+        match(TLPAREN);
+        parse_variable(); // Parse the first variable
+        while (parser.current_token == TCOMMA) {
+            match(TCOMMA);
+            parse_variable(); // Parse subsequent variables
+        }
+        match(TRPAREN);
     }
+    
+    match(TSEMI);
+    
+    // Handle procedure's local var declarations
+    if (parser.current_token == TVAR) {
+        parse_var_declarations();
+    }
+    
+    match(TBEGIN);
+    parse_statement_list();
+    match(TEND);
+    match(TSEMI);
 }
 
 static void parse_procedure_call(void) {
@@ -464,11 +468,13 @@ static void parse_procedure_call(void) {
     }
 }
 
+// Function to parse a read statement
 static void parse_read_statement(void) {
-    if (parser.current_token == TREAD)
+    if (parser.current_token == TREAD) {
         match(TREAD);
-    else
+    } else {
         match(TREADLN);
+    }
     match(TLPAREN);
     parse_variable();
     while (parser.current_token == TCOMMA) {
@@ -476,13 +482,18 @@ static void parse_read_statement(void) {
         parse_variable();
     }
     match(TRPAREN);
+    if (parser.current_token == TSEMI) {
+        match(TSEMI); // Ensure the semicolon is matched for readln
+    }
 }
 
+// Function to parse a write statement
 static void parse_write_statement(void) {
-    if (parser.current_token == TWRITE)
+    if (parser.current_token == TWRITE) {
         match(TWRITE);
-    else
+    } else {
         match(TWRITELN);
+    }
     match(TLPAREN);
     parse_expression();
     while (parser.current_token == TCOMMA) {
@@ -490,4 +501,7 @@ static void parse_write_statement(void) {
         parse_expression();
     }
     match(TRPAREN);
+    if (parser.current_token == TSEMI) {
+        match(TSEMI); // Ensure the semicolon is matched for readln
+    }
 }

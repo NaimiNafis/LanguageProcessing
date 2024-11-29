@@ -4,140 +4,199 @@ get_linenum called, returning: 1
 Current character: p (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: program at line 1
+DEBUG: Matched keyword: program with token: 2
+DEBUG: Keyword token: 2
 get_linenum called, returning: 1
 Initializing pretty printer...
 Starting parsing...
+DEBUG: Matching token: 2
 get_linenum called, returning: 1
 Current character: i (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: ifst at line 1
-get_linenum called, returning: 1
+DEBUG: No match for keyword: ifst
+DEBUG: Next token: 1
+DEBUG: Matching token: 1
 get_linenum called, returning: 1
 Current character: ; (Line: 1)
-get_linenum called, returning: 1
+DEBUG: Next token: 46
+DEBUG: Matching token: 46
 get_linenum called, returning: 3
 Current character: v (Line: 3)
 get_linenum called, returning: 3
 Processing identifier/keyword: var at line 3
-get_linenum called, returning: 3
+DEBUG: Matched keyword: var with token: 3
+DEBUG: Keyword token: 3
+DEBUG: Next token: 3
+DEBUG: Matching token: 3
 get_linenum called, returning: 4
 Current character: c (Line: 4)
 get_linenum called, returning: 4
 Processing identifier/keyword: ch at line 4
-get_linenum called, returning: 4
+DEBUG: No match for keyword: ch
+DEBUG: Next token: 1
+DEBUG: Matching token: 1
 get_linenum called, returning: 5
 Current character: : (Line: 5)
-get_linenum called, returning: 5
+DEBUG: Next token: 45
+DEBUG: Matching token: 45
 get_linenum called, returning: 6
 Current character: c (Line: 6)
 get_linenum called, returning: 6
 Processing identifier/keyword: char at line 6
-get_linenum called, returning: 6
+DEBUG: Matched keyword: char with token: 20
+DEBUG: Keyword token: 20
+DEBUG: Next token: 20
+DEBUG: Matching token: 20
 get_linenum called, returning: 6
 Current character: ; (Line: 6)
-get_linenum called, returning: 6
+DEBUG: Next token: 46
+DEBUG: Matching token: 46
 get_linenum called, returning: 7
 Current character: b (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: begin at line 7
-get_linenum called, returning: 7
+DEBUG: Matched keyword: begin with token: 6
+DEBUG: Keyword token: 6
+DEBUG: Next token: 6
+DEBUG: Matching token: 6
 get_linenum called, returning: 7
 Current character: r (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: readln at line 7
-get_linenum called, returning: 7
+DEBUG: Matched keyword: readln with token: 23
+DEBUG: Keyword token: 23
+DEBUG: Next token: 23
 DEBUG: Entering parse_statement with token: 23
+DEBUG: Matching token: 23
 get_linenum called, returning: 7
 Current character: ( (Line: 7)
-get_linenum called, returning: 7
+DEBUG: Next token: 38
+DEBUG: Matching token: 38
 get_linenum called, returning: 7
 Current character: c (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: ch at line 7
-get_linenum called, returning: 7
+DEBUG: No match for keyword: ch
+DEBUG: Next token: 1
 get_linenum called, returning: 7
 Current character: ) (Line: 7)
+DEBUG: Matching token: 39
 get_linenum called, returning: 7
 Current character: ; (Line: 7)
-get_linenum called, returning: 7
+DEBUG: Next token: 46
+DEBUG: Matching token: 46
 get_linenum called, returning: 8
 Current character: i (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: if at line 8
-get_linenum called, returning: 8
+DEBUG: Matched keyword: if with token: 8
+DEBUG: Keyword token: 8
+DEBUG: Next token: 8
 DEBUG: Entering parse_statement with token: 8
 DEBUG: Found IF token
 get_linenum called, returning: 8
 Current character: c (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: ch at line 8
+DEBUG: No match for keyword: ch
 DEBUG: After IF scan, token is: 1
 DEBUG: Entering parse_if_statement
 DEBUG: Parsing condition, current token: 1
+DEBUG: Entering parse_factor with token: 1
+DEBUG: Matching token: 1
 get_linenum called, returning: 8
 Current character: = (Line: 8)
-get_linenum called, returning: 8
+DEBUG: Next token: 32
+DEBUG: Current token in parse_expression (comparison): 32
+DEBUG: Matching token: 32
 get_linenum called, returning: 8
 Current character: ' (Line: 8)
 get_linenum called, returning: 8
 Processing string literal starting at line 8
-get_linenum called, returning: 8
+DEBUG: Next token: 28
+DEBUG: Entering parse_factor with token: 28
+DEBUG: Matching token: 28
 get_linenum called, returning: 8
 Current character: t (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: then at line 8
-get_linenum called, returning: 8
+DEBUG: Matched keyword: then with token: 9
+DEBUG: Keyword token: 9
+DEBUG: Next token: 9
 DEBUG: Condition parsed, looking for THEN
+DEBUG: Matching token: 9
 get_linenum called, returning: 8
 Current character: w (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: writeln at line 8
-get_linenum called, returning: 8
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
+DEBUG: Next token: 24
 DEBUG: Entering parse_statement with token: 24
+DEBUG: Matching token: 24
 get_linenum called, returning: 8
 Current character: ( (Line: 8)
-get_linenum called, returning: 8
+DEBUG: Next token: 38
+DEBUG: Matching token: 38
 get_linenum called, returning: 8
 Current character: ' (Line: 8)
 get_linenum called, returning: 8
 Processing string literal starting at line 8
-get_linenum called, returning: 8
+DEBUG: Next token: 28
+DEBUG: Entering parse_factor with token: 28
+DEBUG: Matching token: 28
 get_linenum called, returning: 8
 Current character: ) (Line: 8)
-get_linenum called, returning: 8
+DEBUG: Next token: 39
+DEBUG: Matching token: 39
 get_linenum called, returning: 8
 Current character: e (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: else at line 8
-get_linenum called, returning: 8
+DEBUG: Matched keyword: else with token: 10
+DEBUG: Keyword token: 10
+DEBUG: Next token: 10
 DEBUG: Found ELSE clause
+DEBUG: Matching token: 10
 get_linenum called, returning: 8
 Current character: w (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: writeln at line 8
-get_linenum called, returning: 8
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
+DEBUG: Next token: 24
 DEBUG: Entering parse_statement with token: 24
+DEBUG: Matching token: 24
 get_linenum called, returning: 8
 Current character: ( (Line: 8)
-get_linenum called, returning: 8
+DEBUG: Next token: 38
+DEBUG: Matching token: 38
 get_linenum called, returning: 8
 Current character: ' (Line: 8)
 get_linenum called, returning: 8
 Processing string literal starting at line 8
-get_linenum called, returning: 8
+DEBUG: Next token: 28
+DEBUG: Entering parse_factor with token: 28
+DEBUG: Matching token: 28
 get_linenum called, returning: 8
 Current character: ) (Line: 8)
-get_linenum called, returning: 8
+DEBUG: Next token: 39
+DEBUG: Matching token: 39
 get_linenum called, returning: 9
 Current character: e (Line: 9)
 get_linenum called, returning: 9
 Processing identifier/keyword: end at line 9
-get_linenum called, returning: 9
+DEBUG: Matched keyword: end with token: 7
+DEBUG: Keyword token: 7
+DEBUG: Next token: 7
+DEBUG: Matching token: 7
 get_linenum called, returning: 9
 Current character: . (Line: 9)
-get_linenum called, returning: 9
+DEBUG: Next token: 43
+DEBUG: Matching token: 43
 End of file reached at line 10
-get_linenum called, returning: 10
+DEBUG: Next token: -1
 Parsing successful. Cleaning up scanner...
 Reinitializing scanner for pretty printing...
 Starting pretty printing...
@@ -145,10 +204,13 @@ get_linenum called, returning: 1
 Current character: p (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: program at line 1
+DEBUG: Matched keyword: program with token: 2
+DEBUG: Keyword token: 2
 programget_linenum called, returning: 1
 Current character: i (Line: 1)
 get_linenum called, returning: 1
 Processing identifier/keyword: ifst at line 1
+DEBUG: No match for keyword: ifst
 NAMEget_linenum called, returning: 1
 Current character: ; (Line: 1)
  ;
@@ -156,16 +218,21 @@ get_linenum called, returning: 3
 Current character: v (Line: 3)
 get_linenum called, returning: 3
 Processing identifier/keyword: var at line 3
+DEBUG: Matched keyword: var with token: 3
+DEBUG: Keyword token: 3
  varget_linenum called, returning: 4
 Current character: c (Line: 4)
 get_linenum called, returning: 4
 Processing identifier/keyword: ch at line 4
+DEBUG: No match for keyword: ch
 NAMEget_linenum called, returning: 5
 Current character: : (Line: 5)
  :get_linenum called, returning: 6
 Current character: c (Line: 6)
 get_linenum called, returning: 6
 Processing identifier/keyword: char at line 6
+DEBUG: Matched keyword: char with token: 20
+DEBUG: Keyword token: 20
 charget_linenum called, returning: 6
 Current character: ; (Line: 6)
 ;
@@ -173,17 +240,22 @@ get_linenum called, returning: 7
 Current character: b (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: begin at line 7
+DEBUG: Matched keyword: begin with token: 6
+DEBUG: Keyword token: 6
 begin
     get_linenum called, returning: 7
 Current character: r (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: readln at line 7
+DEBUG: Matched keyword: readln with token: 23
+DEBUG: Keyword token: 23
 readlnget_linenum called, returning: 7
 Current character: ( (Line: 7)
 (get_linenum called, returning: 7
 Current character: c (Line: 7)
 get_linenum called, returning: 7
 Processing identifier/keyword: ch at line 7
+DEBUG: No match for keyword: ch
 NAMEget_linenum called, returning: 7
 Current character: ) (Line: 7)
  )get_linenum called, returning: 7
@@ -193,10 +265,13 @@ Current character: ; (Line: 7)
 Current character: i (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: if at line 8
+DEBUG: Matched keyword: if with token: 8
+DEBUG: Keyword token: 8
 ifget_linenum called, returning: 8
 Current character: c (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: ch at line 8
+DEBUG: No match for keyword: ch
 NAMEget_linenum called, returning: 8
 Current character: = (Line: 8)
  =get_linenum called, returning: 8
@@ -207,10 +282,14 @@ STRINGget_linenum called, returning: 8
 Current character: t (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: then at line 8
+DEBUG: Matched keyword: then with token: 9
+DEBUG: Keyword token: 9
  thenget_linenum called, returning: 8
 Current character: w (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: writeln at line 8
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
 writelnget_linenum called, returning: 8
 Current character: ( (Line: 8)
 (get_linenum called, returning: 8
@@ -223,10 +302,14 @@ Current character: ) (Line: 8)
 Current character: e (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: else at line 8
+DEBUG: Matched keyword: else with token: 10
+DEBUG: Keyword token: 10
 elseget_linenum called, returning: 8
 Current character: w (Line: 8)
 get_linenum called, returning: 8
 Processing identifier/keyword: writeln at line 8
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
 writelnget_linenum called, returning: 8
 Current character: ( (Line: 8)
 (get_linenum called, returning: 8
@@ -239,6 +322,8 @@ Current character: ) (Line: 8)
 Current character: e (Line: 9)
 get_linenum called, returning: 9
 Processing identifier/keyword: end at line 9
+DEBUG: Matched keyword: end with token: 7
+DEBUG: Keyword token: 7
 end
 get_linenum called, returning: 9
 Current character: . (Line: 9)
