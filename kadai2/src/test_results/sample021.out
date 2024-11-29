@@ -1,1 +1,1 @@
-Syntax error at line 2: Unexpected token (token: 3)
+Syntax error at line 2: semicolon expected (token: 3)
