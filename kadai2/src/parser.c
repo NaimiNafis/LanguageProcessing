@@ -57,22 +57,25 @@ void init_parser(void) {
 
 // Main program parsing
 int parse_program(void) {
+    parser.first_error_line = 0;
+    
+    // Set up error handling
+    int error_line = setjmp(parser.error_jmp);
+    if (error_line != 0) {
+        return error_line;  // Return the error line number
+    }
+
     if (parser.current_token != TPROGRAM) {
         parse_error("program expected");
-        return parser.error_count;
     }
 
     match(TPROGRAM);
-    match(TNAME);
+    match(TNAME); 
     match(TSEMI);
     parse_block();
     match(TDOT);
 
-    if (parser.current_token != -1) {
-        parse_error("End of file expected");
-    }
-
-    return parser.error_count;
+    return 0;  // Success
 }
 
 static void parse_block(void) {
@@ -165,10 +168,15 @@ static void parse_statement_list(void) {
         } else if (parser.current_token == TEND) {
             debug_printf("Found end of statement list\n");
             break;
+        } else if (parser.current_token == TELSE || 
+                  parser.current_token == TBEGIN || 
+                  parser.current_token == TEND ||
+                  parser.current_token == TIF) {  // Added TIF here
+            // Allow these tokens without requiring semicolon
+            continue;
         } else if (parser.current_token == TNAME || 
                   parser.current_token == TREAD || 
                   parser.current_token == TREADLN) {
-            // For backward compatibility - allow these to continue
             // Only check for missing semicolon if we're not starting a new valid statement
             if (parser.current_token == parser.previous_token) {
                 parse_error("Missing semicolon");
@@ -230,28 +238,27 @@ static void parse_assignment(void) {
 }
 
 static void parse_if_statement(void) {
+    debug_printf("Entering parse_if_statement with token: %d\n", parser.current_token);
     match(TIF);
     parse_condition();
     match(TTHEN);
     if (parser.current_token == TBEGIN) {
-        match(TBEGIN);
-        parse_statement_list();
-        match(TEND);
+        parse_block();
     } else {
         parse_statement();
     }
+    
     if (parser.current_token == TELSE) {
+        debug_printf("Found ELSE token\n");
         match(TELSE);
         if (parser.current_token == TBEGIN) {
-            match(TBEGIN);
-            parse_statement_list();
-            match(TEND);
+            parse_block();
         } else {
             parse_statement();
         }
     }
+    debug_printf("Exiting parse_if_statement\n");
 }
-
 static void parse_while_statement(void) {
     match(TWHILE);
     parse_condition();
@@ -302,11 +309,23 @@ static void parse_read_statement(void) {
 }
 
 static void parse_write_statement(void) {
+    debug_printf("Entering parse_write_statement with token: %d\n", parser.current_token);
+    
     if (parser.current_token == TWRITE) {
         match(TWRITE);
     } else {
         match(TWRITELN);
     }
+    
+    // Handle empty writeln statements (no parameters)
+    if (parser.current_token == TSEMI || 
+        parser.current_token == TEND || 
+        parser.current_token == TELSE) {
+        debug_printf("Found empty writeln statement\n");
+        return;
+    }
+    
+    debug_printf("Parsing writeln parameters\n");
     match(TLPAREN);
     parse_expression();
     while (parser.current_token == TCOMMA) {
@@ -314,9 +333,8 @@ static void parse_write_statement(void) {
         parse_expression();
     }
     match(TRPAREN);
-    if (parser.current_token == TSEMI) {
-        match(TSEMI);
-    }
+    
+    debug_printf("Exiting parse_write_statement with token: %d\n", parser.current_token);
 }
 
 static void parse_variable(void) {
@@ -337,14 +355,20 @@ static void parse_expression(void) {
 }
 
 static void parse_term(void) {
+    debug_printf("Entering parse_term with token: %d\n", parser.current_token);
     parse_factor();
     while (parser.current_token == TSTAR || parser.current_token == TDIV) {
+        if (parser.current_token == '/') {  // Detect invalid division operator
+            parse_error("Invalid operator '/' - use 'div' instead");
+        }
         match(parser.current_token);
         parse_factor();
     }
+    debug_printf("Exiting parse_term\n");
 }
 
 static void parse_factor(void) {
+    debug_printf("Entering parse_factor with token: %d\n", parser.current_token);
     switch (parser.current_token) {
         case TLPAREN:
             match(TLPAREN);
@@ -358,6 +382,7 @@ static void parse_factor(void) {
         case TNAME:
         case TNUMBER:
         case TSTRING:
+        case TCHAR:
         case TTRUE:
         case TFALSE:
             match(parser.current_token);
@@ -365,9 +390,11 @@ static void parse_factor(void) {
         default:
             parse_error("Invalid expression");
     }
+    debug_printf("Exiting parse_factor\n");
 }
 
 static void parse_comparison(void) {
+    debug_printf("Entering parse_comparison with token: %d\n", parser.current_token);
     parse_expression();
     if (parser.current_token == TEQUAL || 
         parser.current_token == TNOTEQ ||
@@ -375,9 +402,17 @@ static void parse_comparison(void) {
         parser.current_token == TGREQ ||
         parser.current_token == TLE ||
         parser.current_token == TLEEQ) {
+        int op = parser.current_token;
         match(parser.current_token);
-        parse_expression();
+        // Handle character literals in comparisons
+        if (parser.current_token == TSTRING || 
+            parser.current_token == TCHAR) {
+            match(parser.current_token);
+        } else {
+            parse_expression();
+        }
     }
+    debug_printf("Exiting parse_comparison with token: %d\n", parser.current_token);
 }
 
 static void parse_condition(void) {
@@ -389,28 +424,18 @@ static void parse_condition(void) {
 }
 
 void parse_error(const char* message) {
+    int current_line = get_linenum();
+    
+    // Store first error line
     if (parser.first_error_line == 0) {
-        parser.first_error_line = get_linenum();
+        parser.first_error_line = current_line;
     }
+    
     fprintf(stderr, "Syntax error at line %d: %s (token: %d)\n", 
-            get_linenum(), message, parser.current_token);
-    parser.error_count++;
+            current_line, message, parser.current_token);
 
-    // Exit if too many errors
-    if (parser.error_count >= MAX_ERRORS) {
-        exit(1); 
-    }
-
-    // Skip tokens until a synchronization point
-    while (parser.current_token != -1) { // -1 is EOF
-        // Check if current token is a sync point
-        for (int i = 0; i < SYNC_TOKENS_COUNT; i++) {
-            if (parser.current_token == sync_tokens[i]) {
-                return;
-            }
-        }
-        parser.current_token = scan();
-    }
+    // Jump back to parse_program with error line
+    longjmp(parser.error_jmp, parser.first_error_line);
 }
 
 static void match(int expected_token) {

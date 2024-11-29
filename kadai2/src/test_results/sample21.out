@@ -91,6 +91,8 @@ get_linenum called, returning: 2
 Processing number: 1 at line 2
 get_linenum called, returning: 2
 Next token: 27 at line: 2
+Entering parse_term with token: 27
+Entering parse_factor with token: 27
 Matching token: 27, expected token: 27 at line: 2
 get_linenum called, returning: 2
 Current character: e (Line: 2)
@@ -100,6 +102,8 @@ DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
 get_linenum called, returning: 2
 Next token: 7 at line: 2
+Exiting parse_factor
+Exiting parse_term
 Exiting parse_statement with token: 7 at line: 2
 Found end of statement list
 Exiting parse_statement_list with token: 7 at line: 2
@@ -113,7 +117,7 @@ Matching token: 43, expected token: 43 at line: 2
 End of file reached at line 3
 get_linenum called, returning: 3
 Next token: -1 at line: 3
-Parsing successful. Cleaning up scanner...
+Parsing completed with result: 0
 Reinitializing scanner for pretty printing...
 Starting pretty printing...
 get_linenum called, returning: 1

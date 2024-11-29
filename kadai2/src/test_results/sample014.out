@@ -1,5 +1,1 @@
-Syntax error at line 19: Expected semicolon or end of statement list (token: 8)
-Syntax error at line 22: Expected semicolon or end of statement list (token: 10)
-Syntax error at line 22: Invalid statement (token: 10)
-Syntax error at line 22: Expected semicolon or end of statement list (token: 10)
-Syntax error at line 22: Invalid statement (token: 10)
+Syntax error at line 19: Unexpected token (token: 32)

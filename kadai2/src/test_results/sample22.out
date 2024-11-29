@@ -106,11 +106,15 @@ DEBUG: Matched keyword: true with token: 25
 DEBUG: Keyword token: 25
 get_linenum called, returning: 9
 Next token: 25 at line: 9
+Entering parse_term with token: 25
+Entering parse_factor with token: 25
 Matching token: 25, expected token: 25 at line: 9
 get_linenum called, returning: 9
 Current character: ; (Line: 9)
 get_linenum called, returning: 9
 Next token: 46 at line: 9
+Exiting parse_factor
+Exiting parse_term
 Exiting parse_statement with token: 46 at line: 9
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 9
@@ -137,11 +141,15 @@ DEBUG: Matched keyword: false with token: 26
 DEBUG: Keyword token: 26
 get_linenum called, returning: 10
 Next token: 26 at line: 10
+Entering parse_term with token: 26
+Entering parse_factor with token: 26
 Matching token: 26, expected token: 26 at line: 10
 get_linenum called, returning: 10
 Current character: ; (Line: 10)
 get_linenum called, returning: 10
 Next token: 46 at line: 10
+Exiting parse_factor
+Exiting parse_term
 Exiting parse_statement with token: 46 at line: 10
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 10
@@ -164,7 +172,7 @@ Matching token: 43, expected token: 43 at line: 11
 End of file reached at line 12
 get_linenum called, returning: 12
 Next token: -1 at line: 12
-Parsing successful. Cleaning up scanner...
+Parsing completed with result: 0
 Reinitializing scanner for pretty printing...
 Starting pretty printing...
 get_linenum called, returning: 1

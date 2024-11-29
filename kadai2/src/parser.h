@@ -2,6 +2,7 @@
 #define PARSER_H
 
 #include "scan.h"
+#include <setjmp.h>
 
 // Parser structure
 typedef struct {
@@ -12,6 +13,7 @@ typedef struct {
     int error_count;
     int first_error_line; 
     int previous_token;
+    jmp_buf error_jmp; 
 } Parser;
 
 // Public interface

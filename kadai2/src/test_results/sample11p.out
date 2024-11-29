@@ -103,11 +103,13 @@ Next token: 24 at line: 5
 Entering parse_statement_list with token: 24 at line: 5
 Processing statement with token: 24
 Entering parse_statement with token: 24 at line: 5
+Entering parse_write_statement with token: 24
 Matching token: 24, expected token: 24 at line: 5
 get_linenum called, returning: 5
 Current character: ( (Line: 5)
 get_linenum called, returning: 5
 Next token: 38 at line: 5
+Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 5
 get_linenum called, returning: 5
 Current character: ' (Line: 5)
@@ -115,16 +117,23 @@ get_linenum called, returning: 5
 Processing string literal starting at line 5
 get_linenum called, returning: 5
 Next token: 28 at line: 5
+Entering parse_term with token: 28
+Entering parse_factor with token: 28
 Matching token: 28, expected token: 28 at line: 5
 get_linenum called, returning: 5
 Current character: ) (Line: 5)
 get_linenum called, returning: 5
 Next token: 39 at line: 5
+Exiting parse_factor
+Exiting parse_term
 Matching token: 39, expected token: 39 at line: 5
 get_linenum called, returning: 5
 Current character: ; (Line: 5)
 get_linenum called, returning: 5
 Next token: 46 at line: 5
+Exiting parse_write_statement with token: 46
+Exiting parse_statement with token: 46 at line: 5
+Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 5
 get_linenum called, returning: 6
 Current character: r (Line: 6)
@@ -134,7 +143,6 @@ DEBUG: Matched keyword: readln with token: 23
 DEBUG: Keyword token: 23
 get_linenum called, returning: 6
 Next token: 23 at line: 6
-Exiting parse_statement with token: 23 at line: 6
 Processing statement with token: 23
 Entering parse_statement with token: 23 at line: 6
 Matched TREAD or TREADLN with token: 23 at line: 6
@@ -258,11 +266,13 @@ Next token: 24 at line: 11
 Entering parse_statement_list with token: 24 at line: 11
 Processing statement with token: 24
 Entering parse_statement with token: 24 at line: 11
+Entering parse_write_statement with token: 24
 Matching token: 24, expected token: 24 at line: 11
 get_linenum called, returning: 11
 Current character: ( (Line: 11)
 get_linenum called, returning: 11
 Next token: 38 at line: 11
+Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 11
 get_linenum called, returning: 11
 Current character: ' (Line: 11)
@@ -270,11 +280,15 @@ get_linenum called, returning: 11
 Processing string literal starting at line 11
 get_linenum called, returning: 11
 Next token: 28 at line: 11
+Entering parse_term with token: 28
+Entering parse_factor with token: 28
 Matching token: 28, expected token: 28 at line: 11
 get_linenum called, returning: 11
 Current character: , (Line: 11)
 get_linenum called, returning: 11
 Next token: 44 at line: 11
+Exiting parse_factor
+Exiting parse_term
 Matching token: 44, expected token: 44 at line: 11
 get_linenum called, returning: 11
 Current character: s (Line: 11)
@@ -283,11 +297,15 @@ Processing identifier/keyword: sum at line 11
 DEBUG: No match for keyword: sum
 get_linenum called, returning: 11
 Next token: 1 at line: 11
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
 Matching token: 1, expected token: 1 at line: 11
 get_linenum called, returning: 11
 Current character: ) (Line: 11)
 get_linenum called, returning: 11
 Next token: 39 at line: 11
+Exiting parse_factor
+Exiting parse_term
 Matching token: 39, expected token: 39 at line: 11
 get_linenum called, returning: 12
 Current character: e (Line: 12)
@@ -297,6 +315,7 @@ DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
 get_linenum called, returning: 12
 Next token: 7 at line: 12
+Exiting parse_write_statement with token: 7
 Exiting parse_statement with token: 7 at line: 12
 Found end of statement list
 Exiting parse_statement_list with token: 7 at line: 12
@@ -397,11 +416,15 @@ get_linenum called, returning: 16
 Processing number: 0 at line 16
 get_linenum called, returning: 16
 Next token: 27 at line: 16
+Entering parse_term with token: 27
+Entering parse_factor with token: 27
 Matching token: 27, expected token: 27 at line: 16
 get_linenum called, returning: 16
 Current character: ; (Line: 16)
 get_linenum called, returning: 16
 Next token: 46 at line: 16
+Exiting parse_factor
+Exiting parse_term
 Exiting parse_statement with token: 46 at line: 16
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 16
@@ -423,11 +446,16 @@ Processing identifier/keyword: n at line 17
 DEBUG: No match for keyword: n
 get_linenum called, returning: 17
 Next token: 1 at line: 17
+Entering parse_comparison with token: 1
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
 Matching token: 1, expected token: 1 at line: 17
 get_linenum called, returning: 17
 Current character: > (Line: 17)
 get_linenum called, returning: 17
 Next token: 36 at line: 17
+Exiting parse_factor
+Exiting parse_term
 Matching token: 36, expected token: 36 at line: 17
 get_linenum called, returning: 17
 Current character: 0 (Line: 17)
@@ -435,6 +463,8 @@ get_linenum called, returning: 17
 Processing number: 0 at line 17
 get_linenum called, returning: 17
 Next token: 27 at line: 17
+Entering parse_term with token: 27
+Entering parse_factor with token: 27
 Matching token: 27, expected token: 27 at line: 17
 get_linenum called, returning: 17
 Current character: d (Line: 17)
@@ -444,6 +474,9 @@ DEBUG: Matched keyword: do with token: 15
 DEBUG: Keyword token: 15
 get_linenum called, returning: 17
 Next token: 15 at line: 17
+Exiting parse_factor
+Exiting parse_term
+Exiting parse_comparison with token: 15
 Matching token: 15, expected token: 15 at line: 17
 get_linenum called, returning: 17
 Current character: b (Line: 17)
@@ -517,11 +550,15 @@ Processing identifier/keyword: sum at line 19
 DEBUG: No match for keyword: sum
 get_linenum called, returning: 19
 Next token: 1 at line: 19
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
 Matching token: 1, expected token: 1 at line: 19
 get_linenum called, returning: 19
 Current character: + (Line: 19)
 get_linenum called, returning: 19
 Next token: 29 at line: 19
+Exiting parse_factor
+Exiting parse_term
 Matching token: 29, expected token: 29 at line: 19
 get_linenum called, returning: 19
 Current character: d (Line: 19)
@@ -530,11 +567,15 @@ Processing identifier/keyword: data at line 19
 DEBUG: No match for keyword: data
 get_linenum called, returning: 19
 Next token: 1 at line: 19
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
 Matching token: 1, expected token: 1 at line: 19
 get_linenum called, returning: 19
 Current character: ; (Line: 19)
 get_linenum called, returning: 19
 Next token: 46 at line: 19
+Exiting parse_factor
+Exiting parse_term
 Exiting parse_statement with token: 46 at line: 19
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 19
@@ -560,11 +601,15 @@ Processing identifier/keyword: n at line 20
 DEBUG: No match for keyword: n
 get_linenum called, returning: 20
 Next token: 1 at line: 20
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
 Matching token: 1, expected token: 1 at line: 20
 get_linenum called, returning: 20
 Current character: - (Line: 20)
 get_linenum called, returning: 20
 Next token: 30 at line: 20
+Exiting parse_factor
+Exiting parse_term
 Matching token: 30, expected token: 30 at line: 20
 get_linenum called, returning: 20
 Current character: 1 (Line: 20)
@@ -572,6 +617,8 @@ get_linenum called, returning: 20
 Processing number: 1 at line 20
 get_linenum called, returning: 20
 Next token: 27 at line: 20
+Entering parse_term with token: 27
+Entering parse_factor with token: 27
 Matching token: 27, expected token: 27 at line: 20
 get_linenum called, returning: 21
 Current character: e (Line: 21)
@@ -581,6 +628,8 @@ DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
 get_linenum called, returning: 21
 Next token: 7 at line: 21
+Exiting parse_factor
+Exiting parse_term
 Exiting parse_statement with token: 7 at line: 21
 Found end of statement list
 Exiting parse_statement_list with token: 7 at line: 21
@@ -705,7 +754,7 @@ Matching token: 43, expected token: 43 at line: 27
 End of file reached at line 28
 get_linenum called, returning: 28
 Next token: -1 at line: 28
-Parsing successful. Cleaning up scanner...
+Parsing completed with result: 0
 Reinitializing scanner for pretty printing...
 Starting pretty printing...
 get_linenum called, returning: 1

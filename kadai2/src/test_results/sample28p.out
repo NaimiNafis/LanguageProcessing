@@ -67,11 +67,13 @@ Next token: 24 at line: 2
 Entering parse_statement_list with token: 24 at line: 2
 Processing statement with token: 24
 Entering parse_statement with token: 24 at line: 2
+Entering parse_write_statement with token: 24
 Matching token: 24, expected token: 24 at line: 2
 get_linenum called, returning: 2
 Current character: ( (Line: 2)
 get_linenum called, returning: 2
 Next token: 38 at line: 2
+Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 2
 get_linenum called, returning: 2
 Current character: ' (Line: 2)
@@ -79,11 +81,15 @@ get_linenum called, returning: 2
 Processing string literal starting at line 2
 get_linenum called, returning: 2
 Next token: 28 at line: 2
+Entering parse_term with token: 28
+Entering parse_factor with token: 28
 Matching token: 28, expected token: 28 at line: 2
 get_linenum called, returning: 2
 Current character: ) (Line: 2)
 get_linenum called, returning: 2
 Next token: 39 at line: 2
+Exiting parse_factor
+Exiting parse_term
 Matching token: 39, expected token: 39 at line: 2
 get_linenum called, returning: 2
 Current character: e (Line: 2)
@@ -93,6 +99,7 @@ DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
 get_linenum called, returning: 2
 Next token: 7 at line: 2
+Exiting parse_write_statement with token: 7
 Exiting parse_statement with token: 7 at line: 2
 Found end of statement list
 Exiting parse_statement_list with token: 7 at line: 2
@@ -146,11 +153,13 @@ Next token: 24 at line: 3
 Entering parse_statement_list with token: 24 at line: 3
 Processing statement with token: 24
 Entering parse_statement with token: 24 at line: 3
+Entering parse_write_statement with token: 24
 Matching token: 24, expected token: 24 at line: 3
 get_linenum called, returning: 3
 Current character: ( (Line: 3)
 get_linenum called, returning: 3
 Next token: 38 at line: 3
+Parsing writeln parameters
 Matching token: 38, expected token: 38 at line: 3
 get_linenum called, returning: 3
 Current character: ' (Line: 3)
@@ -158,11 +167,15 @@ get_linenum called, returning: 3
 Processing string literal starting at line 3
 get_linenum called, returning: 3
 Next token: 28 at line: 3
+Entering parse_term with token: 28
+Entering parse_factor with token: 28
 Matching token: 28, expected token: 28 at line: 3
 get_linenum called, returning: 3
 Current character: ) (Line: 3)
 get_linenum called, returning: 3
 Next token: 39 at line: 3
+Exiting parse_factor
+Exiting parse_term
 Matching token: 39, expected token: 39 at line: 3
 get_linenum called, returning: 3
 Current character: e (Line: 3)
@@ -172,6 +185,7 @@ DEBUG: Matched keyword: end with token: 7
 DEBUG: Keyword token: 7
 get_linenum called, returning: 3
 Next token: 7 at line: 3
+Exiting parse_write_statement with token: 7
 Exiting parse_statement with token: 7 at line: 3
 Found end of statement list
 Exiting parse_statement_list with token: 7 at line: 3
@@ -258,7 +272,7 @@ Matching token: 43, expected token: 43 at line: 4
 End of file reached at line 5
 get_linenum called, returning: 5
 Next token: -1 at line: 5
-Parsing successful. Cleaning up scanner...
+Parsing completed with result: 0
 Reinitializing scanner for pretty printing...
 Starting pretty printing...
 get_linenum called, returning: 1
