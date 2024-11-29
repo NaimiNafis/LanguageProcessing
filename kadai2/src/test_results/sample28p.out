@@ -1,0 +1,262 @@
+Initializing scanner...
+Initializing parser...
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+get_linenum called, returning: 1
+Initializing pretty printer...
+Starting parsing...
+get_linenum called, returning: 1
+Current character: s (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: sample28p at line 1
+get_linenum called, returning: 1
+get_linenum called, returning: 1
+Current character: ; (Line: 1)
+get_linenum called, returning: 1
+get_linenum called, returning: 2
+Current character: p (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: procedure at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: p (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: p at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: ; (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: b (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: begin at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: w (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: writeln at line 2
+get_linenum called, returning: 2
+DEBUG: Entering parse_statement with token: 24
+get_linenum called, returning: 2
+Current character: ( (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: ' (Line: 2)
+get_linenum called, returning: 2
+Processing string literal starting at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: ) (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: e (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: end at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: ; (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 3
+Current character: p (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: procedure at line 3
+get_linenum called, returning: 3
+get_linenum called, returning: 3
+Current character: q (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: q at line 3
+get_linenum called, returning: 3
+get_linenum called, returning: 3
+Current character: ; (Line: 3)
+get_linenum called, returning: 3
+get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: begin at line 3
+get_linenum called, returning: 3
+get_linenum called, returning: 3
+Current character: w (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: writeln at line 3
+get_linenum called, returning: 3
+DEBUG: Entering parse_statement with token: 24
+get_linenum called, returning: 3
+Current character: ( (Line: 3)
+get_linenum called, returning: 3
+get_linenum called, returning: 3
+Current character: ' (Line: 3)
+get_linenum called, returning: 3
+Processing string literal starting at line 3
+get_linenum called, returning: 3
+get_linenum called, returning: 3
+Current character: ) (Line: 3)
+get_linenum called, returning: 3
+get_linenum called, returning: 3
+Current character: e (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: end at line 3
+get_linenum called, returning: 3
+get_linenum called, returning: 3
+Current character: ; (Line: 3)
+get_linenum called, returning: 3
+get_linenum called, returning: 4
+Current character: b (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: begin at line 4
+get_linenum called, returning: 4
+get_linenum called, returning: 4
+Current character: c (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: call at line 4
+get_linenum called, returning: 4
+DEBUG: Entering parse_statement with token: 13
+get_linenum called, returning: 4
+Current character: p (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: p at line 4
+get_linenum called, returning: 4
+get_linenum called, returning: 4
+Current character: ; (Line: 4)
+get_linenum called, returning: 4
+get_linenum called, returning: 4
+Current character: c (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: call at line 4
+get_linenum called, returning: 4
+DEBUG: Entering parse_statement with token: 13
+get_linenum called, returning: 4
+Current character: q (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: q at line 4
+get_linenum called, returning: 4
+get_linenum called, returning: 4
+Current character: e (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: end at line 4
+get_linenum called, returning: 4
+get_linenum called, returning: 4
+Current character: . (Line: 4)
+get_linenum called, returning: 4
+End of file reached at line 5
+get_linenum called, returning: 5
+Parsing successful. Cleaning up scanner...
+Reinitializing scanner for pretty printing...
+Starting pretty printing...
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+programget_linenum called, returning: 1
+Current character: s (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: sample28p at line 1
+NAMEget_linenum called, returning: 1
+Current character: ; (Line: 1)
+ ;
+get_linenum called, returning: 2
+Current character: p (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: procedure at line 2
+ procedureget_linenum called, returning: 2
+Current character: p (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: p at line 2
+NAMEget_linenum called, returning: 2
+Current character: ; (Line: 2)
+ ;
+get_linenum called, returning: 2
+Current character: b (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: begin at line 2
+ begin
+    get_linenum called, returning: 2
+Current character: w (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: writeln at line 2
+ writelnget_linenum called, returning: 2
+Current character: ( (Line: 2)
+(get_linenum called, returning: 2
+Current character: ' (Line: 2)
+get_linenum called, returning: 2
+Processing string literal starting at line 2
+STRINGget_linenum called, returning: 2
+Current character: ) (Line: 2)
+ )get_linenum called, returning: 2
+Current character: e (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: end at line 2
+end
+get_linenum called, returning: 2
+Current character: ; (Line: 2)
+;
+get_linenum called, returning: 3
+Current character: p (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: procedure at line 3
+procedureget_linenum called, returning: 3
+Current character: q (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: q at line 3
+NAMEget_linenum called, returning: 3
+Current character: ; (Line: 3)
+ ;
+get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: begin at line 3
+ begin
+    get_linenum called, returning: 3
+Current character: w (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: writeln at line 3
+ writelnget_linenum called, returning: 3
+Current character: ( (Line: 3)
+(get_linenum called, returning: 3
+Current character: ' (Line: 3)
+get_linenum called, returning: 3
+Processing string literal starting at line 3
+STRINGget_linenum called, returning: 3
+Current character: ) (Line: 3)
+ )get_linenum called, returning: 3
+Current character: e (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: end at line 3
+end
+get_linenum called, returning: 3
+Current character: ; (Line: 3)
+;
+get_linenum called, returning: 4
+Current character: b (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: begin at line 4
+begin
+    get_linenum called, returning: 4
+Current character: c (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: call at line 4
+callget_linenum called, returning: 4
+Current character: p (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: p at line 4
+NAMEget_linenum called, returning: 4
+Current character: ; (Line: 4)
+ ;
+    get_linenum called, returning: 4
+Current character: c (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: call at line 4
+ callget_linenum called, returning: 4
+Current character: q (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: q at line 4
+NAMEget_linenum called, returning: 4
+Current character: e (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: end at line 4
+ end
+get_linenum called, returning: 4
+Current character: . (Line: 4)
+ .End of file reached at line 5
+Cleaning up scanner after pretty printing...

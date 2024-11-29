@@ -1,0 +1,89 @@
+Initializing scanner...
+Initializing parser...
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+get_linenum called, returning: 1
+Initializing pretty printer...
+Starting parsing...
+get_linenum called, returning: 1
+Current character: W (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: Write at line 1
+get_linenum called, returning: 1
+get_linenum called, returning: 1
+Current character: ; (Line: 1)
+get_linenum called, returning: 1
+get_linenum called, returning: 1
+Current character: b (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: begin at line 1
+get_linenum called, returning: 1
+get_linenum called, returning: 2
+Current character: w (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: writeln at line 2
+get_linenum called, returning: 2
+DEBUG: Entering parse_statement with token: 24
+get_linenum called, returning: 2
+Current character: ( (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: ' (Line: 2)
+get_linenum called, returning: 2
+Processing string literal starting at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: ) (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: e (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: end at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: . (Line: 2)
+get_linenum called, returning: 2
+End of file reached at line 3
+get_linenum called, returning: 3
+Parsing successful. Cleaning up scanner...
+Reinitializing scanner for pretty printing...
+Starting pretty printing...
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+programget_linenum called, returning: 1
+Current character: W (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: Write at line 1
+NAMEget_linenum called, returning: 1
+Current character: ; (Line: 1)
+ ;
+get_linenum called, returning: 1
+Current character: b (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: begin at line 1
+ begin
+    get_linenum called, returning: 2
+Current character: w (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: writeln at line 2
+ writelnget_linenum called, returning: 2
+Current character: ( (Line: 2)
+(get_linenum called, returning: 2
+Current character: ' (Line: 2)
+get_linenum called, returning: 2
+Processing string literal starting at line 2
+STRINGget_linenum called, returning: 2
+Current character: ) (Line: 2)
+ )get_linenum called, returning: 2
+Current character: e (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: end at line 2
+end
+get_linenum called, returning: 2
+Current character: . (Line: 2)
+.End of file reached at line 3
+Cleaning up scanner after pretty printing...

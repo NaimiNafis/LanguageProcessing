@@ -1,0 +1,182 @@
+Initializing scanner...
+Initializing parser...
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+get_linenum called, returning: 1
+Initializing pretty printer...
+Starting parsing...
+get_linenum called, returning: 1
+Current character: S (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: S at line 1
+get_linenum called, returning: 1
+get_linenum called, returning: 1
+Current character: ; (Line: 1)
+get_linenum called, returning: 1
+get_linenum called, returning: 1
+Current character: b (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: begin at line 1
+get_linenum called, returning: 1
+get_linenum called, returning: 1
+Current character: e (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: end at line 1
+get_linenum called, returning: 1
+DEBUG: Entering parse_statement with token: 7
+DEBUG: Found END token in statement
+get_linenum called, returning: 1
+Current character: . (Line: 1)
+get_linenum called, returning: 1
+End of file reached at line 1
+get_linenum called, returning: 1
+Parsing successful. Cleaning up scanner...
+Reinitializing scanner for pretty printing...
+Starting pretty printing...
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+programget_linenum called, returning: 1
+Current character: S (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: S at line 1
+NAMEget_linenum called, returning: 1
+Current character: ; (Line: 1)
+ ;
+get_linenum called, returning: 1
+Current character: b (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: begin at line 1
+ begin
+    get_linenum called, returning: 1
+Current character: e (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: end at line 1
+ end
+get_linenum called, returning: 1
+Current character: . (Line: 1)
+ .End of file reached at line 1
+Cleaning up scanner after pretty printing...

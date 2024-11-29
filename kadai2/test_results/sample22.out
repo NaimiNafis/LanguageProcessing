@@ -1,7 +1,0 @@
-program assignboolean;
-var x, y : boolean;
-begin
-x := x;
-y := y;
-end
-.

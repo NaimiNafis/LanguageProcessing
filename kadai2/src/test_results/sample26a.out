@@ -1,0 +1,446 @@
+Initializing scanner...
+Initializing parser...
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+get_linenum called, returning: 1
+Initializing pretty printer...
+Starting parsing...
+get_linenum called, returning: 1
+Current character: w (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: whilest at line 1
+get_linenum called, returning: 1
+get_linenum called, returning: 1
+Current character: ; (Line: 1)
+get_linenum called, returning: 1
+get_linenum called, returning: 2
+Current character: v (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: var at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: n (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: n at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: , (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: i (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: i at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: , (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: s (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: sum at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: : (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: i (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: integer at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: ; (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: begin at line 3
+get_linenum called, returning: 3
+get_linenum called, returning: 4
+Current character: r (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: readln at line 4
+get_linenum called, returning: 4
+get_linenum called, returning: 4
+Current character: ( (Line: 4)
+get_linenum called, returning: 4
+get_linenum called, returning: 4
+Current character: n (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: n at line 4
+get_linenum called, returning: 4
+get_linenum called, returning: 4
+Current character: ) (Line: 4)
+get_linenum called, returning: 4
+get_linenum called, returning: 4
+Current character: ; (Line: 4)
+get_linenum called, returning: 4
+get_linenum called, returning: 5
+Current character: i (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: i at line 5
+get_linenum called, returning: 5
+get_linenum called, returning: 5
+Current character: : (Line: 5)
+get_linenum called, returning: 5
+get_linenum called, returning: 5
+Current character: n (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: n at line 5
+get_linenum called, returning: 5
+get_linenum called, returning: 5
+Current character: ; (Line: 5)
+get_linenum called, returning: 5
+get_linenum called, returning: 6
+Current character: s (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: sum at line 6
+get_linenum called, returning: 6
+get_linenum called, returning: 6
+Current character: : (Line: 6)
+get_linenum called, returning: 6
+get_linenum called, returning: 6
+Current character: 0 (Line: 6)
+get_linenum called, returning: 6
+Processing number: 0 at line 6
+get_linenum called, returning: 6
+get_linenum called, returning: 6
+Current character: ; (Line: 6)
+get_linenum called, returning: 6
+get_linenum called, returning: 7
+Current character: w (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: while at line 7
+get_linenum called, returning: 7
+get_linenum called, returning: 7
+Current character: ( (Line: 7)
+get_linenum called, returning: 7
+get_linenum called, returning: 7
+Current character: i (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: i at line 7
+get_linenum called, returning: 7
+get_linenum called, returning: 7
+Current character: > (Line: 7)
+get_linenum called, returning: 7
+get_linenum called, returning: 7
+Current character: 0 (Line: 7)
+get_linenum called, returning: 7
+Processing number: 00 at line 7
+get_linenum called, returning: 7
+get_linenum called, returning: 7
+Current character: ) (Line: 7)
+get_linenum called, returning: 7
+get_linenum called, returning: 7
+Current character: d (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: do at line 7
+get_linenum called, returning: 7
+get_linenum called, returning: 7
+Current character: b (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: begin at line 7
+get_linenum called, returning: 7
+get_linenum called, returning: 8
+Current character: s (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: sum at line 8
+get_linenum called, returning: 8
+get_linenum called, returning: 8
+Current character: : (Line: 8)
+get_linenum called, returning: 8
+get_linenum called, returning: 8
+Current character: s (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: sum at line 8
+get_linenum called, returning: 8
+get_linenum called, returning: 8
+Current character: + (Line: 8)
+get_linenum called, returning: 8
+get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: i at line 8
+get_linenum called, returning: 8
+get_linenum called, returning: 8
+Current character: ; (Line: 8)
+get_linenum called, returning: 8
+get_linenum called, returning: 9
+Current character: i (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: i at line 9
+get_linenum called, returning: 9
+get_linenum called, returning: 9
+Current character: : (Line: 9)
+get_linenum called, returning: 9
+get_linenum called, returning: 9
+Current character: i (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: i at line 9
+get_linenum called, returning: 9
+get_linenum called, returning: 9
+Current character: - (Line: 9)
+get_linenum called, returning: 9
+get_linenum called, returning: 9
+Current character: 1 (Line: 9)
+get_linenum called, returning: 9
+Processing number: 1 at line 9
+get_linenum called, returning: 9
+get_linenum called, returning: 10
+Current character: e (Line: 10)
+get_linenum called, returning: 10
+Processing identifier/keyword: end at line 10
+get_linenum called, returning: 10
+get_linenum called, returning: 10
+Current character: ; (Line: 10)
+get_linenum called, returning: 10
+get_linenum called, returning: 11
+Current character: w (Line: 11)
+get_linenum called, returning: 11
+Processing identifier/keyword: writeln at line 11
+get_linenum called, returning: 11
+get_linenum called, returning: 11
+Current character: ( (Line: 11)
+get_linenum called, returning: 11
+get_linenum called, returning: 11
+Current character: ' (Line: 11)
+get_linenum called, returning: 11
+Processing string literal starting at line 11
+get_linenum called, returning: 11
+get_linenum called, returning: 11
+Current character: , (Line: 11)
+get_linenum called, returning: 11
+get_linenum called, returning: 11
+Current character: n (Line: 11)
+get_linenum called, returning: 11
+Processing identifier/keyword: n at line 11
+get_linenum called, returning: 11
+get_linenum called, returning: 11
+Current character: , (Line: 11)
+get_linenum called, returning: 11
+get_linenum called, returning: 11
+Current character: ' (Line: 11)
+get_linenum called, returning: 11
+Processing string literal starting at line 11
+get_linenum called, returning: 11
+get_linenum called, returning: 11
+Current character: , (Line: 11)
+get_linenum called, returning: 11
+get_linenum called, returning: 11
+Current character: s (Line: 11)
+get_linenum called, returning: 11
+Processing identifier/keyword: sum at line 11
+get_linenum called, returning: 11
+get_linenum called, returning: 11
+Current character: ) (Line: 11)
+get_linenum called, returning: 11
+get_linenum called, returning: 12
+Current character: e (Line: 12)
+get_linenum called, returning: 12
+Processing identifier/keyword: end at line 12
+get_linenum called, returning: 12
+get_linenum called, returning: 12
+Current character: . (Line: 12)
+get_linenum called, returning: 12
+End of file reached at line 13
+get_linenum called, returning: 13
+Parsing successful. Cleaning up scanner...
+Reinitializing scanner for pretty printing...
+Starting pretty printing...
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+programget_linenum called, returning: 1
+Current character: w (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: whilest at line 1
+NAMEget_linenum called, returning: 1
+Current character: ; (Line: 1)
+ ;
+get_linenum called, returning: 2
+Current character: v (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: var at line 2
+ varget_linenum called, returning: 2
+Current character: n (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: n at line 2
+NAMEget_linenum called, returning: 2
+Current character: , (Line: 2)
+ ,get_linenum called, returning: 2
+Current character: i (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: i at line 2
+NAMEget_linenum called, returning: 2
+Current character: , (Line: 2)
+ ,get_linenum called, returning: 2
+Current character: s (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: sum at line 2
+NAMEget_linenum called, returning: 2
+Current character: : (Line: 2)
+ :get_linenum called, returning: 2
+Current character: i (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: integer at line 2
+integerget_linenum called, returning: 2
+Current character: ; (Line: 2)
+;
+get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: begin at line 3
+begin
+    get_linenum called, returning: 4
+Current character: r (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: readln at line 4
+readlnget_linenum called, returning: 4
+Current character: ( (Line: 4)
+(get_linenum called, returning: 4
+Current character: n (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: n at line 4
+NAMEget_linenum called, returning: 4
+Current character: ) (Line: 4)
+ )get_linenum called, returning: 4
+Current character: ; (Line: 4)
+;
+    get_linenum called, returning: 5
+Current character: i (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: i at line 5
+NAMEget_linenum called, returning: 5
+Current character: : (Line: 5)
+ :=get_linenum called, returning: 5
+Current character: n (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: n at line 5
+NAMEget_linenum called, returning: 5
+Current character: ; (Line: 5)
+ ;
+    get_linenum called, returning: 6
+Current character: s (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: sum at line 6
+ NAMEget_linenum called, returning: 6
+Current character: : (Line: 6)
+ :=get_linenum called, returning: 6
+Current character: 0 (Line: 6)
+get_linenum called, returning: 6
+Processing number: 0 at line 6
+NUMBERget_linenum called, returning: 6
+Current character: ; (Line: 6)
+ ;
+    get_linenum called, returning: 7
+Current character: w (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: while at line 7
+ whileget_linenum called, returning: 7
+Current character: ( (Line: 7)
+(get_linenum called, returning: 7
+Current character: i (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: i at line 7
+NAMEget_linenum called, returning: 7
+Current character: > (Line: 7)
+ >get_linenum called, returning: 7
+Current character: 0 (Line: 7)
+get_linenum called, returning: 7
+Processing number: 00 at line 7
+NUMBERget_linenum called, returning: 7
+Current character: ) (Line: 7)
+ )get_linenum called, returning: 7
+Current character: d (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: do at line 7
+do
+        get_linenum called, returning: 7
+Current character: b (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: begin at line 7
+begin
+            get_linenum called, returning: 8
+Current character: s (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: sum at line 8
+NAMEget_linenum called, returning: 8
+Current character: : (Line: 8)
+ :=get_linenum called, returning: 8
+Current character: s (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: sum at line 8
+NAMEget_linenum called, returning: 8
+Current character: + (Line: 8)
+ +get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: i at line 8
+NAMEget_linenum called, returning: 8
+Current character: ; (Line: 8)
+ ;
+            get_linenum called, returning: 9
+Current character: i (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: i at line 9
+ NAMEget_linenum called, returning: 9
+Current character: : (Line: 9)
+ :=get_linenum called, returning: 9
+Current character: i (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: i at line 9
+NAMEget_linenum called, returning: 9
+Current character: - (Line: 9)
+ -get_linenum called, returning: 9
+Current character: 1 (Line: 9)
+get_linenum called, returning: 9
+Processing number: 1 at line 9
+NUMBERget_linenum called, returning: 10
+Current character: e (Line: 10)
+get_linenum called, returning: 10
+Processing identifier/keyword: end at line 10
+ end
+        get_linenum called, returning: 10
+Current character: ; (Line: 10)
+ ;
+        get_linenum called, returning: 11
+Current character: w (Line: 11)
+get_linenum called, returning: 11
+Processing identifier/keyword: writeln at line 11
+ writelnget_linenum called, returning: 11
+Current character: ( (Line: 11)
+(get_linenum called, returning: 11
+Current character: ' (Line: 11)
+get_linenum called, returning: 11
+Processing string literal starting at line 11
+STRINGget_linenum called, returning: 11
+Current character: , (Line: 11)
+ ,get_linenum called, returning: 11
+Current character: n (Line: 11)
+get_linenum called, returning: 11
+Processing identifier/keyword: n at line 11
+NAMEget_linenum called, returning: 11
+Current character: , (Line: 11)
+ ,get_linenum called, returning: 11
+Current character: ' (Line: 11)
+get_linenum called, returning: 11
+Processing string literal starting at line 11
+STRINGget_linenum called, returning: 11
+Current character: , (Line: 11)
+ ,get_linenum called, returning: 11
+Current character: s (Line: 11)
+get_linenum called, returning: 11
+Processing identifier/keyword: sum at line 11
+NAMEget_linenum called, returning: 11
+Current character: ) (Line: 11)
+ )get_linenum called, returning: 12
+Current character: e (Line: 12)
+get_linenum called, returning: 12
+Processing identifier/keyword: end at line 12
+end
+    get_linenum called, returning: 12
+Current character: . (Line: 12)
+.End of file reached at line 13
+Cleaning up scanner after pretty printing...

@@ -1,0 +1,148 @@
+Initializing scanner...
+Initializing parser...
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+get_linenum called, returning: 2
+Current character: p (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: program at line 2
+get_linenum called, returning: 2
+Initializing pretty printer...
+Starting parsing...
+get_linenum called, returning: 2
+Current character: S (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: S at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: ; (Line: 2)
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: b (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: begin at line 2
+get_linenum called, returning: 2
+get_linenum called, returning: 2
+Current character: e (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: end at line 2
+get_linenum called, returning: 2
+DEBUG: Entering parse_statement with token: 7
+DEBUG: Found END token in statement
+get_linenum called, returning: 2
+Current character: . (Line: 2)
+get_linenum called, returning: 2
+End of file reached at line 3
+get_linenum called, returning: 3
+Parsing successful. Cleaning up scanner...
+Reinitializing scanner for pretty printing...
+Starting pretty printing...
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+get_linenum called, returning: 2
+Current character: p (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: program at line 2
+programget_linenum called, returning: 2
+Current character: S (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: S at line 2
+NAMEget_linenum called, returning: 2
+Current character: ; (Line: 2)
+ ;
+get_linenum called, returning: 2
+Current character: b (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: begin at line 2
+ begin
+    get_linenum called, returning: 2
+Current character: e (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: end at line 2
+ end
+get_linenum called, returning: 2
+Current character: . (Line: 2)
+ .End of file reached at line 3
+Cleaning up scanner after pretty printing...

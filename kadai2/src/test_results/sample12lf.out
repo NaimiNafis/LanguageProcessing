@@ -1,0 +1,198 @@
+Initializing scanner...
+Initializing parser...
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+get_linenum called, returning: 3
+Current character: p (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: program at line 3
+get_linenum called, returning: 3
+Initializing pretty printer...
+Starting parsing...
+get_linenum called, returning: 3
+Current character: S (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: S at line 3
+get_linenum called, returning: 3
+get_linenum called, returning: 3
+Current character: ; (Line: 3)
+get_linenum called, returning: 3
+get_linenum called, returning: 6
+Current character: b (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: begin at line 6
+get_linenum called, returning: 6
+get_linenum called, returning: 6
+Current character: e (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: end at line 6
+get_linenum called, returning: 6
+DEBUG: Entering parse_statement with token: 7
+DEBUG: Found END token in statement
+get_linenum called, returning: 6
+Current character: . (Line: 6)
+get_linenum called, returning: 6
+Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 8
+Line number incremented to: 8
+Warning: Unterminated multi-line comment at line 8, skipping...
+End of file reached at line 8
+get_linenum called, returning: 8
+Parsing successful. Cleaning up scanner...
+Reinitializing scanner for pretty printing...
+Starting pretty printing...
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 1
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+Line number incremented to: 2
+get_linenum called, returning: 3
+Current character: p (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: program at line 3
+programget_linenum called, returning: 3
+Current character: S (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: S at line 3
+NAMEget_linenum called, returning: 3
+Current character: ; (Line: 3)
+ ;
+get_linenum called, returning: 6
+Current character: b (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: begin at line 6
+ begin
+    get_linenum called, returning: 6
+Current character: e (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: end at line 6
+ end
+get_linenum called, returning: 6
+Current character: . (Line: 6)
+ .Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 7
+Line number incremented to: 8
+Line number incremented to: 8
+Warning: Unterminated multi-line comment at line 8, skipping...
+End of file reached at line 8
+Cleaning up scanner after pretty printing...
