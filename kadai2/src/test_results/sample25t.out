@@ -1,0 +1,1245 @@
+Initializing scanner...
+Initializing parser...
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+DEBUG: Matched keyword: program with token: 2
+DEBUG: Keyword token: 2
+get_linenum called, returning: 1
+Initializing pretty printer...
+Starting parsing...
+Matching token: 2, expected token: 2 at line: 1
+get_linenum called, returning: 1
+Current character: I (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: IfstTC at line 1
+DEBUG: No match for keyword: IfstTC
+get_linenum called, returning: 1
+Next token: 1 at line: 1
+Matching token: 1, expected token: 1 at line: 1
+get_linenum called, returning: 1
+Current character: ; (Line: 1)
+get_linenum called, returning: 1
+Next token: 46 at line: 1
+Matching token: 46, expected token: 46 at line: 1
+get_linenum called, returning: 2
+Current character: v (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: var at line 2
+DEBUG: Matched keyword: var with token: 3
+DEBUG: Keyword token: 3
+get_linenum called, returning: 2
+Next token: 3 at line: 2
+Entering parse_block with token: 3 at line: 2
+Matching token: 3, expected token: 3 at line: 2
+get_linenum called, returning: 3
+Current character: c (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: ch at line 3
+DEBUG: No match for keyword: ch
+get_linenum called, returning: 3
+Next token: 1 at line: 3
+Matching token: 1, expected token: 1 at line: 3
+get_linenum called, returning: 3
+Current character: : (Line: 3)
+get_linenum called, returning: 3
+Next token: 45 at line: 3
+Matching token: 45, expected token: 45 at line: 3
+get_linenum called, returning: 3
+Current character: c (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: char at line 3
+DEBUG: Matched keyword: char with token: 20
+DEBUG: Keyword token: 20
+get_linenum called, returning: 3
+Next token: 20 at line: 3
+Matching token: 20, expected token: 20 at line: 3
+get_linenum called, returning: 3
+Current character: ; (Line: 3)
+get_linenum called, returning: 3
+Next token: 46 at line: 3
+Matching token: 46, expected token: 46 at line: 3
+get_linenum called, returning: 3
+Current character: i (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: int at line 3
+DEBUG: No match for keyword: int
+get_linenum called, returning: 3
+Next token: 1 at line: 3
+Matching token: 1, expected token: 1 at line: 3
+get_linenum called, returning: 3
+Current character: : (Line: 3)
+get_linenum called, returning: 3
+Next token: 45 at line: 3
+Matching token: 45, expected token: 45 at line: 3
+get_linenum called, returning: 3
+Current character: i (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: integer at line 3
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+get_linenum called, returning: 3
+Next token: 21 at line: 3
+Matching token: 21, expected token: 21 at line: 3
+get_linenum called, returning: 3
+Current character: ; (Line: 3)
+get_linenum called, returning: 3
+Next token: 46 at line: 3
+Matching token: 46, expected token: 46 at line: 3
+get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: boolx at line 3
+DEBUG: No match for keyword: boolx
+get_linenum called, returning: 3
+Next token: 1 at line: 3
+Matching token: 1, expected token: 1 at line: 3
+get_linenum called, returning: 3
+Current character: , (Line: 3)
+get_linenum called, returning: 3
+Next token: 44 at line: 3
+Matching token: 44, expected token: 44 at line: 3
+get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: booly at line 3
+DEBUG: No match for keyword: booly
+get_linenum called, returning: 3
+Next token: 1 at line: 3
+Matching token: 1, expected token: 1 at line: 3
+get_linenum called, returning: 3
+Current character: : (Line: 3)
+get_linenum called, returning: 3
+Next token: 45 at line: 3
+Matching token: 45, expected token: 45 at line: 3
+get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: boolean at line 3
+DEBUG: Matched keyword: boolean with token: 22
+DEBUG: Keyword token: 22
+get_linenum called, returning: 3
+Next token: 22 at line: 3
+Matching token: 22, expected token: 22 at line: 3
+get_linenum called, returning: 3
+Current character: ; (Line: 3)
+get_linenum called, returning: 3
+Next token: 46 at line: 3
+Matching token: 46, expected token: 46 at line: 3
+get_linenum called, returning: 4
+Current character: b (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: begin at line 4
+DEBUG: Matched keyword: begin with token: 6
+DEBUG: Keyword token: 6
+get_linenum called, returning: 4
+Next token: 6 at line: 4
+Matching token: 6, expected token: 6 at line: 4
+get_linenum called, returning: 5
+Current character: b (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: boolx at line 5
+DEBUG: No match for keyword: boolx
+get_linenum called, returning: 5
+Next token: 1 at line: 5
+Entering parse_statement_list with token: 1 at line: 5
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 5
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
+Matching token: 1, expected token: 1 at line: 5
+get_linenum called, returning: 5
+Current character: : (Line: 5)
+get_linenum called, returning: 5
+Next token: 42 at line: 5
+Exiting parse_variable
+Matching token: 42, expected token: 42 at line: 5
+get_linenum called, returning: 5
+Current character: t (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: true at line 5
+DEBUG: Matched keyword: true with token: 25
+DEBUG: Keyword token: 25
+get_linenum called, returning: 5
+Next token: 25 at line: 5
+Entering parse_term with token: 25
+Entering parse_factor with token: 25
+Matching token: 25, expected token: 25 at line: 5
+get_linenum called, returning: 5
+Current character: ; (Line: 5)
+get_linenum called, returning: 5
+Next token: 46 at line: 5
+Exiting parse_factor
+Exiting parse_term
+Exiting parse_assignment
+Exiting parse_statement with token: 46 at line: 5
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 5
+get_linenum called, returning: 5
+Current character: b (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: booly at line 5
+DEBUG: No match for keyword: booly
+get_linenum called, returning: 5
+Next token: 1 at line: 5
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 5
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
+Matching token: 1, expected token: 1 at line: 5
+get_linenum called, returning: 5
+Current character: : (Line: 5)
+get_linenum called, returning: 5
+Next token: 42 at line: 5
+Exiting parse_variable
+Matching token: 42, expected token: 42 at line: 5
+get_linenum called, returning: 5
+Current character: f (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: false at line 5
+DEBUG: Matched keyword: false with token: 26
+DEBUG: Keyword token: 26
+get_linenum called, returning: 5
+Next token: 26 at line: 5
+Entering parse_term with token: 26
+Entering parse_factor with token: 26
+Matching token: 26, expected token: 26 at line: 5
+get_linenum called, returning: 5
+Current character: ; (Line: 5)
+get_linenum called, returning: 5
+Next token: 46 at line: 5
+Exiting parse_factor
+Exiting parse_term
+Exiting parse_assignment
+Exiting parse_statement with token: 46 at line: 5
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 5
+get_linenum called, returning: 5
+Current character: c (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: ch at line 5
+DEBUG: No match for keyword: ch
+get_linenum called, returning: 5
+Next token: 1 at line: 5
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 5
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
+Matching token: 1, expected token: 1 at line: 5
+get_linenum called, returning: 5
+Current character: : (Line: 5)
+get_linenum called, returning: 5
+Next token: 42 at line: 5
+Exiting parse_variable
+Matching token: 42, expected token: 42 at line: 5
+get_linenum called, returning: 5
+Current character: ' (Line: 5)
+get_linenum called, returning: 5
+Processing string literal starting at line 5
+get_linenum called, returning: 5
+Next token: 28 at line: 5
+Entering parse_term with token: 28
+Entering parse_factor with token: 28
+Matching token: 28, expected token: 28 at line: 5
+get_linenum called, returning: 5
+Current character: ; (Line: 5)
+get_linenum called, returning: 5
+Next token: 46 at line: 5
+Exiting parse_factor
+Exiting parse_term
+Exiting parse_assignment
+Exiting parse_statement with token: 46 at line: 5
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 5
+get_linenum called, returning: 5
+Current character: i (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: int at line 5
+DEBUG: No match for keyword: int
+get_linenum called, returning: 5
+Next token: 1 at line: 5
+Processing statement with token: 1
+Entering parse_statement with token: 1 at line: 5
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
+Matching token: 1, expected token: 1 at line: 5
+get_linenum called, returning: 5
+Current character: : (Line: 5)
+get_linenum called, returning: 5
+Next token: 42 at line: 5
+Exiting parse_variable
+Matching token: 42, expected token: 42 at line: 5
+get_linenum called, returning: 5
+Current character: 6 (Line: 5)
+get_linenum called, returning: 5
+Processing number: 66 at line 5
+get_linenum called, returning: 5
+Next token: 27 at line: 5
+Entering parse_term with token: 27
+Entering parse_factor with token: 27
+Matching token: 27, expected token: 27 at line: 5
+get_linenum called, returning: 5
+Current character: ; (Line: 5)
+get_linenum called, returning: 5
+Next token: 46 at line: 5
+Exiting parse_factor
+Exiting parse_term
+Exiting parse_assignment
+Exiting parse_statement with token: 46 at line: 5
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 5
+get_linenum called, returning: 6
+Current character: w (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: write at line 6
+DEBUG: Matched keyword: write with token: 48
+DEBUG: Keyword token: 48
+get_linenum called, returning: 6
+Next token: 48 at line: 6
+Processing statement with token: 48
+Entering parse_statement with token: 48 at line: 6
+Entering parse_write_statement with token: 48
+Matching token: 48, expected token: 48 at line: 6
+get_linenum called, returning: 6
+Current character: ( (Line: 6)
+get_linenum called, returning: 6
+Next token: 38 at line: 6
+Matching token: 38, expected token: 38 at line: 6
+get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: integer at line 6
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+get_linenum called, returning: 6
+Next token: 21 at line: 6
+Entering parse_term with token: 21
+Entering parse_factor with token: 21
+Matching token: 21, expected token: 21 at line: 6
+get_linenum called, returning: 6
+Current character: ( (Line: 6)
+get_linenum called, returning: 6
+Next token: 38 at line: 6
+Matching token: 38, expected token: 38 at line: 6
+get_linenum called, returning: 6
+Current character: c (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: ch at line 6
+DEBUG: No match for keyword: ch
+get_linenum called, returning: 6
+Next token: 1 at line: 6
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 6
+get_linenum called, returning: 6
+Current character: ) (Line: 6)
+get_linenum called, returning: 6
+Next token: 39 at line: 6
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 6
+get_linenum called, returning: 6
+Current character: ) (Line: 6)
+get_linenum called, returning: 6
+Next token: 39 at line: 6
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 6
+get_linenum called, returning: 6
+Current character: ; (Line: 6)
+get_linenum called, returning: 6
+Next token: 46 at line: 6
+Exiting parse_write_statement with token: 46
+Exiting parse_statement with token: 46 at line: 6
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 6
+get_linenum called, returning: 6
+Current character: w (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: write at line 6
+DEBUG: Matched keyword: write with token: 48
+DEBUG: Keyword token: 48
+get_linenum called, returning: 6
+Next token: 48 at line: 6
+Processing statement with token: 48
+Entering parse_statement with token: 48 at line: 6
+Entering parse_write_statement with token: 48
+Matching token: 48, expected token: 48 at line: 6
+get_linenum called, returning: 6
+Current character: ( (Line: 6)
+get_linenum called, returning: 6
+Next token: 38 at line: 6
+Matching token: 38, expected token: 38 at line: 6
+get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: integer at line 6
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+get_linenum called, returning: 6
+Next token: 21 at line: 6
+Entering parse_term with token: 21
+Entering parse_factor with token: 21
+Matching token: 21, expected token: 21 at line: 6
+get_linenum called, returning: 6
+Current character: ( (Line: 6)
+get_linenum called, returning: 6
+Next token: 38 at line: 6
+Matching token: 38, expected token: 38 at line: 6
+get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: int at line 6
+DEBUG: No match for keyword: int
+get_linenum called, returning: 6
+Next token: 1 at line: 6
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 6
+get_linenum called, returning: 6
+Current character: ) (Line: 6)
+get_linenum called, returning: 6
+Next token: 39 at line: 6
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 6
+get_linenum called, returning: 6
+Current character: ) (Line: 6)
+get_linenum called, returning: 6
+Next token: 39 at line: 6
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 6
+get_linenum called, returning: 6
+Current character: ; (Line: 6)
+get_linenum called, returning: 6
+Next token: 46 at line: 6
+Exiting parse_write_statement with token: 46
+Exiting parse_statement with token: 46 at line: 6
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 6
+get_linenum called, returning: 6
+Current character: w (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: write at line 6
+DEBUG: Matched keyword: write with token: 48
+DEBUG: Keyword token: 48
+get_linenum called, returning: 6
+Next token: 48 at line: 6
+Processing statement with token: 48
+Entering parse_statement with token: 48 at line: 6
+Entering parse_write_statement with token: 48
+Matching token: 48, expected token: 48 at line: 6
+get_linenum called, returning: 6
+Current character: ( (Line: 6)
+get_linenum called, returning: 6
+Next token: 38 at line: 6
+Matching token: 38, expected token: 38 at line: 6
+get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: integer at line 6
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+get_linenum called, returning: 6
+Next token: 21 at line: 6
+Entering parse_term with token: 21
+Entering parse_factor with token: 21
+Matching token: 21, expected token: 21 at line: 6
+get_linenum called, returning: 6
+Current character: ( (Line: 6)
+get_linenum called, returning: 6
+Next token: 38 at line: 6
+Matching token: 38, expected token: 38 at line: 6
+get_linenum called, returning: 6
+Current character: b (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: boolx at line 6
+DEBUG: No match for keyword: boolx
+get_linenum called, returning: 6
+Next token: 1 at line: 6
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 6
+get_linenum called, returning: 6
+Current character: ) (Line: 6)
+get_linenum called, returning: 6
+Next token: 39 at line: 6
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 6
+get_linenum called, returning: 6
+Current character: , (Line: 6)
+get_linenum called, returning: 6
+Next token: 44 at line: 6
+Exiting parse_factor
+Exiting parse_term
+Matching token: 44, expected token: 44 at line: 6
+get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: integer at line 6
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+get_linenum called, returning: 6
+Next token: 21 at line: 6
+Entering parse_term with token: 21
+Entering parse_factor with token: 21
+Matching token: 21, expected token: 21 at line: 6
+get_linenum called, returning: 6
+Current character: ( (Line: 6)
+get_linenum called, returning: 6
+Next token: 38 at line: 6
+Matching token: 38, expected token: 38 at line: 6
+get_linenum called, returning: 6
+Current character: b (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: booly at line 6
+DEBUG: No match for keyword: booly
+get_linenum called, returning: 6
+Next token: 1 at line: 6
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 6
+get_linenum called, returning: 6
+Current character: ) (Line: 6)
+get_linenum called, returning: 6
+Next token: 39 at line: 6
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 6
+get_linenum called, returning: 6
+Current character: ) (Line: 6)
+get_linenum called, returning: 6
+Next token: 39 at line: 6
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 6
+get_linenum called, returning: 6
+Current character: ; (Line: 6)
+get_linenum called, returning: 6
+Next token: 46 at line: 6
+Exiting parse_write_statement with token: 46
+Exiting parse_statement with token: 46 at line: 6
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 6
+get_linenum called, returning: 7
+Current character: w (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: writeln at line 7
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
+get_linenum called, returning: 7
+Next token: 24 at line: 7
+Processing statement with token: 24
+Entering parse_statement with token: 24 at line: 7
+Entering parse_write_statement with token: 24
+Matching token: 24, expected token: 24 at line: 7
+get_linenum called, returning: 7
+Current character: ; (Line: 7)
+get_linenum called, returning: 7
+Next token: 46 at line: 7
+Found empty writeln statement
+Exiting parse_statement with token: 46 at line: 7
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 7
+get_linenum called, returning: 8
+Current character: w (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: writeln at line 8
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
+get_linenum called, returning: 8
+Next token: 24 at line: 8
+Processing statement with token: 24
+Entering parse_statement with token: 24 at line: 8
+Entering parse_write_statement with token: 24
+Matching token: 24, expected token: 24 at line: 8
+get_linenum called, returning: 8
+Current character: ( (Line: 8)
+get_linenum called, returning: 8
+Next token: 38 at line: 8
+Matching token: 38, expected token: 38 at line: 8
+get_linenum called, returning: 8
+Current character: c (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: char at line 8
+DEBUG: Matched keyword: char with token: 20
+DEBUG: Keyword token: 20
+get_linenum called, returning: 8
+Next token: 20 at line: 8
+Entering parse_term with token: 20
+Entering parse_factor with token: 20
+Matching token: 20, expected token: 20 at line: 8
+get_linenum called, returning: 8
+Current character: ( (Line: 8)
+get_linenum called, returning: 8
+Next token: 38 at line: 8
+Matching token: 38, expected token: 38 at line: 8
+get_linenum called, returning: 8
+Current character: c (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: ch at line 8
+DEBUG: No match for keyword: ch
+get_linenum called, returning: 8
+Next token: 1 at line: 8
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 8
+get_linenum called, returning: 8
+Current character: ) (Line: 8)
+get_linenum called, returning: 8
+Next token: 39 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 8
+get_linenum called, returning: 8
+Current character: , (Line: 8)
+get_linenum called, returning: 8
+Next token: 44 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 44, expected token: 44 at line: 8
+get_linenum called, returning: 8
+Current character: c (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: char at line 8
+DEBUG: Matched keyword: char with token: 20
+DEBUG: Keyword token: 20
+get_linenum called, returning: 8
+Next token: 20 at line: 8
+Entering parse_term with token: 20
+Entering parse_factor with token: 20
+Matching token: 20, expected token: 20 at line: 8
+get_linenum called, returning: 8
+Current character: ( (Line: 8)
+get_linenum called, returning: 8
+Next token: 38 at line: 8
+Matching token: 38, expected token: 38 at line: 8
+get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: int at line 8
+DEBUG: No match for keyword: int
+get_linenum called, returning: 8
+Next token: 1 at line: 8
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 8
+get_linenum called, returning: 8
+Current character: ) (Line: 8)
+get_linenum called, returning: 8
+Next token: 39 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 8
+get_linenum called, returning: 8
+Current character: ) (Line: 8)
+get_linenum called, returning: 8
+Next token: 39 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 8
+get_linenum called, returning: 8
+Current character: ; (Line: 8)
+get_linenum called, returning: 8
+Next token: 46 at line: 8
+Exiting parse_write_statement with token: 46
+Exiting parse_statement with token: 46 at line: 8
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 8
+get_linenum called, returning: 8
+Current character: w (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: writeln at line 8
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
+get_linenum called, returning: 8
+Next token: 24 at line: 8
+Processing statement with token: 24
+Entering parse_statement with token: 24 at line: 8
+Entering parse_write_statement with token: 24
+Matching token: 24, expected token: 24 at line: 8
+get_linenum called, returning: 8
+Current character: ( (Line: 8)
+get_linenum called, returning: 8
+Next token: 38 at line: 8
+Matching token: 38, expected token: 38 at line: 8
+get_linenum called, returning: 8
+Current character: b (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: boolean at line 8
+DEBUG: Matched keyword: boolean with token: 22
+DEBUG: Keyword token: 22
+get_linenum called, returning: 8
+Next token: 22 at line: 8
+Entering parse_term with token: 22
+Entering parse_factor with token: 22
+Matching token: 22, expected token: 22 at line: 8
+get_linenum called, returning: 8
+Current character: ( (Line: 8)
+get_linenum called, returning: 8
+Next token: 38 at line: 8
+Matching token: 38, expected token: 38 at line: 8
+get_linenum called, returning: 8
+Current character: c (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: ch at line 8
+DEBUG: No match for keyword: ch
+get_linenum called, returning: 8
+Next token: 1 at line: 8
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 8
+get_linenum called, returning: 8
+Current character: ) (Line: 8)
+get_linenum called, returning: 8
+Next token: 39 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 8
+get_linenum called, returning: 8
+Current character: , (Line: 8)
+get_linenum called, returning: 8
+Next token: 44 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 44, expected token: 44 at line: 8
+get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: integer at line 8
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+get_linenum called, returning: 8
+Next token: 21 at line: 8
+Entering parse_term with token: 21
+Entering parse_factor with token: 21
+Matching token: 21, expected token: 21 at line: 8
+get_linenum called, returning: 8
+Current character: ( (Line: 8)
+get_linenum called, returning: 8
+Next token: 38 at line: 8
+Matching token: 38, expected token: 38 at line: 8
+get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: int at line 8
+DEBUG: No match for keyword: int
+get_linenum called, returning: 8
+Next token: 1 at line: 8
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 8
+get_linenum called, returning: 8
+Current character: ) (Line: 8)
+get_linenum called, returning: 8
+Next token: 39 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 8
+get_linenum called, returning: 8
+Current character: , (Line: 8)
+get_linenum called, returning: 8
+Next token: 44 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 44, expected token: 44 at line: 8
+get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: integer at line 8
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+get_linenum called, returning: 8
+Next token: 21 at line: 8
+Entering parse_term with token: 21
+Entering parse_factor with token: 21
+Matching token: 21, expected token: 21 at line: 8
+get_linenum called, returning: 8
+Current character: ( (Line: 8)
+get_linenum called, returning: 8
+Next token: 38 at line: 8
+Matching token: 38, expected token: 38 at line: 8
+get_linenum called, returning: 8
+Current character: b (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: boolx at line 8
+DEBUG: No match for keyword: boolx
+get_linenum called, returning: 8
+Next token: 1 at line: 8
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 8
+get_linenum called, returning: 8
+Current character: ) (Line: 8)
+get_linenum called, returning: 8
+Next token: 39 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 8
+get_linenum called, returning: 8
+Current character: , (Line: 8)
+get_linenum called, returning: 8
+Next token: 44 at line: 8
+Exiting parse_factor
+Exiting parse_term
+Matching token: 44, expected token: 44 at line: 8
+get_linenum called, returning: 9
+Current character: i (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: integer at line 9
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+get_linenum called, returning: 9
+Next token: 21 at line: 9
+Entering parse_term with token: 21
+Entering parse_factor with token: 21
+Matching token: 21, expected token: 21 at line: 9
+get_linenum called, returning: 9
+Current character: ( (Line: 9)
+get_linenum called, returning: 9
+Next token: 38 at line: 9
+Matching token: 38, expected token: 38 at line: 9
+get_linenum called, returning: 9
+Current character: b (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: booly at line 9
+DEBUG: No match for keyword: booly
+get_linenum called, returning: 9
+Next token: 1 at line: 9
+Entering parse_term with token: 1
+Entering parse_factor with token: 1
+Matching token: 1, expected token: 1 at line: 9
+get_linenum called, returning: 9
+Current character: ) (Line: 9)
+get_linenum called, returning: 9
+Next token: 39 at line: 9
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 9
+get_linenum called, returning: 9
+Current character: ) (Line: 9)
+get_linenum called, returning: 9
+Next token: 39 at line: 9
+Exiting parse_factor
+Exiting parse_term
+Matching token: 39, expected token: 39 at line: 9
+get_linenum called, returning: 9
+Current character: ; (Line: 9)
+get_linenum called, returning: 9
+Next token: 46 at line: 9
+Exiting parse_write_statement with token: 46
+Exiting parse_statement with token: 46 at line: 9
+Found semicolon, matching TSEMI
+Matching token: 46, expected token: 46 at line: 9
+get_linenum called, returning: 9
+Current character: e (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: end at line 9
+DEBUG: Matched keyword: end with token: 7
+DEBUG: Keyword token: 7
+get_linenum called, returning: 9
+Next token: 7 at line: 9
+Exiting parse_statement_list with token: 7 at line: 9
+Matching token: 7, expected token: 7 at line: 9
+get_linenum called, returning: 9
+Current character: . (Line: 9)
+get_linenum called, returning: 9
+Next token: 43 at line: 9
+Exiting parse_block with token: 43 at line: 9
+Matching token: 43, expected token: 43 at line: 9
+End of file reached at line 10
+get_linenum called, returning: 10
+Next token: -1 at line: 10
+Parsing completed with result: 0
+Reinitializing scanner for pretty printing...
+Starting pretty printing...
+get_linenum called, returning: 1
+Current character: p (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: program at line 1
+DEBUG: Matched keyword: program with token: 2
+DEBUG: Keyword token: 2
+programget_linenum called, returning: 1
+Current character: I (Line: 1)
+get_linenum called, returning: 1
+Processing identifier/keyword: IfstTC at line 1
+DEBUG: No match for keyword: IfstTC
+NAMEget_linenum called, returning: 1
+Current character: ; (Line: 1)
+ ;
+get_linenum called, returning: 2
+Current character: v (Line: 2)
+get_linenum called, returning: 2
+Processing identifier/keyword: var at line 2
+DEBUG: Matched keyword: var with token: 3
+DEBUG: Keyword token: 3
+ varget_linenum called, returning: 3
+Current character: c (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: ch at line 3
+DEBUG: No match for keyword: ch
+NAMEget_linenum called, returning: 3
+Current character: : (Line: 3)
+ :get_linenum called, returning: 3
+Current character: c (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: char at line 3
+DEBUG: Matched keyword: char with token: 20
+DEBUG: Keyword token: 20
+charget_linenum called, returning: 3
+Current character: ; (Line: 3)
+;
+get_linenum called, returning: 3
+Current character: i (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: int at line 3
+DEBUG: No match for keyword: int
+NAMEget_linenum called, returning: 3
+Current character: : (Line: 3)
+ :get_linenum called, returning: 3
+Current character: i (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: integer at line 3
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+integerget_linenum called, returning: 3
+Current character: ; (Line: 3)
+;
+get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: boolx at line 3
+DEBUG: No match for keyword: boolx
+NAMEget_linenum called, returning: 3
+Current character: , (Line: 3)
+ ,get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: booly at line 3
+DEBUG: No match for keyword: booly
+NAMEget_linenum called, returning: 3
+Current character: : (Line: 3)
+ :get_linenum called, returning: 3
+Current character: b (Line: 3)
+get_linenum called, returning: 3
+Processing identifier/keyword: boolean at line 3
+DEBUG: Matched keyword: boolean with token: 22
+DEBUG: Keyword token: 22
+booleanget_linenum called, returning: 3
+Current character: ; (Line: 3)
+;
+get_linenum called, returning: 4
+Current character: b (Line: 4)
+get_linenum called, returning: 4
+Processing identifier/keyword: begin at line 4
+DEBUG: Matched keyword: begin with token: 6
+DEBUG: Keyword token: 6
+begin
+    get_linenum called, returning: 5
+Current character: b (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: boolx at line 5
+DEBUG: No match for keyword: boolx
+NAMEget_linenum called, returning: 5
+Current character: : (Line: 5)
+ :=get_linenum called, returning: 5
+Current character: t (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: true at line 5
+DEBUG: Matched keyword: true with token: 25
+DEBUG: Keyword token: 25
+trueget_linenum called, returning: 5
+Current character: ; (Line: 5)
+;
+    get_linenum called, returning: 5
+Current character: b (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: booly at line 5
+DEBUG: No match for keyword: booly
+NAMEget_linenum called, returning: 5
+Current character: : (Line: 5)
+ :=get_linenum called, returning: 5
+Current character: f (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: false at line 5
+DEBUG: Matched keyword: false with token: 26
+DEBUG: Keyword token: 26
+falseget_linenum called, returning: 5
+Current character: ; (Line: 5)
+;
+    get_linenum called, returning: 5
+Current character: c (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: ch at line 5
+DEBUG: No match for keyword: ch
+NAMEget_linenum called, returning: 5
+Current character: : (Line: 5)
+ :=get_linenum called, returning: 5
+Current character: ' (Line: 5)
+get_linenum called, returning: 5
+Processing string literal starting at line 5
+STRINGget_linenum called, returning: 5
+Current character: ; (Line: 5)
+ ;
+    get_linenum called, returning: 5
+Current character: i (Line: 5)
+get_linenum called, returning: 5
+Processing identifier/keyword: int at line 5
+DEBUG: No match for keyword: int
+ NAMEget_linenum called, returning: 5
+Current character: : (Line: 5)
+ :=get_linenum called, returning: 5
+Current character: 6 (Line: 5)
+get_linenum called, returning: 5
+Processing number: 66 at line 5
+NUMBERget_linenum called, returning: 5
+Current character: ; (Line: 5)
+ ;
+    get_linenum called, returning: 6
+Current character: w (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: write at line 6
+DEBUG: Matched keyword: write with token: 48
+DEBUG: Keyword token: 48
+ writeget_linenum called, returning: 6
+Current character: ( (Line: 6)
+(get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: integer at line 6
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+integerget_linenum called, returning: 6
+Current character: ( (Line: 6)
+(get_linenum called, returning: 6
+Current character: c (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: ch at line 6
+DEBUG: No match for keyword: ch
+NAMEget_linenum called, returning: 6
+Current character: ) (Line: 6)
+ )get_linenum called, returning: 6
+Current character: ) (Line: 6)
+)get_linenum called, returning: 6
+Current character: ; (Line: 6)
+;
+    get_linenum called, returning: 6
+Current character: w (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: write at line 6
+DEBUG: Matched keyword: write with token: 48
+DEBUG: Keyword token: 48
+writeget_linenum called, returning: 6
+Current character: ( (Line: 6)
+(get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: integer at line 6
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+integerget_linenum called, returning: 6
+Current character: ( (Line: 6)
+(get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: int at line 6
+DEBUG: No match for keyword: int
+NAMEget_linenum called, returning: 6
+Current character: ) (Line: 6)
+ )get_linenum called, returning: 6
+Current character: ) (Line: 6)
+)get_linenum called, returning: 6
+Current character: ; (Line: 6)
+;
+    get_linenum called, returning: 6
+Current character: w (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: write at line 6
+DEBUG: Matched keyword: write with token: 48
+DEBUG: Keyword token: 48
+writeget_linenum called, returning: 6
+Current character: ( (Line: 6)
+(get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: integer at line 6
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+integerget_linenum called, returning: 6
+Current character: ( (Line: 6)
+(get_linenum called, returning: 6
+Current character: b (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: boolx at line 6
+DEBUG: No match for keyword: boolx
+NAMEget_linenum called, returning: 6
+Current character: ) (Line: 6)
+ )get_linenum called, returning: 6
+Current character: , (Line: 6)
+,get_linenum called, returning: 6
+Current character: i (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: integer at line 6
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+integerget_linenum called, returning: 6
+Current character: ( (Line: 6)
+(get_linenum called, returning: 6
+Current character: b (Line: 6)
+get_linenum called, returning: 6
+Processing identifier/keyword: booly at line 6
+DEBUG: No match for keyword: booly
+NAMEget_linenum called, returning: 6
+Current character: ) (Line: 6)
+ )get_linenum called, returning: 6
+Current character: ) (Line: 6)
+)get_linenum called, returning: 6
+Current character: ; (Line: 6)
+;
+    get_linenum called, returning: 7
+Current character: w (Line: 7)
+get_linenum called, returning: 7
+Processing identifier/keyword: writeln at line 7
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
+writelnget_linenum called, returning: 7
+Current character: ; (Line: 7)
+;
+    get_linenum called, returning: 8
+Current character: w (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: writeln at line 8
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
+writelnget_linenum called, returning: 8
+Current character: ( (Line: 8)
+(get_linenum called, returning: 8
+Current character: c (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: char at line 8
+DEBUG: Matched keyword: char with token: 20
+DEBUG: Keyword token: 20
+charget_linenum called, returning: 8
+Current character: ( (Line: 8)
+(get_linenum called, returning: 8
+Current character: c (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: ch at line 8
+DEBUG: No match for keyword: ch
+NAMEget_linenum called, returning: 8
+Current character: ) (Line: 8)
+ )get_linenum called, returning: 8
+Current character: , (Line: 8)
+,get_linenum called, returning: 8
+Current character: c (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: char at line 8
+DEBUG: Matched keyword: char with token: 20
+DEBUG: Keyword token: 20
+charget_linenum called, returning: 8
+Current character: ( (Line: 8)
+(get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: int at line 8
+DEBUG: No match for keyword: int
+NAMEget_linenum called, returning: 8
+Current character: ) (Line: 8)
+ )get_linenum called, returning: 8
+Current character: ) (Line: 8)
+)get_linenum called, returning: 8
+Current character: ; (Line: 8)
+;
+    get_linenum called, returning: 8
+Current character: w (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: writeln at line 8
+DEBUG: Matched keyword: writeln with token: 24
+DEBUG: Keyword token: 24
+writelnget_linenum called, returning: 8
+Current character: ( (Line: 8)
+(get_linenum called, returning: 8
+Current character: b (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: boolean at line 8
+DEBUG: Matched keyword: boolean with token: 22
+DEBUG: Keyword token: 22
+booleanget_linenum called, returning: 8
+Current character: ( (Line: 8)
+(get_linenum called, returning: 8
+Current character: c (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: ch at line 8
+DEBUG: No match for keyword: ch
+NAMEget_linenum called, returning: 8
+Current character: ) (Line: 8)
+ )get_linenum called, returning: 8
+Current character: , (Line: 8)
+,get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: integer at line 8
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+integerget_linenum called, returning: 8
+Current character: ( (Line: 8)
+(get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: int at line 8
+DEBUG: No match for keyword: int
+NAMEget_linenum called, returning: 8
+Current character: ) (Line: 8)
+ )get_linenum called, returning: 8
+Current character: , (Line: 8)
+,get_linenum called, returning: 8
+Current character: i (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: integer at line 8
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+integerget_linenum called, returning: 8
+Current character: ( (Line: 8)
+(get_linenum called, returning: 8
+Current character: b (Line: 8)
+get_linenum called, returning: 8
+Processing identifier/keyword: boolx at line 8
+DEBUG: No match for keyword: boolx
+NAMEget_linenum called, returning: 8
+Current character: ) (Line: 8)
+ )get_linenum called, returning: 8
+Current character: , (Line: 8)
+,get_linenum called, returning: 9
+Current character: i (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: integer at line 9
+DEBUG: Matched keyword: integer with token: 21
+DEBUG: Keyword token: 21
+integerget_linenum called, returning: 9
+Current character: ( (Line: 9)
+(get_linenum called, returning: 9
+Current character: b (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: booly at line 9
+DEBUG: No match for keyword: booly
+NAMEget_linenum called, returning: 9
+Current character: ) (Line: 9)
+ )get_linenum called, returning: 9
+Current character: ) (Line: 9)
+)get_linenum called, returning: 9
+Current character: ; (Line: 9)
+;
+    get_linenum called, returning: 9
+Current character: e (Line: 9)
+get_linenum called, returning: 9
+Processing identifier/keyword: end at line 9
+DEBUG: Matched keyword: end with token: 7
+DEBUG: Keyword token: 7
+end
+get_linenum called, returning: 9
+Current character: . (Line: 9)
+.End of file reached at line 10
+Cleaning up scanner after pretty printing...

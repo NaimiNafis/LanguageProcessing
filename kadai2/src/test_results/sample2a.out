@@ -165,11 +165,13 @@ Processing identifier/keyword: n at line 5
 DEBUG: No match for keyword: n
 get_linenum called, returning: 5
 Next token: 1 at line: 5
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 5
 get_linenum called, returning: 5
 Current character: ) (Line: 5)
 get_linenum called, returning: 5
 Next token: 39 at line: 5
+Exiting parse_variable
 Matching token: 39, expected token: 39 at line: 5
 get_linenum called, returning: 5
 Current character: ; (Line: 5)
@@ -187,11 +189,14 @@ Exiting parse_read_statement with token: 1 at line: 5
 Exiting parse_statement with token: 1 at line: 5
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 5
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 5
 get_linenum called, returning: 5
 Current character: : (Line: 5)
 get_linenum called, returning: 5
 Next token: 42 at line: 5
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 5
 get_linenum called, returning: 5
 Current character: 0 (Line: 5)
@@ -208,6 +213,7 @@ get_linenum called, returning: 5
 Next token: 46 at line: 5
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 5
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 5
@@ -520,11 +526,14 @@ Next token: 1 at line: 11
 Entering parse_statement_list with token: 1 at line: 11
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 11
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 11
 get_linenum called, returning: 11
 Current character: : (Line: 11)
 get_linenum called, returning: 11
 Next token: 42 at line: 11
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 11
 get_linenum called, returning: 11
 Current character: c (Line: 11)
@@ -558,6 +567,7 @@ get_linenum called, returning: 11
 Next token: 46 at line: 11
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 11
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 11
@@ -570,11 +580,14 @@ get_linenum called, returning: 11
 Next token: 1 at line: 11
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 11
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 11
 get_linenum called, returning: 11
 Current character: : (Line: 11)
 get_linenum called, returning: 11
 Next token: 42 at line: 11
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 11
 get_linenum called, returning: 11
 Current character: n (Line: 11)
@@ -608,6 +621,7 @@ get_linenum called, returning: 11
 Next token: 46 at line: 11
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 11
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 11
@@ -747,11 +761,14 @@ get_linenum called, returning: 14
 Next token: 1 at line: 14
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 14
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 14
 get_linenum called, returning: 14
 Current character: : (Line: 14)
 get_linenum called, returning: 14
 Next token: 42 at line: 14
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 14
 get_linenum called, returning: 14
 Current character: 0 (Line: 14)
@@ -768,6 +785,7 @@ get_linenum called, returning: 14
 Next token: 46 at line: 14
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 14
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 14
@@ -850,11 +868,14 @@ get_linenum called, returning: 16
 Next token: 1 at line: 16
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 16
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 16
 get_linenum called, returning: 16
 Current character: : (Line: 16)
 get_linenum called, returning: 16
 Next token: 42 at line: 16
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 16
 get_linenum called, returning: 16
 Current character: c (Line: 16)
@@ -888,6 +909,7 @@ get_linenum called, returning: 16
 Next token: 46 at line: 16
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 16
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 16
@@ -900,11 +922,14 @@ get_linenum called, returning: 16
 Next token: 1 at line: 16
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 16
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 16
 get_linenum called, returning: 16
 Current character: : (Line: 16)
 get_linenum called, returning: 16
 Next token: 42 at line: 16
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 16
 get_linenum called, returning: 16
 Current character: n (Line: 16)
@@ -938,6 +963,7 @@ get_linenum called, returning: 16
 Next token: 46 at line: 16
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 16
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 16
@@ -1077,11 +1103,14 @@ get_linenum called, returning: 19
 Next token: 1 at line: 19
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 19
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 19
 get_linenum called, returning: 19
 Current character: : (Line: 19)
 get_linenum called, returning: 19
 Next token: 42 at line: 19
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 19
 get_linenum called, returning: 19
 Current character: 0 (Line: 19)
@@ -1098,6 +1127,7 @@ get_linenum called, returning: 19
 Next token: 46 at line: 19
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 19
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 19
@@ -1180,11 +1210,14 @@ get_linenum called, returning: 21
 Next token: 1 at line: 21
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 21
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 21
 get_linenum called, returning: 21
 Current character: : (Line: 21)
 get_linenum called, returning: 21
 Next token: 42 at line: 21
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 21
 get_linenum called, returning: 21
 Current character: c (Line: 21)
@@ -1218,6 +1251,7 @@ get_linenum called, returning: 21
 Next token: 46 at line: 21
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 21
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 21
@@ -1230,11 +1264,14 @@ get_linenum called, returning: 21
 Next token: 1 at line: 21
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 21
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 21
 get_linenum called, returning: 21
 Current character: : (Line: 21)
 get_linenum called, returning: 21
 Next token: 42 at line: 21
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 21
 get_linenum called, returning: 21
 Current character: n (Line: 21)
@@ -1268,6 +1305,7 @@ get_linenum called, returning: 21
 Next token: 46 at line: 21
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 21
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 21
@@ -1407,11 +1445,14 @@ get_linenum called, returning: 24
 Next token: 1 at line: 24
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 24
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 24
 get_linenum called, returning: 24
 Current character: : (Line: 24)
 get_linenum called, returning: 24
 Next token: 42 at line: 24
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 24
 get_linenum called, returning: 24
 Current character: 0 (Line: 24)
@@ -1428,6 +1469,7 @@ get_linenum called, returning: 24
 Next token: 46 at line: 24
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 24
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 24
@@ -1510,11 +1552,14 @@ get_linenum called, returning: 26
 Next token: 1 at line: 26
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 26
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 26
 get_linenum called, returning: 26
 Current character: : (Line: 26)
 get_linenum called, returning: 26
 Next token: 42 at line: 26
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 26
 get_linenum called, returning: 26
 Current character: c (Line: 26)
@@ -1548,6 +1593,7 @@ get_linenum called, returning: 26
 Next token: 46 at line: 26
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 26
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 26
@@ -1560,11 +1606,14 @@ get_linenum called, returning: 26
 Next token: 1 at line: 26
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 26
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 26
 get_linenum called, returning: 26
 Current character: : (Line: 26)
 get_linenum called, returning: 26
 Next token: 42 at line: 26
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 26
 get_linenum called, returning: 26
 Current character: n (Line: 26)
@@ -1598,6 +1647,7 @@ get_linenum called, returning: 26
 Next token: 46 at line: 26
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 26
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 26
@@ -1737,11 +1787,14 @@ get_linenum called, returning: 33
 Next token: 1 at line: 33
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 33
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 33
 get_linenum called, returning: 33
 Current character: : (Line: 33)
 get_linenum called, returning: 33
 Next token: 42 at line: 33
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 33
 get_linenum called, returning: 33
 Current character: 0 (Line: 33)
@@ -1758,6 +1811,7 @@ get_linenum called, returning: 33
 Next token: 46 at line: 33
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 33
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 33
@@ -1840,11 +1894,14 @@ get_linenum called, returning: 35
 Next token: 1 at line: 35
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 35
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 35
 get_linenum called, returning: 35
 Current character: : (Line: 35)
 get_linenum called, returning: 35
 Next token: 42 at line: 35
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 35
 get_linenum called, returning: 35
 Current character: c (Line: 35)
@@ -1878,6 +1935,7 @@ get_linenum called, returning: 35
 Next token: 46 at line: 35
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 35
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 35
@@ -1890,11 +1948,14 @@ get_linenum called, returning: 35
 Next token: 1 at line: 35
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 35
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 35
 get_linenum called, returning: 35
 Current character: : (Line: 35)
 get_linenum called, returning: 35
 Next token: 42 at line: 35
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 35
 get_linenum called, returning: 35
 Current character: n (Line: 35)
@@ -1928,6 +1989,7 @@ get_linenum called, returning: 35
 Next token: 46 at line: 35
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 35
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 35

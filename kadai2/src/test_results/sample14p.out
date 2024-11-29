@@ -241,11 +241,14 @@ Next token: 1 at line: 12
 Entering parse_statement_list with token: 1 at line: 12
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 12
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 12
 get_linenum called, returning: 12
 Current character: : (Line: 12)
 get_linenum called, returning: 12
 Next token: 42 at line: 12
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 12
 get_linenum called, returning: 12
 Current character: x (Line: 12)
@@ -284,6 +287,7 @@ get_linenum called, returning: 13
 Next token: 7 at line: 13
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 7 at line: 13
 Found end of statement list
 Exiting parse_statement_list with token: 7 at line: 13
@@ -336,11 +340,14 @@ Next token: 1 at line: 16
 Entering parse_statement_list with token: 1 at line: 16
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 16
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 16
 get_linenum called, returning: 16
 Current character: : (Line: 16)
 get_linenum called, returning: 16
 Next token: 42 at line: 16
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 16
 get_linenum called, returning: 16
 Current character: x (Line: 16)
@@ -379,6 +386,7 @@ get_linenum called, returning: 17
 Next token: 7 at line: 17
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 7 at line: 17
 Found end of statement list
 Exiting parse_statement_list with token: 7 at line: 17
@@ -431,11 +439,14 @@ Next token: 1 at line: 20
 Entering parse_statement_list with token: 1 at line: 20
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 20
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 20
 get_linenum called, returning: 20
 Current character: : (Line: 20)
 get_linenum called, returning: 20
 Next token: 42 at line: 20
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 20
 get_linenum called, returning: 20
 Current character: x (Line: 20)
@@ -472,6 +483,7 @@ get_linenum called, returning: 21
 Next token: 7 at line: 21
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 7 at line: 21
 Found end of statement list
 Exiting parse_statement_list with token: 7 at line: 21
@@ -524,11 +536,14 @@ Next token: 1 at line: 24
 Entering parse_statement_list with token: 1 at line: 24
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 24
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 24
 get_linenum called, returning: 24
 Current character: : (Line: 24)
 get_linenum called, returning: 24
 Next token: 42 at line: 24
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 24
 get_linenum called, returning: 24
 Current character: x (Line: 24)
@@ -569,6 +584,7 @@ get_linenum called, returning: 25
 Next token: 7 at line: 25
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 7 at line: 25
 Found end of statement list
 Exiting parse_statement_list with token: 7 at line: 25
@@ -702,11 +718,14 @@ get_linenum called, returning: 30
 Next token: 1 at line: 30
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 30
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 30
 get_linenum called, returning: 30
 Current character: : (Line: 30)
 get_linenum called, returning: 30
 Next token: 42 at line: 30
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 30
 get_linenum called, returning: 30
 Current character: 0 (Line: 30)
@@ -723,6 +742,7 @@ get_linenum called, returning: 30
 Next token: 46 at line: 30
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 30
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 30
@@ -735,11 +755,14 @@ get_linenum called, returning: 31
 Next token: 1 at line: 31
 Processing statement with token: 1
 Entering parse_statement with token: 1 at line: 31
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 31
 get_linenum called, returning: 31
 Current character: : (Line: 31)
 get_linenum called, returning: 31
 Next token: 42 at line: 31
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 31
 get_linenum called, returning: 31
 Current character: f (Line: 31)
@@ -758,6 +781,7 @@ get_linenum called, returning: 31
 Next token: 46 at line: 31
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 46 at line: 31
 Found semicolon, matching TSEMI
 Matching token: 46, expected token: 46 at line: 31
@@ -884,11 +908,13 @@ Processing identifier/keyword: com at line 34
 DEBUG: No match for keyword: com
 get_linenum called, returning: 34
 Next token: 1 at line: 34
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 34
 get_linenum called, returning: 34
 Current character: , (Line: 34)
 get_linenum called, returning: 34
 Next token: 44 at line: 34
+Exiting parse_variable
 Matching token: 44, expected token: 44 at line: 34
 get_linenum called, returning: 34
 Current character: y (Line: 34)
@@ -897,11 +923,13 @@ Processing identifier/keyword: y at line 34
 DEBUG: No match for keyword: y
 get_linenum called, returning: 34
 Next token: 1 at line: 34
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 34
 get_linenum called, returning: 34
 Current character: ) (Line: 34)
 get_linenum called, returning: 34
 Next token: 39 at line: 34
+Exiting parse_variable
 Matching token: 39, expected token: 39 at line: 34
 get_linenum called, returning: 34
 Current character: ; (Line: 34)
@@ -1020,11 +1048,14 @@ DEBUG: No match for keyword: x
 get_linenum called, returning: 35
 Next token: 1 at line: 35
 Entering parse_statement with token: 1 at line: 35
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 35
 get_linenum called, returning: 35
 Current character: : (Line: 35)
 get_linenum called, returning: 35
 Next token: 42 at line: 35
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 35
 get_linenum called, returning: 35
 Current character: y (Line: 35)
@@ -1046,6 +1077,7 @@ get_linenum called, returning: 36
 Next token: 10 at line: 36
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 10 at line: 36
 Found ELSE token
 Matching token: 10, expected token: 10 at line: 36
@@ -1458,11 +1490,14 @@ DEBUG: No match for keyword: endflag
 get_linenum called, returning: 40
 Next token: 1 at line: 40
 Entering parse_statement with token: 1 at line: 40
+Entering parse_assignment with token: 1
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 40
 get_linenum called, returning: 40
 Current character: : (Line: 40)
 get_linenum called, returning: 40
 Next token: 42 at line: 40
+Exiting parse_variable
 Matching token: 42, expected token: 42 at line: 40
 get_linenum called, returning: 40
 Current character: t (Line: 40)
@@ -1485,6 +1520,7 @@ get_linenum called, returning: 41
 Next token: 10 at line: 41
 Exiting parse_factor
 Exiting parse_term
+Exiting parse_assignment
 Exiting parse_statement with token: 10 at line: 41
 Found ELSE token
 Matching token: 10, expected token: 10 at line: 41

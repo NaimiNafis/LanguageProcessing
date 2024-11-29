@@ -232,9 +232,15 @@ static void parse_statement(void) {
 }
 
 static void parse_assignment(void) {
-    match(TNAME);
-    match(TASSIGN);
+    debug_printf("Entering parse_assignment with token: %d\n", parser.current_token);
+    
+    // Parse variable (including array access)
+    parse_variable();
+    
+    match(TASSIGN);  // Match :=
     parse_expression();
+    
+    debug_printf("Exiting parse_assignment\n");
 }
 
 static void parse_if_statement(void) {
@@ -349,12 +355,16 @@ static void parse_write_statement(void) {
 }
 
 static void parse_variable(void) {
+    debug_printf("Entering parse_variable with token: %d\n", parser.current_token);
     match(TNAME);
+    
+    // Handle array indexing
     if (parser.current_token == TLSQPAREN) {
         match(TLSQPAREN);
-        parse_expression();
+        parse_expression();  // Parse array index
         match(TRSQPAREN);
     }
+    debug_printf("Exiting parse_variable\n");
 }
 
 static void parse_expression(void) {
@@ -390,10 +400,22 @@ static void parse_factor(void) {
             match(TNOT);
             parse_factor();
             break;
+        case TMINUS:
+            match(TMINUS);
+            parse_factor();
+            break;
+        case TINTEGER:
+        case TCHAR:
+        case TBOOLEAN:
+            int type = parser.current_token;
+            match(parser.current_token);
+            match(TLPAREN);
+            parse_expression();
+            match(TRPAREN);
+            break;
         case TNAME:
         case TNUMBER:
         case TSTRING:
-        case TCHAR:
         case TTRUE:
         case TFALSE:
             match(parser.current_token);

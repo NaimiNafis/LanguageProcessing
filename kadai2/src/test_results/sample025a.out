@@ -97,11 +97,13 @@ Processing identifier/keyword: ch at line 7
 DEBUG: No match for keyword: ch
 get_linenum called, returning: 7
 Next token: 1 at line: 7
+Entering parse_variable with token: 1
 Matching token: 1, expected token: 1 at line: 7
 get_linenum called, returning: 7
 Current character: ) (Line: 7)
 get_linenum called, returning: 7
 Next token: 39 at line: 7
+Exiting parse_variable
 Matching token: 39, expected token: 39 at line: 7
 get_linenum called, returning: 7
 Current character: ; (Line: 7)
