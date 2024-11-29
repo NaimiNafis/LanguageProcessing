@@ -8,6 +8,8 @@
 
 // Define a constant for EOF
 #define EOF_TOKEN -1
+#define MAX_ERRORS 5
+#define SYNC_TOKENS_COUNT 6
 
 // Forward declarations for parsing functions
 static void parse_block(void);
@@ -36,10 +38,21 @@ void parse_error(const char* message);
 // Parser state
 static Parser parser;
 
+static const int sync_tokens[] = {
+    TSEMI,   // Semicolon
+    TEND,    // End
+    TBEGIN,  // Begin 
+    TDOT,    // Dot
+    TELSE,   // Else
+    -1       // EOF
+};
+
 void init_parser(void) {
     parser.current_token = scan();
     parser.line_number = get_linenum();
     parser.error_count = 0;
+    parser.first_error_line = 0;
+    parser.previous_token = 0;
 }
 
 // Main program parsing
@@ -152,11 +165,14 @@ static void parse_statement_list(void) {
         } else if (parser.current_token == TEND) {
             debug_printf("Found end of statement list\n");
             break;
-        } else if (parser.current_token == TNAME) {
-            // Allow new statement starting with a variable name
-            continue;
-        } else if (parser.current_token == TREAD || parser.current_token == TREADLN) {
-            // Allow read/readln statements to continue
+        } else if (parser.current_token == TNAME || 
+                  parser.current_token == TREAD || 
+                  parser.current_token == TREADLN) {
+            // For backward compatibility - allow these to continue
+            // Only check for missing semicolon if we're not starting a new valid statement
+            if (parser.current_token == parser.previous_token) {
+                parse_error("Missing semicolon");
+            }
             continue;
         } else {
             debug_printf("Unexpected token after statement: %d\n", parser.current_token);
@@ -373,15 +389,34 @@ static void parse_condition(void) {
 }
 
 void parse_error(const char* message) {
+    if (parser.first_error_line == 0) {
+        parser.first_error_line = get_linenum();
+    }
     fprintf(stderr, "Syntax error at line %d: %s (token: %d)\n", 
             get_linenum(), message, parser.current_token);
     parser.error_count++;
-    exit(1);
+
+    // Exit if too many errors
+    if (parser.error_count >= MAX_ERRORS) {
+        exit(1); 
+    }
+
+    // Skip tokens until a synchronization point
+    while (parser.current_token != -1) { // -1 is EOF
+        // Check if current token is a sync point
+        for (int i = 0; i < SYNC_TOKENS_COUNT; i++) {
+            if (parser.current_token == sync_tokens[i]) {
+                return;
+            }
+        }
+        parser.current_token = scan();
+    }
 }
 
 static void match(int expected_token) {
     debug_printf("Matching token: %d, expected token: %d at line: %d\n", parser.current_token, expected_token, parser.line_number);
     if (parser.current_token == expected_token) {
+        parser.previous_token = parser.current_token; 
         parser.current_token = scan();
         parser.line_number = get_linenum();
         debug_printf("Next token: %d at line: %d\n", parser.current_token, parser.line_number);

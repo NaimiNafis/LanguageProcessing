@@ -10,6 +10,8 @@ typedef struct {
     int current_token;
     int line_number;
     int error_count;
+    int first_error_line; 
+    int previous_token;
 } Parser;
 
 // Public interface

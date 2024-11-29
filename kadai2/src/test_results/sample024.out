@@ -1,1 +1,5 @@
 Syntax error at line 2: Invalid statement (token: 46)
+Syntax error at line 3: Unexpected token (token: 1)
+Syntax error at line 3: Expected semicolon or end of statement list (token: -1)
+Syntax error at line 3: Unexpected token (token: -1)
+Syntax error at line 3: Unexpected token (token: -1)
