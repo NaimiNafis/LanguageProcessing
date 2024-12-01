@@ -1,0 +1,27 @@
+programNAME ;
+ varNAME :array[NUMBER ]ofboolean;
+NAME ,NAME :integer;
+begin
+    NAME :=NUMBER ;
+     whileNAME <NUMBER do
+         begin
+             NAME [NAME ]:=true;
+            NAME :=NAME +NUMBER end
+         ;
+         NAME [NUMBER ]:=false;
+        NAME [NUMBER ]:=false;
+        NAME :=NUMBER ;
+         whileNAME <NUMBER do
+             begin
+                 ifNAME [NAME ]thenbegin
+                    writeln(NAME ,STRING );
+                    NAME :=NAME ;
+                     ifNAME <NUMBER thenwhileNAME <NUMBER do
+                         begin
+                             NAME [NAME ]:=false;
+                            NAME :=NAME +NAME end
+                         end
+                     ;
+                     NAME :=NAME +NUMBER end
+                 end
+             .

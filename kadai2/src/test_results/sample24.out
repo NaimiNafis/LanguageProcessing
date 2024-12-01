@@ -1,4 +1,4 @@
-programNAME ;
- begin
-     writeln(STRING )end
-.
+program Write ;
+begin
+writeln ('It's OK?' ) 
+end.

@@ -1,6 +1,6 @@
-programNAME ;
- varNAME :char;
+program ifst ;
+var ch  : char ;
 begin
-    readln(NAME );
-    ifNAME =STRING thenwriteln(STRING )elsewriteln(STRING )end
-.
+readln (ch ) ;
+    if ch  = 'a' then writeln ('It is 'a' ' ) else writeln ('It is not 'a' ' ) 
+end.
