@@ -1,5 +1,8 @@
-program assigninteger ;
-var n  : integer ;
+program assigninteger;
+
+var
+n : integer;
+    
 begin
-n  := 1 
+n := 1
 end.

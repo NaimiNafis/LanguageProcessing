@@ -1,43 +1,53 @@
-program sample14 ;
-var com  : char ;
-x , y  : integer ;
-endflag  : boolean ;
+program sample14;
+
+var
+com : char;
+    x , y : integer;
+    endflag : boolean;
+    
 begin
-writeln ('   *** Calculator -- h for help ***' ) ;
-    x  := 0 ;
-    endflag  := false ;
-    while  not endflag do
-    begin
-        writeln (' Please input command :' ) ;
-            readln (com , y ) ;
-            if (com  = 'c' )  or (com  = 'C' ) then begin
-            x  := y ;
-                
-            endelse if com  = '+' then begin
-            x  := x  + y ;
-                
-            endelse if com  = '-' then begin
-            x  := x  - y ;
-                
-            endelse if com  = '*' then begin
-            x  := x  * y ;
-                
-            endelse if com  = '/' then begin
-            x  := x  div y ;
-                
-            endelse if (com  = 'o' )  or (com  = 'O' ) then begin
-            endflag  := true 
-            endelse begin
-            writeln ;
-                writeln ('Calculator Usage:' ) ;
-                writeln ('  c number : clear & set it' ) ;
-                writeln ('  + number : add it' ) ;
-                writeln ('  - number : subtract it' ) ;
-                writeln ('  * number : multiply it' ) ;
-                writeln ('  / number : divide it' ) ;
-                writeln ('  o        : off(terminate execution)' ) ;
-                writeln 
-            end;
-            if endflag then writeln ('Final Result =' , x ) else writeln ('Temporary Result =' , x ) 
-        end
-    end.
+writeln ( STRING );
+    x := 0;
+    endflag := false;
+    while not endflag do
+begin
+writeln ( STRING );
+    readln ( com , y );
+    if ( com = STRING ) or ( com = STRING ) then
+begin
+x := y;
+    
+endelse if com = STRING then
+begin
+x := x + y;
+    
+endelse if com = STRING then
+begin
+x := x - y;
+    
+endelse if com = STRING then
+begin
+x := x * y;
+    
+endelse if com = STRING then
+begin
+x := x div y;
+    
+endelse if ( com = STRING ) or ( com = STRING ) then
+begin
+endflag := true
+endelse
+begin
+writeln;
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln
+end;
+if endflag then writeln ( STRING , x ) else writeln ( STRING , x )
+end
+end.

@@ -265,6 +265,10 @@ static void parse_statement_list(void) {
 
 static void parse_statement(void) {
     debug_printf("Entering parse_statement with token: %d at line: %d\n", parser.current_token, parser.line_number);
+    if (parser.current_token == -1) {
+        parse_error("Unexpected end of file in statement");
+        return;
+    }
     switch (parser.current_token) {
         case TNAME:
             parse_assignment();
@@ -570,12 +574,23 @@ void parse_error(const char* message) {
 }
 
 static void match(int expected_token) {
-    debug_printf("Matching token: %d, expected token: %d at line: %d\n", parser.current_token, expected_token, parser.line_number);
+    debug_printf("Matching token: %d, expected token: %d at line: %d\n", 
+                 parser.current_token, expected_token, parser.line_number);
+    
+    if (parser.current_token == -1) {
+        parse_error("Unexpected end of file");
+        return;
+    }
+
     if (parser.current_token == expected_token) {
-        parser.previous_token = parser.current_token; 
-        parser.current_token = scan();
+        parser.previous_token = parser.current_token;
+        int next_token = scan();
+        if (next_token == -1 && expected_token != TDOT) { // Allow EOF after final dot
+            parse_error("Unexpected end of file");
+            return;
+        }
+        parser.current_token = next_token;
         parser.line_number = get_linenum();
-        debug_printf("Next token: %d at line: %d\n", parser.current_token, parser.line_number);
     } else {
         parse_error("Unexpected token");
     }

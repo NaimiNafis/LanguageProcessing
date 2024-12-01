@@ -1,6 +1,9 @@
-program assignchar ;
-var x , y  : char ;
+program assignchar;
+
+var
+x , y : char;
+    
 begin
-x  := 'X' ;
-    y  := 'Y' 
+x := STRING;
+    y := STRING
 end.

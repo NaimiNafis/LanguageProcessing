@@ -46,6 +46,9 @@ static void update_line_number(char c) {
 
 // Main scan function: identifies and processes tokens
 int scan(void) {
+    if (fp == NULL) {
+        return -1;  // Return error token if file pointer is invalid
+    }
 
     // Stop scanning if error occurred
     if (scanner.has_error) {
