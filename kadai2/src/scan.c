@@ -12,6 +12,7 @@ int num_attr;  // Store numerical attributes
 char cbuf = '\0';  // Buffer for the current character being read
 int linenum = 1;  // Line number tracker
 extern keyword key[KEYWORDSIZE];  // Keyword array
+static const char* current_filename = NULL;
 
 // Helper function declarations
 int match_keyword(const char *token_str);
@@ -28,6 +29,7 @@ Scanner scanner = {0};  // Initialize all fields to 0
 // Initialize file reading
 int init_scan(char *filename) {
     scanner.has_error = 0;  // Reset error flag
+    current_filename = filename;  // Store filename
     fp = fopen(filename, "r");
     if (fp == NULL) {
         error("Unable to open file.");
@@ -36,6 +38,10 @@ int init_scan(char *filename) {
     linenum = 1;
     cbuf = (char) fgetc(fp);
     return 0;
+}
+
+const char* get_current_file(void) {
+    return current_filename;
 }
 
 static void update_line_number(char c) {

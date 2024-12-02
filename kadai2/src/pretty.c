@@ -6,6 +6,8 @@
 
 #define INDENT_SIZE 4
 #define MAX_INDENT 40
+#define NORMAL 0
+#define ERROR 1
 
 static int current_indent = 0;
 static int need_space = 0;
@@ -16,6 +18,8 @@ static void pretty_expression(void);
 static void pretty_statement(void);
 static void pretty_term(void);
 static void pretty_factor(void);
+static void pretty_block(void);
+static void handle_if_else_chain(void);
 static int get_token(void);
 
 // Helper functions
@@ -120,38 +124,6 @@ void pretty_print_program(void) {
     }
 }
 
-void pretty_if_statement(void) {
-    if (need_space) printf(" ");
-    printf("if ");
-    need_space = 0;
-    
-    pretty_expression();
-    
-    printf(" then ");
-    need_space = 0;
-    
-    pretty_statement();
-    
-    if (current_token.kind == TELSE) {
-        printf(" else ");
-        get_token();
-        pretty_statement();
-    }
-}
-
-void pretty_while_statement(void) {
-    if (need_space) printf(" ");
-    printf("while ");
-    need_space = 0;
-    
-    pretty_expression();
-    
-    printf(" do ");
-    need_space = 0;
-    
-    pretty_statement();
-}
-
 static void pretty_expression(void) {
     pretty_term();
     while (current_token.kind == TPLUS || current_token.kind == TMINUS) {
@@ -164,30 +136,56 @@ static void pretty_expression(void) {
 static void pretty_statement(void) {
     switch (current_token.kind) {
         case TIF:
-            pretty_if_statement();
+            get_token(); // consume IF
+            handle_if_else_chain();
             break;
+            
         case TWHILE:
-            pretty_while_statement();
-            break;
-        case TBEGIN:
-            pretty_print_token(TBEGIN);
+            if (need_space) printf(" ");
+            printf("while ");
+            need_space = 0;
             get_token();
+            
+            // Print condition
+            while (current_token.kind != TDO) {
+                pretty_print_token(current_token.kind);
+                get_token();
+            }
+            
+            printf(" do\n");
+            increase_indent();
+            print_indent();
+            get_token(); // consume DO
+            pretty_statement();
+            decrease_indent();
+            break;
+
+        case TBEGIN:
+            printf("begin\n");
+            increase_indent();
+            get_token();
+            
             while (current_token.kind != TEND) {
+                print_indent();
                 pretty_statement();
                 if (current_token.kind == TSEMI) {
-                    pretty_print_token(TSEMI);
+                    printf(";\n");
                     get_token();
                 }
             }
-            pretty_print_token(TEND);
+            
+            decrease_indent();
+            print_indent();
+            printf("end");
             get_token();
             break;
+
         default:
+            // Handle expressions and assignments
             pretty_expression();
             break;
     }
 }
-
 static void pretty_term(void) {
     pretty_factor();
     while (current_token.kind == TSTAR || current_token.kind == TDIV) {
@@ -218,8 +216,103 @@ static void pretty_factor(void) {
     }
 }
 
+void pretty_procedure_declaration(void) {
+    print_newline_with_indent();
+    printf("procedure ");
+    need_space = 0;
+
+    // Print procedure name
+    if (current_token.kind == TNAME) {
+        pretty_print_token(TNAME);
+        get_token();
+    }
+
+    // Print semicolon
+    printf(";");
+    print_newline_with_indent();
+
+    // Print procedure body
+    increase_indent();
+    pretty_block();
+    decrease_indent();
+
+    // Print final semicolon
+    printf(";");
+    print_newline_with_indent();
+}
+
+static void pretty_block(void) {
+    // Print BEGIN
+    pretty_print_token(TBEGIN);
+    
+    // Print statements
+    while (current_token.kind != TEND) {
+        pretty_statement();
+        if (current_token.kind == TSEMI) {
+            pretty_print_token(TSEMI);
+            get_token();
+        }
+    }
+    
+    // Print END
+    pretty_print_token(TEND);
+    get_token();
+
+}
+
 static int get_token(void) {
     int token = scan();
     current_token.kind = token;
     return token;
+}
+
+static void handle_if_else_chain(void) {
+    // Handle the initial if
+    if (need_space) printf(" ");
+    printf("if ");
+    need_space = 0;
+
+    // Print condition
+    while (current_token.kind != TTHEN) {
+        pretty_print_token(current_token.kind);
+        get_token();
+    }
+    
+    printf(" then\n");
+    current_indent += INDENT_SIZE;
+    print_indent();
+    get_token();  // consume TTHEN
+
+    // Print then part
+    pretty_statement();
+
+    // Handle else if chain
+    while (current_token.kind == TELSE) {
+        decrease_indent();
+        print_newline_with_indent();
+        printf("else ");
+        get_token();  // consume ELSE
+        
+        if (current_token.kind == TIF) {
+            get_token();  // consume IF
+            // Handle else-if condition
+            while (current_token.kind != TTHEN) {
+                pretty_print_token(current_token.kind);
+                get_token();
+            }
+            printf(" then\n");
+            increase_indent();
+            print_indent();
+            get_token();  // consume TTHEN
+            pretty_statement();
+        } else {
+            // Handle final else
+            printf("\n");
+            increase_indent();
+            print_indent();
+            pretty_statement();
+            break;
+        }
+    }
+    decrease_indent();
 }

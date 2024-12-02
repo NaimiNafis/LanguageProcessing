@@ -26,5 +26,6 @@ int init_scan(char *filename);
 int scan(void);
 int get_linenum(void);
 void end_scan(void);
+extern const char* get_current_file(void);
 
 #endif
