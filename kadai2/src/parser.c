@@ -293,49 +293,35 @@ static int parse_statement_list(void) {
 
     // Handle empty block case
     if (parser.current_token == TEND) {
-        debug_printf("Empty statement list detected\n");
         return NORMAL;
     }
-    
-    // Parse first statement
-    if (parse_statement() == ERROR) return ERROR;
 
-    while (parser.current_token != TEND && parser.current_token != -1) {
-        debug_printf("Processing statement with token: %d\n", parser.current_token);
+    // Parse statements until end or else
+    while (parser.current_token != TEND && 
+           parser.current_token != TELSE && 
+           parser.current_token != -1) {
+           
+        // Parse statement
+        if (parse_statement() == ERROR) return ERROR;
 
-        if (parser.current_token == TSEMI) {
-            debug_printf("Found semicolon, matching TSEMI\n");
-            if (match(TSEMI) == ERROR) return ERROR;
-            
-            // Check for more statements after semicolon
-            if (parser.current_token != TEND) {
-                if (parse_statement() == ERROR) return ERROR;
-            }
-        } else if (parser.current_token == TELSE || 
-                  parser.current_token == TBEGIN || 
-                  parser.current_token == TEND ||
-                  parser.current_token == TIF) {
-            // Keep your special case handling for control structures
-            debug_printf("Found control structure token: %d\n", parser.current_token);
-            break;
-        } else if (parser.current_token == TNAME || 
-                  parser.current_token == TREAD || 
-                  parser.current_token == TREADLN) {
-            // Keep your special case handling for statements
-            if (parser.current_token == parser.previous_token) {
+        // Handle statement termination
+        if (parser.current_token != TEND && 
+            parser.current_token != TELSE) {
+            // Need semicolon unless at end/else
+            if (parser.current_token != TSEMI) {
                 parse_error("Missing semicolon");
                 return ERROR;
             }
-            if (parse_statement() == ERROR) return ERROR;
-        } else {
-            debug_printf("Unexpected token after statement: %d\n", parser.current_token);
-            parse_error("Expected semicolon or end of statement list");
-            return ERROR;
+            if (match(TSEMI) == ERROR) return ERROR;
+
+            // Skip extra semicolons
+            while (parser.current_token == TSEMI) {
+                if (match(TSEMI) == ERROR) return ERROR;
+            }
         }
     }
 
-    debug_printf("Exiting parse_statement_list with token: %d at line: %d\n", 
-                parser.current_token, parser.line_number);
+    debug_printf("Exiting parse_statement_list with token: %d\n", parser.current_token);
     return NORMAL;
 }
 
@@ -514,83 +500,111 @@ static int parse_while_statement(void) {
 }
 
 static int parse_procedure_call(void) {
-    match(TCALL);
-    match(TNAME);
+    if (match(TCALL) == ERROR) return ERROR;
+    if (match(TNAME) == ERROR) return ERROR;
+    
     if (parser.current_token == TLPAREN) {
-        match(TLPAREN);
-        parse_expression();
+        if (match(TLPAREN) == ERROR) return ERROR;
+        if (parse_expression() == ERROR) return ERROR;
+        
         while (parser.current_token == TCOMMA) {
-            match(TCOMMA);
-            parse_expression();
+            if (match(TCOMMA) == ERROR) return ERROR;
+            if (parse_expression() == ERROR) return ERROR;
         }
-        match(TRPAREN);
+        
+        if (match(TRPAREN) == ERROR) return ERROR;
     }
+    return NORMAL;
 }
 
 static int parse_read_statement(void) {
-    // Handle both read and readln
     int is_readln = (parser.current_token == TREADLN);
-    match(parser.current_token);  // match either TREAD or TREADLN
+    if (match(parser.current_token) == ERROR) return ERROR;
 
     if (parser.current_token == TLPAREN) {
-        match(TLPAREN);
+        if (match(TLPAREN) == ERROR) return ERROR;
         
         // Must have at least one variable
-        parse_variable();
+        if (parse_variable() == ERROR) return ERROR;
 
         // Handle multiple variables
         while (parser.current_token == TCOMMA) {
-            match(TCOMMA);
-            parse_variable();
+            if (match(TCOMMA) == ERROR) return ERROR;
+            if (parse_variable() == ERROR) return ERROR;
         }
 
-        match(TRPAREN);
+        if (match(TRPAREN) == ERROR) return ERROR;
     }
+    return NORMAL;
 }
 
 static int parse_write_statement(void) {
+    debug_printf("Entering parse_write_statement with token: %d\n", parser.current_token);
+    
     // Handle both write and writeln
     int is_writeln = (parser.current_token == TWRITELN);
-    match(parser.current_token);  // match either TWRITE or TWRITELN
+    if (match(parser.current_token) == ERROR) return ERROR;
 
     if (parser.current_token == TLPAREN) {
-        match(TLPAREN);
+        if (match(TLPAREN) == ERROR) return ERROR;
         
         // Parse first output specification
         if (parser.current_token == TSTRING) {
-            match(TSTRING);
-        } else {
-            parse_expression();
-            // Check for width specification
+            if (match(TSTRING) == ERROR) return ERROR;
             if (parser.current_token == TCOLON) {
-                match(TCOLON);
+                if (match(TCOLON) == ERROR) return ERROR;
                 if (parser.current_token != TNUMBER) {
                     parse_error("Number expected after colon");
+                    return ERROR;
                 }
-                match(TNUMBER);
+                if (match(TNUMBER) == ERROR) return ERROR;
+            }
+        } else {
+            if (parse_expression() == ERROR) return ERROR;
+            if (parser.current_token == TCOLON) {
+                if (match(TCOLON) == ERROR) return ERROR;
+                if (parser.current_token != TNUMBER) {
+                    parse_error("Number expected after colon");
+                    return ERROR;
+                }
+                if (match(TNUMBER) == ERROR) return ERROR;
             }
         }
 
         // Handle multiple output specifications
         while (parser.current_token == TCOMMA) {
-            match(TCOMMA);
+            if (match(TCOMMA) == ERROR) return ERROR;
             if (parser.current_token == TSTRING) {
-                match(TSTRING);
-            } else {
-                parse_expression();
+                if (match(TSTRING) == ERROR) return ERROR;
                 if (parser.current_token == TCOLON) {
-                    match(TCOLON);
+                    if (match(TCOLON) == ERROR) return ERROR;
                     if (parser.current_token != TNUMBER) {
                         parse_error("Number expected after colon");
+                        return ERROR;
                     }
-                    match(TNUMBER);
+                    if (match(TNUMBER) == ERROR) return ERROR;
+                }
+            } else {
+                if (parse_expression() == ERROR) return ERROR;
+                if (parser.current_token == TCOLON) {
+                    if (match(TCOLON) == ERROR) return ERROR;
+                    if (parser.current_token != TNUMBER) {
+                        parse_error("Number expected after colon");
+                        return ERROR;
+                    }
+                    if (match(TNUMBER) == ERROR) return ERROR;
                 }
             }
         }
 
-        match(TRPAREN);
+        if (match(TRPAREN) == ERROR) return ERROR;
     }
-}
+
+    debug_printf("Checking for semicolon after writeln, current token: %d\n", parser.current_token);
+    
+    // Let parse_statement_list handle semicolons
+    return NORMAL;
+} 
 
 static int parse_variable(void) {
     debug_printf("Entering parse_variable with token: %d\n", parser.current_token);
@@ -737,7 +751,13 @@ static int parse_comparison(void) {
             // No comparison operator found, just match closing paren
             if (match(TRPAREN) == ERROR) return ERROR;
             
-            // Now check for comparison operator after the parenthesized expression
+            // Add support for operations after parenthesis
+            if (parser.current_token == TSTAR || parser.current_token == TDIV) {
+                if (match(parser.current_token) == ERROR) return ERROR;
+                if (parse_expression() == ERROR) return ERROR;
+            }
+            
+            // Now check for comparison operator
             if (parser.current_token == TEQUAL || 
                 parser.current_token == TNOTEQ ||
                 parser.current_token == TGR ||
