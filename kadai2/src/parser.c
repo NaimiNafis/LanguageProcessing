@@ -89,58 +89,60 @@ int parse_program(void) {
 static int parse_block(void) {
     debug_printf("Entering parse_block\n");
 
-    // Handle variable declarations
-    if (parser.current_token == TVAR) {
-        while (parser.current_token == TVAR) {
+    // Handle VAR and PROCEDURE declarations
+    while (parser.current_token == TVAR || parser.current_token == TPROCEDURE) {
+        if (parser.current_token == TVAR) {
+            // Match VAR keyword once
             if (match(TVAR) == ERROR) {
                 parse_error("Error parsing var keyword");
                 return ERROR;
             }
 
-            // Parse variable names
-            if (parser.current_token != TNAME) {
-                parse_error("Variable name expected");
-                return ERROR;
-            }
-            match(TNAME);
-
-            // Parse additional variable names
-            while (parser.current_token == TCOMMA) {
-                if (match(TCOMMA) == ERROR) {
-                    parse_error("Error parsing comma in variable list");
-                    return ERROR;
-                }
+            // Parse variable declarations until we hit BEGIN or PROCEDURE
+            while (parser.current_token == TNAME) {
+                debug_printf("Parsing variable declaration starting with: %d\n", parser.current_token);
                 
-                if (parser.current_token != TNAME) {
-                    parse_error("Variable name expected after comma");
+                // Parse first variable name
+                match(TNAME);
+
+                // Parse additional variable names
+                while (parser.current_token == TCOMMA) {
+                    if (match(TCOMMA) == ERROR) {
+                        parse_error("Error parsing comma in variable list");
+                        return ERROR;
+                    }
+                    
+                    if (parser.current_token != TNAME) {
+                        parse_error("Variable name expected after comma");
+                        return ERROR;
+                    }
+                    match(TNAME);
+                }
+
+                // Parse type declaration
+                if (match(TCOLON) == ERROR) {
+                    parse_error("Expected ':' after variable names");
                     return ERROR;
                 }
-                match(TNAME);
-            }
 
-            // Parse type declaration
-            if (match(TCOLON) == ERROR) {
-                parse_error("Expected ':' after variable names");
-                return ERROR;
-            }
+                if (parse_type() == ERROR) {
+                    parse_error("Invalid variable type");
+                    return ERROR;  
+                }
 
-            if (parse_type() == ERROR) {
-                parse_error("Invalid variable type");
-                return ERROR;
-            }
-
-            if (match(TSEMI) == ERROR) {
-                parse_error("Expected semicolon after variable declaration");
-                return ERROR;
+                if (match(TSEMI) == ERROR) {
+                    parse_error("Expected semicolon after variable declaration");
+                    return ERROR;
+                }
             }
         }
-    }
-    
-    // Parse procedure declarations 
-    while (parser.current_token == TPROCEDURE) {
-        if (parse_procedure() == ERROR) {
-            parse_error("Failed to parse procedure declaration");
-            return ERROR;
+        
+        // Handle procedure declarations
+        if (parser.current_token == TPROCEDURE) {
+            if (parse_procedure() == ERROR) {
+                parse_error("Failed to parse procedure declaration");
+                return ERROR;
+            }
         }
     }
 
@@ -152,7 +154,7 @@ static int parse_block(void) {
 
     if (parse_statement_list() == ERROR) {
         parse_error("Failed to parse statement list");
-        return ERROR; 
+        return ERROR;
     }
 
     if (match(TEND) == ERROR) {
@@ -166,40 +168,56 @@ static int parse_block(void) {
 }
 
 static int parse_variable_declaration(void) {
-    while (parser.current_token == TVAR) {
-        match(TVAR);
-        
-        do {
-            // Parse variable names
+    // Match VAR keyword
+    if (parser.current_token != TVAR) {
+        parse_error("Expected 'var' keyword");
+        return ERROR;
+    }
+    match(TVAR);
+
+    // Loop to handle multiple variable declarations
+    do {
+        // Parse first variable name
+        if (parser.current_token != TNAME) {
+            parse_error("Variable name expected");
+            return ERROR;
+        }
+        match(TNAME);
+
+        // Handle multiple variables separated by commas
+        while (parser.current_token == TCOMMA) {
+            match(TCOMMA);
             if (parser.current_token != TNAME) {
-                parse_error("Variable name expected");
+                parse_error("Variable name expected after comma");
+                return ERROR;
             }
             match(TNAME);
-            
-            // Handle multiple variables (comma-separated)
-            while (parser.current_token == TCOMMA) {
-                match(TCOMMA);
-                if (parser.current_token != TNAME) {
-                    parse_error("Variable name expected after comma");
-                }
-                match(TNAME);
-            }
-            
-            // Check and parse type declaration
-            if (parser.current_token != TCOLON) {
-                parse_error("Colon expected");
-            }
-            match(TCOLON);
-            
-            parse_type();
-            
-            if (parser.current_token != TSEMI) {
-                parse_error("Semicolon expected");
-            }
-            match(TSEMI);
-            
-        } while (parser.current_token == TNAME); // Continue if more variables are declared
-    }
+        }
+
+        // Type declaration
+        if (parser.current_token != TCOLON) {
+            parse_error("Expected ':' after variable names");
+            return ERROR;
+        }
+        match(TCOLON);
+
+        // Parse the type
+        if (parse_type() == ERROR) {
+            parse_error("Invalid type declaration");
+            return ERROR;
+        }
+
+        // Require semicolon
+        if (parser.current_token != TSEMI) {
+            parse_error("Expected semicolon after type declaration");
+            return ERROR;
+        }
+        match(TSEMI);
+
+        // Continue if there are more variable declarations
+    } while (parser.current_token == TNAME);
+
+    return NORMAL;
 }
 
 static int parse_name_list(void) {
@@ -211,74 +229,50 @@ static int parse_name_list(void) {
 }
 
 static int parse_type(void) {
-    debug_printf("Entering parse_type\n");
-
-    switch (parser.current_token) {
-        case TARRAY:
-            if (match(TARRAY) == ERROR) {
-                parse_error("Error parsing array keyword");
-                return ERROR;
-            }
-            
-            // Parse array size bracket
-            if (match(TLSQPAREN) == ERROR) {
-                parse_error("Expected '[' after array");
-                return ERROR;
-            }
-            
-            // Parse array size
-            if (parser.current_token != TNUMBER) {
-                parse_error("Array size number expected");
-                return ERROR;
-            }
-            match(TNUMBER);
-            
-            if (match(TRSQPAREN) == ERROR) {
-                parse_error("Expected ']' after array size");
-                return ERROR;
-            }
-            
-            // Parse "of" keyword
-            if (match(TOF) == ERROR) {
-                parse_error("Expected 'of' after array size");
-                return ERROR;
-            }
-            
-            // Parse element type
-            switch (parser.current_token) {
-                case TINTEGER:
-                case TCHAR:
-                case TBOOLEAN:
-                    match(parser.current_token);
-                    break;
-                default:
-                    parse_error("Invalid array element type");
-                    return ERROR;
-            }
-            return NORMAL;
-            
-        case TINTEGER:
-            if (match(TINTEGER) == ERROR) {
-                return ERROR;
-            }
-            return NORMAL;
-            
-        case TBOOLEAN:
-            if (match(TBOOLEAN) == ERROR) {
-                return ERROR;
-            }
-            return NORMAL;
-            
-        case TCHAR:
-            if (match(TCHAR) == ERROR) {
-                return ERROR;
-            }
-            return NORMAL;
-            
-        default:
-            parse_error("Type declaration expected");
-            return ERROR;
+    if (parser.current_token == TINTEGER || parser.current_token == TBOOLEAN || 
+        parser.current_token == TCHAR) {
+        match(parser.current_token);
+        return NORMAL;
     }
+    else if (parser.current_token == TARRAY) {
+        match(TARRAY);
+        
+        if (match(TLSQPAREN) == ERROR) {
+            parse_error("Expected '[' after ARRAY");
+            return ERROR;
+        }
+
+        // Handle array size (number)
+        if (parser.current_token != TNUMBER) {
+            parse_error("Expected number for array size");
+            return ERROR;
+        }
+        match(TNUMBER);
+
+        if (match(TRSQPAREN) == ERROR) {
+            parse_error("Expected ']' after array size");
+            return ERROR;
+        }
+
+        if (match(TOF) == ERROR) {
+            parse_error("Expected 'OF' after array declaration");
+            return ERROR;
+        }
+
+        // Parse base type
+        if (parser.current_token != TINTEGER && 
+            parser.current_token != TBOOLEAN && 
+            parser.current_token != TCHAR) {
+            parse_error("Expected valid base type after OF");
+            return ERROR;
+        }
+        match(parser.current_token);
+        
+        return NORMAL;
+    }
+
+    parse_error("Invalid type");
+    return ERROR;
 }
 
 static int parse_parameter_list(void) {
@@ -812,44 +806,40 @@ static int parse_procedure(void) {
     }
     match(TNAME);
 
-    // Handle parameter list if present
+    // Handle parameter list
     if (parser.current_token == TLPAREN) {
-        if (match(TLPAREN) == ERROR) {
-            parse_error("Error parsing left parenthesis");
-            return ERROR;
-        }
+        match(TLPAREN);
 
-        // Parse first parameter
-        if (parser.current_token != TNAME) {
-            parse_error("Parameter name expected");
-            return ERROR;
-        }
-        match(TNAME);
-
-        // Parse additional parameters
-        while (parser.current_token == TCOMMA) {
-            if (match(TCOMMA) == ERROR) {
-                parse_error("Error parsing comma");
-                return ERROR;
-            }
-            
+        // Parse parameter groups
+        do {
+            // Parse parameter names
             if (parser.current_token != TNAME) {
-                parse_error("Parameter name expected after comma");
+                parse_error("Parameter name expected");
                 return ERROR;
             }
             match(TNAME);
-        }
 
-        // Parse parameter type
-        if (match(TCOLON) == ERROR) {
-            parse_error("Expected ':' after parameter names");
-            return ERROR;
-        }
+            while (parser.current_token == TCOMMA) {
+                match(TCOMMA);
+                if (parser.current_token != TNAME) {
+                    parse_error("Parameter name expected after comma");
+                    return ERROR;
+                }
+                match(TNAME);
+            }
 
-        if (parse_type() == ERROR) {
-            parse_error("Invalid parameter type");
-            return ERROR;
-        }
+            // Parse parameter type
+            if (match(TCOLON) == ERROR) {
+                parse_error("Expected ':' after parameter names");
+                return ERROR;
+            }
+
+            if (parse_type() == ERROR) {
+                parse_error("Invalid parameter type");
+                return ERROR;
+            }
+
+        } while (parser.current_token == TSEMI && match(TSEMI) == NORMAL); // Continue if more parameter groups
 
         if (match(TRPAREN) == ERROR) {
             parse_error("Expected ')' after parameters");
@@ -857,19 +847,17 @@ static int parse_procedure(void) {
         }
     }
 
-    // Match semicolon after procedure header
+    // Parse procedure body
     if (match(TSEMI) == ERROR) {
         parse_error("Expected semicolon after procedure header");
         return ERROR;
     }
 
-    // Parse procedure body
     if (parse_block() == ERROR) {
         parse_error("Invalid procedure body");
         return ERROR;
     }
 
-    // Match final semicolon after procedure body
     if (match(TSEMI) == ERROR) {
         parse_error("Expected semicolon after procedure body");
         return ERROR;

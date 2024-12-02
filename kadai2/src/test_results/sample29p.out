@@ -1,130 +1,173 @@
-programNAME ;
- varNAME :integer;
-NAME :array[NUMBER ]ofchar;
-procedureNAME (NAME ,NAME ,NAME ,NAME :integer);
-varNAME ,NAME ,NAME :integer;
+program sample29;
+
+var
+unused1 : integer;
+    UnusedArrayForTest : array [ 200 ] of char;
+    procedure gcmlcm ( m , n , gc , lc : integer );
+    
+    var
+    a , b , r : integer;
+        
+    begin
+    a := m;
+        b := n;
+        while b <> 0 do
+    begin
+    r := a - ( a div b ) * b;
+        a := b;
+        b := r
+    end;
+    gc := a;
+    lc := ( m div gc ) * n
+end;
+procedure abs ( a , b : integer );
+
 begin
-    NAME :=NAME ;
-     NAME :=NAME ;
-     whileNAME <>NUMBER do
-         begin
-             NAME :=NAME -(NAME divNAME )*NAME ;
-             NAME :=NAME ;
-             NAME :=NAME end
-         ;
-         NAME :=NAME ;
-         NAME :=(NAME divNAME )*NAME end
-     ;
-     procedureNAME (NAME ,NAME :integer);
+if a < 0 then b := - a else b := a
+end;
+procedure gcm ( a , b , gc : integer );
+
+var
+lc , aa , bb : integer;
+    
+begin
+if ( a = 0 ) or ( b = 0 ) then gc := 1 else
+begin
+call abs ( a , aa );
+    call abs ( b , bb );
+    call gcmlcm ( aa , bb , gc , lc )
+end
+end;
+procedure lcm ( a , b , lc : integer );
+
+var
+gc , aa , bb : integer;
+    
+begin
+if ( a = 0 ) or ( b = 0 ) then lc := 1 else
+begin
+call abs ( a , aa );
+    call abs ( b , bb );
+    call gcmlcm ( aa , bb , gc , lc )
+end
+end;
+
+var
+unusedchar : char;
+    procedure reduce ( a1 , a2 : integer );
+    
+    var
+    gc : integer;
+        
     begin
-        ifNAME <NUMBER thenNAME :=-NAME elseNAME :=NAME end
-     ;
-     procedureNAME (NAME ,NAME ,NAME :integer);
-    varNAME ,NAME ,NAME :integer;
+    if a1 = 0 then
     begin
-        if(NAME =NUMBER )or(NAME =NUMBER )thenNAME :=NUMBER elsebegin
-            callNAME (NAME ,NAME );
-            callNAME (NAME ,NAME );
-            callNAME (NAME ,NAME ,NAME ,NAME )end
-        end
-    ;
-    procedureNAME (NAME ,NAME ,NAME :integer);
-    varNAME ,NAME ,NAME :integer;
+    a2 := 1;
+        return
+    end;
+    if a2 = 0 then
+begin
+a1 := 1;
+    return
+end;
+if a2 < 0 then
+begin
+a1 := - a1;
+    a2 := - a2
+end;
+call gcm ( a1 , a2 , gc );
+a1 := a1 div gc;
+a2 := a2 div gc
+end;
+procedure sum ( x1 , x2 , y1 , y2 : integer );
+
+var
+lc , y11 : integer;
+    
+begin
+call lcm ( x2 , y2 , lc );
+    x1 := x1 * ( lc div x2 );
+    y11 := y1 * ( lc div y2 );
+    x1 := x1 + y11;
+    x2 := lc;
+    call reduce ( x1 , x2 )
+end;
+procedure sub ( x1 , x2 , y1 , y2 : integer );
+
+var
+lc , y11 : integer;
+    
+begin
+call sum ( x1 , x2 , - y1 , y2 )
+end;
+procedure mult ( x1 , x2 , y1 , y2 : integer );
+
+var
+gc , y22 , y11 : integer;
+    
+begin
+call gcm ( x1 , y2 , gc );
+    x1 := x1 div gc;
+    y22 := y2 div gc;
+    call gcm ( x2 , y1 , gc );
+    x2 := x2 div gc;
+    y11 := y1 div gc;
+    x1 := x1 * y11;
+    x2 := x2 * y22;
+    call reduce ( x1 , x2 )
+end;
+procedure divide ( x1 , x2 , y1 , y2 : integer );
+
+begin
+call mult ( x1 , x2 , y2 , y1 )
+end;
+
+var
+unusedarray : array [ 100 ] of char;
+    procedure printfinal ( a , b : integer );
+    
+begin
+if a = 0 then writeln ( STRING , a ) else if b = 1 then writeln ( STRING , a ) else writeln ( STRING , a , STRING , b )
+end;
+procedure printtemp ( a , b : integer );
+
+begin
+if a = 0 then writeln ( STRING , a ) else if b = 1 then writeln ( STRING , a ) else writeln ( STRING , a , STRING , b )
+end;
+
+var
+x1 , x2 , y1 , y2 : integer;
+    
+    var
+    com : char;
+        endflag : boolean;
+        
     begin
-        if(NAME =NUMBER )or(NAME =NUMBER )thenNAME :=NUMBER elsebegin
-            callNAME (NAME ,NAME );
-            callNAME (NAME ,NAME );
-            callNAME (NAME ,NAME ,NAME ,NAME )end
-        end
-    ;
-    varNAME :char;
-    procedureNAME (NAME ,NAME :integer);
-    varNAME :integer;
+    writeln ( STRING );
+        x1 := 0;
+        x2 := 1;
+        endflag := false;
+        while not endflag do
     begin
-        ifNAME =NUMBER thenbegin
-            NAME :=NUMBER ;
-             returnend
-        ;
-        ifNAME =NUMBER thenbegin
-            NAME :=NUMBER ;
-             returnend
-        ;
-        ifNAME <NUMBER thenbegin
-            NAME :=-NAME ;
-             NAME :=-NAME end
-         ;
-         callNAME (NAME ,NAME ,NAME );
-        NAME :=NAME divNAME ;
-         NAME :=NAME divNAME end
-     ;
-     procedureNAME (NAME ,NAME ,NAME ,NAME :integer);
-    varNAME ,NAME :integer;
+    writeln ( STRING );
+        readln ( com , y1 );
+        y2 := 1;
+        if ( com = STRING ) or ( com = STRING ) then
     begin
-        callNAME (NAME ,NAME ,NAME );
-        NAME :=NAME *(NAME divNAME );
-        NAME :=NAME *(NAME divNAME );
-        NAME :=NAME +NAME ;
-         NAME :=NAME ;
-         callNAME (NAME ,NAME )end
-    ;
-    procedureNAME (NAME ,NAME ,NAME ,NAME :integer);
-    varNAME ,NAME :integer;
-    begin
-        callNAME (NAME ,NAME ,-NAME ,NAME )end
-    ;
-    procedureNAME (NAME ,NAME ,NAME ,NAME :integer);
-    varNAME ,NAME ,NAME :integer;
-    begin
-        callNAME (NAME ,NAME ,NAME );
-        NAME :=NAME divNAME ;
-         NAME :=NAME divNAME ;
-         callNAME (NAME ,NAME ,NAME );
-        NAME :=NAME divNAME ;
-         NAME :=NAME divNAME ;
-         NAME :=NAME *NAME ;
-         NAME :=NAME *NAME ;
-         callNAME (NAME ,NAME )end
-    ;
-    procedureNAME (NAME ,NAME ,NAME ,NAME :integer);
-    begin
-        callNAME (NAME ,NAME ,NAME ,NAME )end
-    ;
-    varNAME :array[NUMBER ]ofchar;
-    procedureNAME (NAME ,NAME :integer);
-    begin
-        ifNAME =NUMBER thenwriteln(STRING ,NAME )elseifNAME =NUMBER thenwriteln(STRING ,NAME )elsewriteln(STRING ,NAME ,STRING ,NAME )end
-    ;
-    procedureNAME (NAME ,NAME :integer);
-    begin
-        ifNAME =NUMBER thenwriteln(STRING ,NAME )elseifNAME =NUMBER thenwriteln(STRING ,NAME )elsewriteln(STRING ,NAME ,STRING ,NAME )end
-    ;
-    varNAME ,NAME ,NAME ,NAME :integer;
-    varNAME :char;
-    NAME :boolean;
-    begin
-        writeln(STRING );
-        NAME :=NUMBER ;
-         NAME :=NUMBER ;
-         NAME :=false;
-        whilenotNAME do
-             begin
-                 writeln(STRING );
-                readln(NAME ,NAME );
-                NAME :=NUMBER ;
-                 if(NAME =STRING )or(NAME =STRING )thenbegin
-                    NAME :=NAME ;
-                     NAME :=NAME end
-                 elseifNAME =STRING thencallNAME (NAME ,NAME ,NAME ,NAME )elseifNAME =STRING thencallNAME (NAME ,NAME ,NAME ,NAME )elseifNAME =STRING thencallNAME (NAME ,NAME ,NAME ,NAME )elseifNAME =STRING thencallNAME (NAME ,NAME ,NAME ,NAME )elseif(NAME =STRING )or(NAME =STRING )thenNAME :=trueelsebegin
-                    writeln;
-                    writeln(STRING );
-                    writeln(STRING );
-                    writeln(STRING );
-                    writeln(STRING );
-                    writeln(STRING );
-                    writeln(STRING );
-                    writeln(STRING );
-                    writelnend
-                ;
-                ifNAME thencallNAME (NAME ,NAME )elsecallNAME (NAME ,NAME )end
-            end
-        .
+    x1 := y1;
+        x2 := y2
+    endelse if com = STRING then call sum ( x1 , x2 , y1 , y2 ) else if com = STRING then call sub ( x1 , x2 , y1 , y2 ) else if com = STRING then call mult ( x1 , x2 , y1 , y2 ) else if com = STRING then call divide ( x1 , x2 , y1 , y2 ) else if ( com = STRING ) or ( com = STRING ) then endflag := true else
+begin
+writeln;
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln ( STRING );
+    writeln
+end;
+if endflag then call printfinal ( x1 , x2 ) else call printtemp ( x1 , x2 )
+end
+end.
