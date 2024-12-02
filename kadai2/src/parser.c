@@ -291,6 +291,12 @@ static int parse_statement_list(void) {
     debug_printf("Entering parse_statement_list with token: %d at line: %d\n", 
                 parser.current_token, parser.line_number);
 
+    // Handle empty block case
+    if (parser.current_token == TEND) {
+        debug_printf("Empty statement list detected\n");
+        return NORMAL;
+    }
+    
     // Parse first statement
     if (parse_statement() == ERROR) return ERROR;
 
@@ -701,56 +707,85 @@ static int parse_factor(void) {
     debug_printf("Exiting parse_factor\n");
     return NORMAL;
 }
+
 static int parse_comparison(void) {
     debug_printf("Entering parse_comparison with token: %d\n", parser.current_token);
     
+    // Keep existing parentheses handling
     if (parser.current_token == TLPAREN) {
-        match(TLPAREN);
-        parse_expression();
+        if (match(TLPAREN) == ERROR) return ERROR;
+        if (parse_expression() == ERROR) return ERROR;
         
-        // Handle comparison operators
+        // First check if we have a comparison operator after the expression
         if (parser.current_token == TEQUAL || 
             parser.current_token == TNOTEQ ||
             parser.current_token == TGR ||
             parser.current_token == TGREQ ||
             parser.current_token == TLE ||
             parser.current_token == TLEEQ) {
-            match(parser.current_token);
-            // Handle character literals after operator
+            if (match(parser.current_token) == ERROR) return ERROR;
+            
+            // Handle right side of comparison
             if (parser.current_token == TSTRING || parser.current_token == TCHAR) {
-                match(parser.current_token);
+                if (match(parser.current_token) == ERROR) return ERROR;
             } else {
-                parse_expression();
+                if (parse_expression() == ERROR) return ERROR;
+            }
+            // Match closing paren after comparison is complete
+            if (match(TRPAREN) == ERROR) return ERROR;
+        } else {
+            // No comparison operator found, just match closing paren
+            if (match(TRPAREN) == ERROR) return ERROR;
+            
+            // Now check for comparison operator after the parenthesized expression
+            if (parser.current_token == TEQUAL || 
+                parser.current_token == TNOTEQ ||
+                parser.current_token == TGR ||
+                parser.current_token == TGREQ ||
+                parser.current_token == TLE ||
+                parser.current_token == TLEEQ) {
+                if (match(parser.current_token) == ERROR) return ERROR;
+                if (parse_expression() == ERROR) return ERROR;
             }
         }
-        match(TRPAREN);
     } else {
-        parse_expression();
-        // Handle same operators outside parentheses
+        // Keep existing non-parentheses handling
+        if (parse_expression() == ERROR) return ERROR;
+        
         if (parser.current_token == TEQUAL || 
             parser.current_token == TNOTEQ ||
             parser.current_token == TGR ||
             parser.current_token == TGREQ ||
             parser.current_token == TLE ||
             parser.current_token == TLEEQ) {
-            match(parser.current_token);
+            if (match(parser.current_token) == ERROR) return ERROR;
+            
             if (parser.current_token == TSTRING || parser.current_token == TCHAR) {
-                match(parser.current_token);
+                if (match(parser.current_token) == ERROR) return ERROR;
             } else {
-                parse_expression();
+                if (parse_expression() == ERROR) return ERROR;
             }
         }
     }
     
     debug_printf("Exiting parse_comparison with token: %d\n", parser.current_token);
+    return NORMAL;
 }
 
 static int parse_condition(void) {
-    parse_comparison();
+    debug_printf("Entering parse_condition with token: %d\n", parser.current_token);
+
+    // Parse first comparison
+    if (parse_comparison() == ERROR) return ERROR;
+
+    // Handle additional conditions with AND/OR
     while (parser.current_token == TOR || parser.current_token == TAND) {
-        match(parser.current_token);
-        parse_comparison();
+        if (match(parser.current_token) == ERROR) return ERROR;
+        if (parse_comparison() == ERROR) return ERROR;
     }
+
+    debug_printf("Exiting parse_condition with token: %d\n", parser.current_token);
+    return NORMAL;
 }
 
 void parse_error(const char* message) {
@@ -779,16 +814,17 @@ static int match(int expected_token) {
     if (parser.current_token == expected_token) {
         parser.previous_token = parser.current_token;
         int next_token = scan();
-        if (next_token == -1 && expected_token != TDOT) { // Allow EOF after final dot
+        if (next_token == -1 && expected_token != TDOT) {
             parse_error("Unexpected end of file");
-            return NORMAL;
+            return ERROR;  // Changed from NORMAL to ERROR
         }
         parser.current_token = next_token;
         parser.line_number = get_linenum();
-    } else {
-        parse_error("Unexpected token");
-        return ERROR;
-    }
+        return NORMAL;    // Add explicit return NORMAL
+    } 
+    
+    parse_error("Unexpected token");
+    return ERROR;
 }
 
 static int parse_procedure(void) {
