@@ -1,5 +1,4 @@
 program Write;
-
 begin
-writeln ( STRING )
+    writeln ( 'It's OK?' )
 end.

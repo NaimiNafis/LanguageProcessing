@@ -61,6 +61,7 @@
     "stdio.h": "c",
     "token.h": "c",
     "pretty.h": "c",
-    "scan.h": "c"
+    "scan.h": "c",
+    "debug.h": "c"
   }
 }

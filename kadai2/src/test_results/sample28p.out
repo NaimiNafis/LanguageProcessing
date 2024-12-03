@@ -1,16 +1,13 @@
 program sample28p;
-procedure p;
-
+    procedure p;
+    begin
+        writeln ( 'Hello!' )
+    end;
+            procedure q;
 begin
-writeln ( STRING )
+    writeln ( 'Everyone!' )
 end;
-procedure q;
-
 begin
-writeln ( STRING )
-end;
-
-begin
-call p;
+    call p;
     call q
 end.

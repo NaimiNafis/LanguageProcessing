@@ -1,9 +1,12 @@
-program ifst;
+program NAME;
 
-var
-ch : char;
-    
+    var
+        NAME : char;
+        
 begin
-readln ( ch );
-    if ch = STRING then writeln ( STRING ) else writeln ( STRING )
-end.
+            readln ( NAME );
+            if NAME = NAME then
+                writeln ( NAME )
+            else
+                writeln ( NAME )
+            end .

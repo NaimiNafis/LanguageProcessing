@@ -1,7 +1,5 @@
 program sample24a;
-
-var
-a : integer;
+var a : integer;
     
 begin
 a := 1;

@@ -1,1 +1,1 @@
-Syntax error at line 32: Unexpected end of file (token: 1)
+Syntax error at line 32: Missing semicolon between statements (token: -1)

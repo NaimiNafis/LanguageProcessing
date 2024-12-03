@@ -1,1 +1,1 @@
-Syntax error at line 2: Unexpected end of file (token: 1)
+Syntax error at line 2: Expected ':' after variable names (token: -1)

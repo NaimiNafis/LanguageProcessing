@@ -44,6 +44,7 @@ void init_parser(void) {
     parser.line_number = get_linenum();
     parser.first_error_line = 0;
     parser.previous_token = 0;
+    parser.previous_previous_token = 0;  // Initialize new field
 }
 
 // Main program parsing
@@ -87,25 +88,26 @@ int parse_program(void) {
 }
 
 static int parse_block(void) {
+    debug_printf("\n=== Entering parse_block ===\n");
+    debug_printf("Current token: %d\n", parser.current_token);
+    debug_printf("Previous token: %d\n", parser.previous_token);
+    debug_printf("Previous-previous token: %d\n", parser.previous_previous_token);
+
+    // Keep existing debug print
     debug_printf("Entering parse_block\n");
 
-    // Handle VAR and PROCEDURE declarations
+    // Existing VAR and PROCEDURE handling stays exactly the same
     while (parser.current_token == TVAR || parser.current_token == TPROCEDURE) {
         if (parser.current_token == TVAR) {
-            // Match VAR keyword once
             if (match(TVAR) == ERROR) {
                 parse_error("Error parsing var keyword");
                 return ERROR;
             }
 
-            // Parse variable declarations until we hit BEGIN or PROCEDURE
             while (parser.current_token == TNAME) {
                 debug_printf("Parsing variable declaration starting with: %d\n", parser.current_token);
-                
-                // Parse first variable name
                 match(TNAME);
 
-                // Parse additional variable names
                 while (parser.current_token == TCOMMA) {
                     if (match(TCOMMA) == ERROR) {
                         parse_error("Error parsing comma in variable list");
@@ -119,7 +121,6 @@ static int parse_block(void) {
                     match(TNAME);
                 }
 
-                // Parse type declaration
                 if (match(TCOLON) == ERROR) {
                     parse_error("Expected ':' after variable names");
                     return ERROR;
@@ -137,7 +138,6 @@ static int parse_block(void) {
             }
         }
         
-        // Handle procedure declarations
         if (parser.current_token == TPROCEDURE) {
             if (parse_procedure() == ERROR) {
                 parse_error("Failed to parse procedure declaration");
@@ -146,24 +146,37 @@ static int parse_block(void) {
         }
     }
 
-    // Parse begin..end block
+    // Add new debug print before BEGIN
+    debug_printf("Before BEGIN match in parse_block\n");
+    debug_printf("Current token: %d\n", parser.current_token);
+
     if (match(TBEGIN) == ERROR) {
         parse_error("Expected 'begin'");
         return ERROR;
     }
+    
+    // Add new debug print after BEGIN
+    debug_printf("After BEGIN match in parse_block\n");
+    debug_printf("Current token: %d\n", parser.current_token);
+    
+    parser.previous_token = TBEGIN;
 
     if (parse_statement_list() == ERROR) {
         parse_error("Failed to parse statement list");
         return ERROR;
     }
 
+    debug_printf("Before END match in parse_block\n");
+    
     if (match(TEND) == ERROR) {
         parse_error("Expected 'end'");
         return ERROR;
     }
 
+    // Keep existing exit debug print
     debug_printf("Exiting parse_block with token: %d at line: %d\n", 
                 parser.current_token, parser.line_number);
+    debug_printf("=== Exiting parse_block ===\n\n");
     return NORMAL;
 }
 
@@ -290,38 +303,37 @@ static int parse_parameter_list(void) {
 static int parse_statement_list(void) {
     debug_printf("Entering parse_statement_list with token: %d at line: %d\n", 
                 parser.current_token, parser.line_number);
+    debug_printf("Previous token: %d, Previous-previous token: %d\n",
+                parser.previous_token, parser.previous_previous_token);
 
-    // Handle empty block case
-    if (parser.current_token == TEND) {
-        return NORMAL;
-    }
-
-    // Parse statements until end or else
     while (parser.current_token != TEND && 
            parser.current_token != TELSE && 
            parser.current_token != -1) {
            
-        // Parse statement
         if (parse_statement() == ERROR) return ERROR;
 
-        // Handle statement termination
+        debug_printf("After statement: current=%d, prev=%d, prev_prev=%d\n",
+                    parser.current_token, parser.previous_token, 
+                    parser.previous_previous_token);
+
+        // Modified semicolon handling
         if (parser.current_token != TEND && 
-            parser.current_token != TELSE) {
-            // Need semicolon unless at end/else
+            parser.current_token != TELSE &&
+            !(parser.previous_token == TBEGIN && 
+              parser.previous_previous_token == TDO)) {
+            
+            debug_printf("Checking semicolon: current=%d at line %d\n", 
+                        parser.current_token, parser.line_number);
+
             if (parser.current_token != TSEMI) {
-                parse_error("Missing semicolon");
+                debug_printf("Missing semicolon before token: %d\n", 
+                            parser.current_token);
+                parse_error("Missing semicolon between statements");
                 return ERROR;
             }
             if (match(TSEMI) == ERROR) return ERROR;
-
-            // Skip extra semicolons
-            while (parser.current_token == TSEMI) {
-                if (match(TSEMI) == ERROR) return ERROR;
-            }
         }
     }
-
-    debug_printf("Exiting parse_statement_list with token: %d\n", parser.current_token);
     return NORMAL;
 }
 
@@ -481,21 +493,40 @@ static int parse_if_statement(void) {
 }
 
 static int parse_while_statement(void) {
-    debug_printf("Entering parse_while_statement\n");
+    debug_printf("\n=== Entering parse_while_statement ===\n");
+    debug_printf("Token state: current=%d, prev=%d, prev_prev=%d\n",
+                parser.current_token, parser.previous_token, 
+                parser.previous_previous_token);
     
     if (match(TWHILE) == ERROR) return ERROR;
+    
     if (parse_condition() == ERROR) return ERROR;
+    
     if (match(TDO) == ERROR) return ERROR;
+    debug_printf("After DO: token=%d, prev=%d, prev_prev=%d\n",
+                parser.current_token, parser.previous_token,
+                parser.previous_previous_token);
+    
+    // Save token state before BEGIN
+    int saved_prev = parser.previous_token;
+    int saved_prev_prev = parser.previous_previous_token;
+    parser.previous_token = TDO;
     
     if (parser.current_token == TBEGIN) {
-        if (match(TBEGIN) == ERROR) return ERROR;
-        if (parse_statement_list() == ERROR) return ERROR;
-        if (match(TEND) == ERROR) return ERROR;
+        debug_printf("Found BEGIN after DO, tokens: current=%d, prev=%d\n",
+                    parser.current_token, parser.previous_token);
+        
+        // No need to update token state here
+        if (parse_block() == ERROR) return ERROR;
     } else {
         if (parse_statement() == ERROR) return ERROR;
     }
     
-    debug_printf("Exiting parse_while_statement\n");
+    // Restore token state after block/statement
+    parser.previous_token = saved_prev;
+    parser.previous_previous_token = saved_prev_prev;
+    
+    debug_printf("=== Exiting parse_while_statement ===\n\n");
     return NORMAL;
 }
 
@@ -822,28 +853,28 @@ void parse_error(const char* message) {
     longjmp(parser.error_jmp, parser.first_error_line);
 }
 
-static int match(int expected_token) {
-    debug_printf("Matching token: %d, expected token: %d at line: %d\n", 
-                 parser.current_token, expected_token, parser.line_number);
-    
-    if (parser.current_token == -1) {
-        parse_error("Unexpected end of file");
-        return ERROR;
-    }
 
+static int match(int expected_token) {
+    debug_printf("Matching token: %d, expected: %d at line: %d\n", 
+                parser.current_token, expected_token, parser.line_number);
+    
     if (parser.current_token == expected_token) {
+        parser.previous_previous_token = parser.previous_token;
         parser.previous_token = parser.current_token;
+        debug_printf("Token history: current->prev->prev_prev: %d->%d->%d\n",
+                    parser.current_token, parser.previous_token,
+                    parser.previous_previous_token);
+        
         int next_token = scan();
-        if (next_token == -1 && expected_token != TDOT) {
-            parse_error("Unexpected end of file");
-            return ERROR;  // Changed from NORMAL to ERROR
-        }
         parser.current_token = next_token;
         parser.line_number = get_linenum();
-        return NORMAL;    // Add explicit return NORMAL
-    } 
+        
+        debug_printf("After match: current=%d, prev=%d, prev_prev=%d\n",
+                    parser.current_token, parser.previous_token,
+                    parser.previous_previous_token);
+        return NORMAL;
+    }
     
-    parse_error("Unexpected token");
     return ERROR;
 }
 

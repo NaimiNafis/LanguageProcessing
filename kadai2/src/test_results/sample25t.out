@@ -1,14 +1,12 @@
 program IfstTC;
-
-var
-ch : char;
-    int : integer;
-    boolx , booly : boolean;
-    
+    var
+        ch : char;
+int : integer;
+boolx , booly : boolean;
 begin
-boolx := true;
+    boolx := true;
     booly := false;
-    ch := STRING;
+    ch :='a';
     int := 66;
     write ( integer ( ch ) );
     write ( integer ( int ) );

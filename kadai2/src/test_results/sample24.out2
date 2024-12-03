@@ -1,5 +1,5 @@
-program Write;
+program NAME;
 
 begin
-writeln ( STRING )
-end.
+    writeln ( NAME )
+end .
