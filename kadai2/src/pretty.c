@@ -22,8 +22,10 @@ static void print_indent(void) {
 void init_pretty_printer(void) {
     current_indent = 0;
     need_space = 0;
-    begin_end_count = 0;
     previous_token = 0;
+    in_procedure = 0;
+    in_procedure_body = 0;
+    in_nested_block = 0; 
 }
 
 void pretty_print_token(int token) {
@@ -31,7 +33,7 @@ void pretty_print_token(int token) {
         // Program structure
         case TPROGRAM:
             printf("program ");
-            current_indent = 0;
+            current_indent = 0;  // Global level, no indentation
             need_space = 0;
             break;
             
@@ -47,15 +49,15 @@ void pretty_print_token(int token) {
         case TVAR:
             printf("\n");
             if (in_procedure_body) {
-                current_indent = 12;  // Level 2 indentation + 4 spaces
+                current_indent = 12;  // Inside procedure body, Level 3 indentation (12 spaces)
             } else if (in_procedure) {
-                current_indent = 8;   // Level 1 indentation + 4 spaces
+                current_indent = 8;   // Inside procedure declaration, Level 2 indentation (8 spaces)
             } else {
-                current_indent = 4;   // Program level indentation
+                current_indent = 4;   // Program-level var declaration, Level 1 indentation (4 spaces)
             }
             print_indent();
             printf("var\n");
-            current_indent += 4;
+            current_indent += 4;  // Add 4 spaces for the variables inside the var block
             print_indent();
             need_space = 0;
             break;
@@ -63,36 +65,31 @@ void pretty_print_token(int token) {
         // Compound statements
         case TBEGIN:
             printf("\n");
-            if (begin_end_count == 0) {
-                current_indent = 4;
+            if (in_procedure_body) {
+                current_indent = 8;  // Inside procedure body, Level 2 indentation (8 spaces)
             } else if (in_procedure) {
-                current_indent = 8;
-                in_procedure_body = 1;
-                in_procedure = 0;
+                current_indent = 4;  // Inside procedure, Level 1 indentation (4 spaces)
             } else {
-                current_indent += 4;  // Nested blocks get additional indentation
-                in_nested_block = 1;
+                current_indent = 0;  // Global block, no indentation
             }
             print_indent();
             printf("begin\n");
-            current_indent += 4;
+            current_indent += 4;   // Increase indentation for inner block
             print_indent();
-            begin_end_count++;
+            in_nested_block = 1;    // Mark that we're inside a nested block
             need_space = 0;
             break;
 
         case TEND:
-            begin_end_count--;
-            current_indent -= 4;
+            if (in_nested_block) {
+                current_indent -= 4; // Decrease indentation after finishing a nested block
+                in_nested_block = 0;  // Mark that we've exited the nested block
+            }
             printf("\n");
             print_indent();
             printf("end");
-            if (begin_end_count == 0) {
-                in_procedure_body = 0;
-                current_indent = 0;
-            } else if (in_nested_block) {
-                current_indent -= 4;
-                in_nested_block = 0;
+            if (!in_procedure_body) {
+                current_indent = 0;  // Reset indentation if we've exited a procedure or main body
             }
             need_space = 1;
             break;
@@ -159,7 +156,7 @@ void pretty_print_token(int token) {
         // Punctuation
         case TSEMI:
             printf(";");
-            if (begin_end_count > 0) {
+            if (in_procedure_body || begin_end_count > 0) {
                 printf("\n");
                 print_indent();
             }
