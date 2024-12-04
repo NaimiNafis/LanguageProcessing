@@ -3,13 +3,20 @@
 #include "scan.h"
 #include "token.h"
 
+// Constants for indentation levels
+#define GLOBAL_LEVEL 0
+#define PROCEDURE_LEVEL 4
+#define NESTED_LEVEL 8
+#define VAR_DECLARATION_LEVEL 4
+
 static int current_indent = 0;
 static int need_space = 0;
-static int begin_end_count = 0;
-static int previous_token = 0;
+static int block_level = 0;
 static int in_procedure = 0;
-static int in_procedure_body = 0;
-static int in_nested_block = 0; 
+static int in_procedure_header = 0;
+static int in_loop_or_if = 0;
+static int last_printed_newline = 0;
+
 extern char string_attr[];
 extern int num_attr;
 
@@ -19,107 +26,146 @@ static void print_indent(void) {
     }
 }
 
-void init_pretty_printer(void) {
-    current_indent = 0;
-    need_space = 0;
-    previous_token = 0;
-    in_procedure = 0;
-    in_procedure_body = 0;
-    in_nested_block = 0; 
+static void print_newline_if_needed(void) {
+    if (!last_printed_newline) {
+        printf("\n");
+        last_printed_newline = 1;
+    }
 }
+
+
+void init_pretty_printer(void) {
+    current_indent = GLOBAL_LEVEL;
+    need_space = 0;
+    block_level = 0;
+    in_procedure = 0;
+    in_procedure_header = 0;
+    in_loop_or_if = 0;
+    last_printed_newline = 0;
+}
+
 
 void pretty_print_token(int token) {
     switch (token) {
         // Program structure
         case TPROGRAM:
+            current_indent = GLOBAL_LEVEL;
             printf("program ");
-            current_indent = 0;  // Global level, no indentation
             need_space = 0;
             break;
-            
+
         case TPROCEDURE:
-            printf("\n");
-            current_indent = 4;  // Level 1 indentation
+            print_newline_if_needed();
+            current_indent = PROCEDURE_LEVEL;
             print_indent();
             printf("procedure ");
             in_procedure = 1;
+            in_procedure_header = 1;
             need_space = 0;
-            break;
-            
-        case TVAR:
-            printf("\n");
-            if (in_procedure_body) {
-                current_indent = 12;  // Inside procedure body, Level 3 indentation (12 spaces)
-            } else if (in_procedure) {
-                current_indent = 8;   // Inside procedure declaration, Level 2 indentation (8 spaces)
-            } else {
-                current_indent = 4;   // Program-level var declaration, Level 1 indentation (4 spaces)
-            }
-            print_indent();
-            printf("var\n");
-            current_indent += 4;  // Add 4 spaces for the variables inside the var block
-            print_indent();
-            need_space = 0;
+            last_printed_newline = 0;
             break;
 
-        // Compound statements
-        case TBEGIN:
-            printf("\n");
-            if (in_procedure_body) {
-                current_indent = 8;  // Inside procedure body, Level 2 indentation (8 spaces)
-            } else if (in_procedure) {
-                current_indent = 4;  // Inside procedure, Level 1 indentation (4 spaces)
+        case TVAR:
+            print_newline_if_needed();
+            if (!in_procedure_header && current_indent == GLOBAL_LEVEL) {
+                printf("    var\n");  // Direct indentation for global var
+                current_indent = 4;
             } else {
-                current_indent = 0;  // Global block, no indentation
+                printf("\n");
+                if (in_procedure_header) {
+                    current_indent = PROCEDURE_LEVEL;
+                } else if (in_procedure) {
+                    current_indent = NESTED_LEVEL;
+                } else {
+                    current_indent = VAR_DECLARATION_LEVEL;
+                }
+                print_indent();
+                printf("var\n");
             }
+            current_indent += 4;
             print_indent();
-            printf("begin\n");
-            current_indent += 4;   // Increase indentation for inner block
-            print_indent();
-            in_nested_block = 1;    // Mark that we're inside a nested block
             need_space = 0;
+            last_printed_newline = 1;
+            break;
+
+        // compound statements
+        case TBEGIN:
+            print_newline_if_needed();
+            if (in_loop_or_if) {
+                current_indent += 4;
+                print_indent();  // Use current indentation level
+                printf("begin\n");
+                current_indent += 4;  // Increase indent for block contents
+            } else if (in_procedure) {
+                current_indent = PROCEDURE_LEVEL;
+                print_indent();
+                printf("begin\n");
+                current_indent += 4;
+            } else {
+                current_indent = GLOBAL_LEVEL;
+                print_indent();
+                printf("begin\n");
+                current_indent += 4;
+            }
+            block_level++;
+            print_indent();
+            need_space = 0;
+            last_printed_newline = 1;
             break;
 
         case TEND:
-            if (in_nested_block) {
-                current_indent -= 4; // Decrease indentation after finishing a nested block
-                in_nested_block = 0;  // Mark that we've exited the nested block
-            }
+            block_level--;
+            current_indent -= 4;
             printf("\n");
             print_indent();
             printf("end");
-            if (!in_procedure_body) {
-                current_indent = 0;  // Reset indentation if we've exited a procedure or main body
+            if (block_level == 0) {
+                current_indent = GLOBAL_LEVEL;
+                in_procedure = 0;
+                in_loop_or_if = 0;
             }
             need_space = 1;
+            last_printed_newline = 0;
             break;
 
         // Statements
         case TIF:
+            in_loop_or_if = 1;
+            print_indent();
             printf("if ");
             need_space = 0;
             break;
 
         case TTHEN:
             printf(" then ");
+            current_indent += 4;
             need_space = 0;
             break;
 
         case TELSE:
+            current_indent -= 4;
             printf("\n");
             print_indent();
             printf("else ");
+            current_indent += 4;
             need_space = 0;
             break;
 
         case TWHILE:
+            in_loop_or_if = 1;
+            print_indent();
             printf("while ");
             need_space = 0;
             break;
 
         case TDO:
+            print_newline_if_needed();
             printf(" do");
+            if (!in_loop_or_if) {
+                current_indent += 4;
+            }
             need_space = 0;
+            last_printed_newline = 0;
             break;
 
         case TCALL:
@@ -156,11 +202,23 @@ void pretty_print_token(int token) {
         // Punctuation
         case TSEMI:
             printf(";");
-            if (in_procedure_body || begin_end_count > 0) {
+            if (block_level > 0) {
+                printf("\n");
+                if (in_loop_or_if) {
+                    current_indent = block_level * 4;
+                }
+                print_indent();
+            } else if (in_procedure_header) {
+                printf("\n");
+                current_indent = PROCEDURE_LEVEL;
+                print_indent();
+                in_procedure_header = 0;
+            } else {
                 printf("\n");
                 print_indent();
             }
             need_space = 0;
+            last_printed_newline = 1;
             break;
 
         case TCOMMA:
@@ -237,7 +295,6 @@ void pretty_print_token(int token) {
             need_space = 1;
             break;
     }
-    previous_token = token;
 }
 
 void pretty_print_program(void) {
