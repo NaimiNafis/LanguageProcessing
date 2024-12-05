@@ -1,10 +1,10 @@
 program sample28p;
     procedure p;
-        begin
+    begin
         writeln ( 'Hello!' )
     end;
     procedure q;
-        begin
+    begin
         writeln ( 'Everyone!' )
     end;
 begin

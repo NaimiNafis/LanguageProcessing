@@ -62,6 +62,7 @@
     "token.h": "c",
     "pretty.h": "c",
     "scan.h": "c",
-    "debug.h": "c"
+    "debug.h": "c",
+    "debug_pretty.h": "c"
   }
 }

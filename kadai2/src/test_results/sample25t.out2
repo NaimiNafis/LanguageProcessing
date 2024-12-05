@@ -1,9 +1,9 @@
 program IfstTC;
     var
         ch : char;
-        int : integer;
-        boolx , booly : boolean;
-        begin
+int : integer;
+boolx , booly : boolean;
+begin
     boolx := true;
     booly := false;
     ch := 'a';

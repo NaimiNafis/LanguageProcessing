@@ -1,7 +1,7 @@
 program assignchar;
     var
         x , y : char;
-        begin
+begin
     x := 'X';
     y := 'Y'
 end.

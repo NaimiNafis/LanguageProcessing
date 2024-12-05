@@ -1,7 +1,7 @@
 program assignboolean;
     var
         x , y : boolean;
-        begin
+begin
     x := true;
     y := false;
     

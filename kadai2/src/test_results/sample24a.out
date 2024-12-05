@@ -1,7 +1,7 @@
 program sample24a;
     var
         a : integer;
-        begin
+begin
     a := 1;
     writeln ( a );
     writeln ( ''' : 3 )

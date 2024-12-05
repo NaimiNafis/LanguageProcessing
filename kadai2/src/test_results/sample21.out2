@@ -1,6 +1,6 @@
 program assigninteger;
     var
         n : integer;
-        begin
+begin
     n := 1
 end.
