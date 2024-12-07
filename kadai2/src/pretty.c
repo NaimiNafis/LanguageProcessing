@@ -18,6 +18,9 @@ static int in_procedure_header = 0;
 static int in_loop_or_if = 0;
 static int last_printed_newline = 0;
 static int in_var_declaration = 0;
+static int prev_token = 0;
+static int curr_token = 0;
+static int next_token = 0;
 
 extern char string_attr[];
 extern int num_attr;
@@ -33,6 +36,12 @@ static void print_newline_if_needed(void) {
         printf("\n");
         last_printed_newline = 1;
     }
+}
+
+static void update_token_history(int new_token) {
+    prev_token = curr_token;
+    curr_token = next_token;
+    next_token = new_token;
 }
 
 void init_pretty_printer(void) {
@@ -74,22 +83,11 @@ void pretty_print_token(int token) {
             break;
 
         case TVAR:
-            print_newline_if_needed();
             if (!in_procedure_header && current_indent == GLOBAL_LEVEL) {
-                printf("    var\n");  // Direct indentation for global var
+                printf("    ");  // Direct indentation for global var
                 current_indent = 4;
-            } else {
-                printf("\n");
-                if (in_procedure_header) {
-                    current_indent = PROCEDURE_LEVEL;
-                } else if (in_procedure) {
-                    current_indent = NESTED_LEVEL;
-                } else {
-                    current_indent = VAR_DECLARATION_LEVEL;
-                }
-                print_indent();
-                printf("var\n");
-            }
+            } 
+            printf("var\n");
             in_var_declaration = 1;
             current_indent += 4;
             print_indent();
@@ -224,11 +222,16 @@ void pretty_print_token(int token) {
         // Punctuation
         case TSEMI:
             printf(";");
-            if (in_var_declaration) {
-                printf("\n");
-                in_var_declaration = 0;  // Reset flag
-                current_indent = GLOBAL_LEVEL;
-                last_printed_newline = 1;
+            if (next_token == TVAR){
+                if(in_procedure_header){
+                    printf("\n");
+                    current_indent = NESTED_LEVEL;
+                    print_indent();
+                } else {
+                    printf("\n");
+                    current_indent = PROCEDURE_LEVEL;
+                    print_indent();
+                }
             } else if (block_level > 0) {
                 printf("\n");
                 if (in_loop_or_if && block_level == 1) {  // Only reset at end of entire loop block
@@ -327,9 +330,17 @@ void pretty_print_token(int token) {
 }
 
 void pretty_print_program(void) {
-    int token;
     init_pretty_printer();
-    while ((token = scan()) > 0) {
-        pretty_print_token(token);
+    
+    // Prime the token stream
+    next_token = scan();
+    if (next_token > 0) {
+        curr_token = next_token;
+        next_token = scan();
+    }
+    
+    while (curr_token > 0) {
+        pretty_print_token(curr_token);
+        update_token_history(scan());
     }
 }

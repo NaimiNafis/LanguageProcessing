@@ -13,10 +13,9 @@ program sample11pp;
     var
         data : integer;
     procedure goukei ( n , s : integer );
-    
         var
             data : integer;
-begin
+    begin
         s := 0;
         while n > 0 do
             begin

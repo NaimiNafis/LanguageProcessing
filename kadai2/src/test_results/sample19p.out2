@@ -1,9 +1,8 @@
 program sample19;
     procedure gcmlcm ( m , n , gc , lc : integer );
-    
         var
             a , b , r : integer;
-begin
+    begin
         a := m;
         b := n;
         while b <> 0 do
@@ -21,10 +20,9 @@ begin
         else b := a
     end;
     procedure gcm ( a , b , gc : integer );
-    
         var
             lc , aa , bb : integer;
-begin
+    begin
                 if  ( a = 0 ) or  ( b = 0 ) then gc := 1
         else 
     begin
@@ -34,10 +32,9 @@ begin
     end
     end;
     procedure lcm ( a , b , lc : integer );
-    
         var
             gc , aa , bb : integer;
-begin
+    begin
                 if  ( a = 0 ) or  ( b = 0 ) then lc := 1
         else 
     begin
@@ -47,10 +44,9 @@ begin
     end
     end;
     procedure reduce ( a1 , a2 : integer );
-    
         var
             gc : integer;
-begin
+    begin
                 if a1 = 0 then 
     begin
         a2 := 1;
@@ -71,10 +67,9 @@ begin
     a2 := a2 div gc
     end;
     procedure sum ( x1 , x2 , y1 , y2 : integer );
-    
         var
             lc , y11 : integer;
-begin
+    begin
         call lcm ( x2 , y2 , lc );
         x1 := x1 *  ( lc div x2 );
         y11 := y1 *  ( lc div y2 );
@@ -83,17 +78,15 @@ begin
         call reduce ( x1 , x2 )
     end;
     procedure sub ( x1 , x2 , y1 , y2 : integer );
-    
         var
             lc , y11 : integer;
-begin
+    begin
         call sum ( x1 , x2 , - y1 , y2 )
     end;
     procedure mult ( x1 , x2 , y1 , y2 : integer );
-    
         var
             gc , y11 , y22 : integer;
-begin
+    begin
         call gcm ( x1 , y2 , gc );
         x1 := x1 div gc;
         y22 := y2 div gc;
