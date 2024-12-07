@@ -12,7 +12,7 @@ program sample19;
                 b := r
             end;
     gc := a;
-    lc :=  ( m div gc ) * n
+    lc := ( m div gc ) * n
     end;
     procedure abs ( a , b : integer );
     begin
@@ -25,9 +25,9 @@ program sample19;
         var
             lc , aa , bb : integer;
     begin
-        if  ( a = 0 ) or  ( b = 0 ) then
+        if ( a = 0 ) or  ( b = 0 ) then
             gc := 1
-        else        
+        else
             begin
                 call abs ( a , aa );
                 call abs ( b , bb );
@@ -38,9 +38,9 @@ program sample19;
         var
             gc , aa , bb : integer;
     begin
-        if  ( a = 0 ) or  ( b = 0 ) then
+        if ( a = 0 ) or  ( b = 0 ) then
             lc := 1
-        else        
+        else
             begin
                 call abs ( a , aa );
                 call abs ( b , bb );
@@ -109,19 +109,21 @@ program sample19;
         begin
         if a = 0 then
             writeln ( 'Final Result =' , a )
-        else if b = 1 then
-            writeln ( 'Final Result =' , a )
         else
-            writeln ( 'Final Result =' , a , '/' , b )
+            if b = 1 then
+                writeln ( 'Final Result =' , a )
+            else
+                writeln ( 'Final Result =' , a , '/' , b )
     end;
     procedure printtemp ( a , b : integer );
     begin
         if a = 0 then
             writeln ( 'Temporary Result =' , a )
-        else if b = 1 then
-            writeln ( 'Temporary Result =' , a )
         else
-            writeln ( 'Temporary Result =' , a , '/' , b )
+            if b = 1 then
+                writeln ( 'Temporary Result =' , a )
+            else
+                writeln ( 'Temporary Result =' , a , '/' , b )
     end;
     var
         x1 , x2 , y1 , y2 : integer;
@@ -137,39 +139,44 @@ begin
             writeln ( ' Please input command :' );
             readln ( com , y1 );
             y2 := 1;
-            if  ( com = 'c' ) or  ( com = 'C' ) then
+            if ( com = 'c' ) or  ( com = 'C' ) then
                 begin
                     x1 := y1;
                     x2 := y2
                 end
-            else if com = '+' then
-                call sum ( x1 , x2 , y1 , y2 )
-            else if com = '-' then
-                call sub ( x1 , x2 , y1 , y2 )
-            else if com = '*' then
-                call mult ( x1 , x2 , y1 , y2 )
-            else if com = '/' then
-                if y1 = 0 then
-                    writeln ( '*** 0-divide error ***' )
+            else
+                if com = '+' then
+                    call sum ( x1 , x2 , y1 , y2 )
                 else
-                    call divide ( x1 , x2 , y1 , y2 )
-                else if  ( com = 'o' ) or  ( com = 'O' ) then
-                    endflag := true
-                else
-                    begin
-                        writeln;
-                        writeln ( 'Calculator Usage:' );
-                        writeln ( '  c number : clear & set it' );
-                        writeln ( '  + number : add it' );
-                        writeln ( '  - number : subtract it' );
-                        writeln ( '  * number : multiply it' );
-                        writeln ( '  / number : divide by it' );
-                        writeln ( '  o        : off(terminate execution)' );
-                        writeln
-                    end;
-                    if endflag then
-                        call printfinal ( x1 , x2 )
+                    if com = '-' then
+                        call sub ( x1 , x2 , y1 , y2 )
                     else
-                        call printtemp ( x1 , x2 )
-                    end
+                        if com = '*' then
+                            call mult ( x1 , x2 , y1 , y2 )
+                        else
+                            if com = '/' then
+                                if y1 = 0 then
+                                    writeln ( '*** 0-divide error ***' )
+                                else
+                                    call divide ( x1 , x2 , y1 , y2 )
+                                else
+                                    if ( com = 'o' ) or  ( com = 'O' ) then
+                                        endflag := true
+                                    else
+                                        begin
+                                            writeln;
+                                            writeln ( 'Calculator Usage:' );
+                                            writeln ( '  c number : clear & set it' );
+                                            writeln ( '  + number : add it' );
+                                            writeln ( '  - number : subtract it' );
+                                            writeln ( '  * number : multiply it' );
+                                            writeln ( '  / number : divide by it' );
+                                            writeln ( '  o        : off(terminate execution)' );
+                                            writeln
+                                        end;
+                                        if endflag then
+                                            call printfinal ( x1 , x2 )
+                                        else
+                                            call printtemp ( x1 , x2 )
+                                        end
 end.

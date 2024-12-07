@@ -100,7 +100,7 @@ void pretty_print_token(int token) {
         // compound statements
         case TBEGIN:
             if (last_printed_newline) {
-                if (in_then) {
+                if (in_then || prev_token == TELSE) {
                     current_indent = current_indent;
                 } else if (in_loop) {
                     // Maintain current indentation for nested blocks
@@ -199,7 +199,9 @@ void pretty_print_token(int token) {
             }
             printf("else");
             if (next_token == TIF) {
-                printf(" ");
+                printf("\n");
+                current_indent += 4;
+                print_indent();
             } else if (next_token == TBEGIN) {
                 current_indent = current_indent;
             } else {
@@ -316,7 +318,11 @@ void pretty_print_token(int token) {
 
         // Grouping symbols
         case TLPAREN:
-            printf(" ( ");
+            if (prev_token == TWHILE || prev_token == TASSIGN || prev_token == TIF || prev_token == TELSE) {
+                printf("( ");
+            } else {
+                printf(" ( ");
+            }
             need_space = 0;
             break;
 

@@ -13,6 +13,6 @@ begin
             b := r
         end;
     gcm := a;
-    lcm :=  ( m div gcm ) * n;
+    lcm := ( m div gcm ) * n;
     writeln ( 'GCM = ' , gcm , '   LCM = ' , lcm )
 end.

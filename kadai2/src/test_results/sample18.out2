@@ -11,11 +11,11 @@ begin
     writeln ( 'Input positive integer' );
     readln ( n );
     can := 2;
-    while  ( can <= n div 2 ) and  ( can < 200 ) do
+    while ( can <= n div 2 ) and  ( can < 200 ) do
         begin
-            if  ( n -  ( n div can ) * can ) <> 0 then
+            if ( n -  ( n div can ) * can ) <> 0 then
                 can := can + 1
-            else            
+            else
                 begin
                     factor[can] := factor[can] + 1;
                     n := n div can
