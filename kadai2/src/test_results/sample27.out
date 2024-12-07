@@ -11,11 +11,11 @@ begin
                     k := 1;
                     while k < 10 do
                         begin
-                                                        if  ( k div 2 ) * 2 = k then 
+                            if  ( k div 2 ) * 2 = k then
     begin
         k := k + 1
     end
-else 
+    else
         begin
             k := k + 1
         end

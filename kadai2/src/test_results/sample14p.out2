@@ -27,13 +27,19 @@ begin
         begin
             writeln ( ' Please input command :' );
             readln ( com , y );
-                        if  ( com = 'c' ) or  ( com = 'C' ) then x := y
-            else                 if com = '+' then call sum
-                else                     if com = '-' then call sub
-                    else                         if com = '*' then call mult
-                        else                             if com = '/' then call divide
-                            else                                 if  ( com = 'o' ) or  ( com = 'O' ) then endflag := true
-                                else 
+            if  ( com = 'c' ) or  ( com = 'C' ) then
+                x := y
+            else if com = '+' then
+                call sum
+            else if com = '-' then
+                call sub
+            else if com = '*' then
+                call mult
+            else if com = '/' then
+                call divide
+            else if  ( com = 'o' ) or  ( com = 'O' ) then
+                endflag := true
+            else
     begin
         writeln;
         writeln ( 'Calculator Usage:' );
@@ -45,7 +51,9 @@ begin
         writeln ( '  o        : off(terminate execution)' );
         writeln
     end;
-        if endflag then writeln ( 'Final Result =' , x )
-    else writeln ( 'Temporary Result =' , x )
+    if endflag then
+        writeln ( 'Final Result =' , x )
+    else
+        writeln ( 'Temporary Result =' , x )
     end
 end.

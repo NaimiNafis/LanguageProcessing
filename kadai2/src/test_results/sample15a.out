@@ -10,7 +10,8 @@ begin
         begin
             writeln ( n : 6 , ' ' , 2 * n : 6 , ' ' , n * n : 6 , ' ' , n * n * n : 6 , ' ' , e : 6 );
             n := n + 1;
-                        if n >= 16 then break;
+            if n >= 16 then
+                break;
                 e := e * 2
             end
 end.

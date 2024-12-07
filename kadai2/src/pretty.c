@@ -15,7 +15,8 @@ static int need_space = 0;
 static int block_level = 0;
 static int in_procedure = 0;
 static int in_procedure_header = 0;
-static int in_loop_or_if = 0;
+static int in_loop = 0;
+static int in_if_else = 0;
 static int last_printed_newline = 0;
 static int in_var_declaration = 0;
 static int prev_token = 0;
@@ -50,9 +51,10 @@ void init_pretty_printer(void) {
     block_level = 0;
     in_procedure = 0;
     in_procedure_header = 0;
-    in_loop_or_if = 0;
+    in_loop = 0;
     last_printed_newline = 0;
     in_var_declaration = 0;
+    in_if_else = 0;
 }
 
 void pretty_print_token(int token) {
@@ -62,7 +64,7 @@ void pretty_print_token(int token) {
             block_level, 
             in_procedure,
             in_procedure_header,
-            in_loop_or_if);
+            in_loop);
     switch (token) {
         // Program structure
         case TPROGRAM:
@@ -101,14 +103,13 @@ void pretty_print_token(int token) {
                 current_indent = GLOBAL_LEVEL;
                 print_indent();
             }
-
             // Check if block is empty (next token is END)
             if (next_token == TEND) {
                 printf("begin");  // No newline for empty block
                 need_space = 0;
                 last_printed_newline = 0;
             } else {
-                if (in_loop_or_if) {
+                if (in_loop) {
                     printf("\n");
                     current_indent += 4;
                     print_indent();
@@ -150,7 +151,7 @@ void pretty_print_token(int token) {
             }
             if (block_level == 0) {
                 in_procedure = 0;
-                in_loop_or_if = 0;
+                in_loop = 0;
             }
             in_procedure_header = 0;
             need_space = 1;
@@ -159,29 +160,45 @@ void pretty_print_token(int token) {
 
         // Statements
         case TIF:
-            in_loop_or_if = 1;
-            print_indent();
+            in_loop = 1;
+            in_if_else = 1;
             printf("if ");
             need_space = 0;
             break;
 
         case TTHEN:
-            printf(" then ");
-            current_indent += 4;
+            printf(" then");
+            if (next_token != TBEGIN) {
+                printf("\n");
+                current_indent += 4;
+                print_indent();
+            }
             need_space = 0;
             break;
 
         case TELSE:
-            current_indent -= 4;
-            printf("\n");
-            print_indent();
-            printf("else ");
-            current_indent += 4;
+            if (prev_token == TEND || prev_token == TSEMI || prev_token == TDOT) {
+                printf("\n");
+                print_indent();
+            }
+            else{
+                current_indent -= 4;
+                printf("\n");
+                print_indent();
+            }
+            printf("else");
+            if (next_token == TIF) {
+                printf(" ");
+            } else if (next_token != TBEGIN && next_token != TIF) {
+                printf("\n");
+                current_indent += 4;
+                print_indent();
+            }
             need_space = 0;
             break;
 
         case TWHILE:
-            in_loop_or_if = 1;
+            in_loop = 1;
             printf("while ");
             need_space = 0;
             break;
@@ -189,7 +206,7 @@ void pretty_print_token(int token) {
         case TDO:
             print_newline_if_needed();
             printf(" do");
-            if (!in_loop_or_if) {
+            if (!in_loop) {
                 current_indent += 4;
             }
             need_space = 0;
@@ -254,8 +271,8 @@ void pretty_print_token(int token) {
                 printf("\n");
             } else if (block_level > 0) {
                 printf("\n");
-                if (in_loop_or_if && block_level == 1) {  // Only reset at end of entire loop block
-                    in_loop_or_if = 0;
+                if (in_loop && block_level == 1) {  // Only reset at end of entire loop block
+                    in_loop = 0;
                     current_indent = 4;
                 }
                 print_indent();
