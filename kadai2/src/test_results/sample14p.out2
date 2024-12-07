@@ -18,8 +18,7 @@ program sample14;
         x := x div y
     end;
     var
-        com : char;
-endflag : boolean;
+        com : char;endflag : boolean;
 begin
     writeln ( '   *** Calculator -- h for help ***' );
     x := 0;

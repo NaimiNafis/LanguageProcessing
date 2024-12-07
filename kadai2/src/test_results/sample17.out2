@@ -1,7 +1,6 @@
 program GCMLCM;
     var
-        m , n , a , b , r : integer;
-gcm , lcm : integer;
+        m , n , a , b , r : integer;gcm , lcm : integer;
 begin
     writeln ( 'Input two integers' );
     readln ( m , n );

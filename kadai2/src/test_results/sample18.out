@@ -1,7 +1,6 @@
 program primefactor;
     var
-        factor : array[200] of integer;
-i , n , can : integer;
+        factor : array[200] of integer;i , n , can : integer;
 begin
     i := 0;
     while i < 200 do

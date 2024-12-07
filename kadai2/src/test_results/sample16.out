@@ -1,7 +1,6 @@
 program sample16;
     var
-        furui : array[2000] of boolean;
-i , j : integer;
+        furui : array[2000] of boolean;i , j : integer;
 begin
     i := 2;
     while i < 2000 do

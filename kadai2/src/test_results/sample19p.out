@@ -116,8 +116,7 @@ program sample19;
     var
         x1 , x2 , y1 , y2 : integer;
     var
-        com : char;
-endflag : boolean;
+        com : char;endflag : boolean;
 begin
     writeln ( '   *** Calculator -- h for help ***' );
     x1 := 0;

@@ -1,7 +1,6 @@
 program sample29;
     var
-        unused1 : integer;
-UnusedArrayForTest : array[200] of char;
+        unused1 : integer;UnusedArrayForTest : array[200] of char;
     procedure gcmlcm ( m , n , gc , lc : integer );
         var
             a , b , r : integer;
@@ -123,8 +122,7 @@ UnusedArrayForTest : array[200] of char;
     var
         x1 , x2 , y1 , y2 : integer;
     var
-        com : char;
-endflag : boolean;
+        com : char;endflag : boolean;
 begin
     writeln ( '   *** Calculator -- h for help ***' );
     x1 := 0;

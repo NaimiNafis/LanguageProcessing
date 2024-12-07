@@ -98,53 +98,61 @@ void pretty_print_token(int token) {
         // compound statements
         case TBEGIN:
             if (last_printed_newline) {
-                // Skip printing newline if we already have one
                 current_indent = GLOBAL_LEVEL;
                 print_indent();
             }
-            if (in_loop_or_if) {
-                printf("\n");
-                current_indent += 4;
-                print_indent();  // Use current indentation level
-                printf("begin\n");
-                current_indent += 4;  // Increase indent for block contents
-            } else if (in_procedure) {
-                current_indent = PROCEDURE_LEVEL - 4;
-                print_indent();
-                printf("begin\n");
-                current_indent = PROCEDURE_LEVEL + 4;
+
+            // Check if block is empty (next token is END)
+            if (next_token == TEND) {
+                printf("begin");  // No newline for empty block
+                need_space = 0;
+                last_printed_newline = 0;
             } else {
-                current_indent = GLOBAL_LEVEL;  // Reset indent
-                print_indent();  // Now print with correct indent
-                printf("begin\n");
-                current_indent = 4;
+                if (in_loop_or_if) {
+                    printf("\n");
+                    current_indent += 4;
+                    print_indent();
+                    printf("begin\n");
+                    current_indent += 4;
+                } else if (in_procedure) {
+                    print_indent();
+                    printf("begin\n");
+                    current_indent = PROCEDURE_LEVEL + 4;
+                } else {
+                    current_indent = GLOBAL_LEVEL;
+                    print_indent();
+                    printf("begin\n");
+                    current_indent = 4;
+                }
+                print_indent();
+                need_space = 0;
+                last_printed_newline = 1;
             }
             block_level++;
-            print_indent();
-            need_space = 0;
-            last_printed_newline = 1;
             break;
 
         case TEND:
             block_level--;
-            printf("\n");
-            if (in_procedure && block_level == 0) {
-                // For procedure end
-                current_indent = PROCEDURE_LEVEL;
-            } else if (block_level == 0) {
-                // For program end
-                current_indent = GLOBAL_LEVEL;
+            if (prev_token == TBEGIN) {
+                // Empty block - no newline
+                printf("\nend");
             } else {
-                // For nested blocks
-                current_indent -= 4;
+                printf("\n");
+                if (in_procedure && block_level == 0) {
+                    current_indent = PROCEDURE_LEVEL;
+                } else if (block_level == 0) {
+                    current_indent = GLOBAL_LEVEL;
+                } else {
+                    current_indent -= 4;
+                }
+                print_indent();
+                printf("end");
             }
-            print_indent();
-            printf("end");
-            // Reset flags if end of block
             if (block_level == 0) {
                 in_procedure = 0;
                 in_loop_or_if = 0;
             }
+            in_procedure_header = 0;
             need_space = 1;
             last_printed_newline = 0;
             break;
@@ -232,6 +240,18 @@ void pretty_print_token(int token) {
                     current_indent = PROCEDURE_LEVEL;
                     print_indent();
                 }
+            } else if (next_token == TBEGIN){
+                if(in_procedure_header){
+                    printf("\n");
+                    current_indent = PROCEDURE_LEVEL;
+                    print_indent();
+                } else {
+                    printf("\n");
+                    current_indent = GLOBAL_LEVEL;
+                    print_indent();
+                }
+            } else if (next_token == TPROCEDURE){
+                printf("\n");
             } else if (block_level > 0) {
                 printf("\n");
                 if (in_loop_or_if && block_level == 1) {  // Only reset at end of entire loop block
@@ -244,11 +264,7 @@ void pretty_print_token(int token) {
                 current_indent = PROCEDURE_LEVEL;
                 print_indent();
                 in_procedure_header = 0;
-            } else {
-                printf("\n");
-                current_indent = GLOBAL_LEVEL;
-                print_indent();
-            }
+            } 
             need_space = 0;
             last_printed_newline = 1;
             break;
