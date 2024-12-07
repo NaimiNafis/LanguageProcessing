@@ -16,6 +16,7 @@ static int stack_top = -1;
 static int current_indent = 0;
 static int need_space = 0;
 static int block_level = 0;
+static int begin_level = 0;
 static int in_procedure = 0;
 static int in_procedure_header = 0;
 static int in_loop = 0;
@@ -160,7 +161,8 @@ void pretty_print_token(int token) {
                 need_space = 0;
                 last_printed_newline = 1;
             }
-            push_block(block_level); 
+            begin_level = block_level;
+            push_block(begin_level); 
             block_level++;
             break;
 
