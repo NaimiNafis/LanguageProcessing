@@ -100,8 +100,13 @@ void pretty_print_token(int token) {
         // compound statements
         case TBEGIN:
             if (last_printed_newline) {
-                current_indent = GLOBAL_LEVEL;
-                print_indent();
+                if (in_loop) {
+                    // Maintain current indentation for nested blocks
+                    print_indent();
+                } else {
+                    current_indent = GLOBAL_LEVEL;
+                    print_indent();
+                }
             }
             // Check if block is empty (next token is END)
             if (next_token == TEND) {
@@ -179,6 +184,7 @@ void pretty_print_token(int token) {
         case TELSE:
             if (prev_token == TEND || prev_token == TSEMI || prev_token == TDOT) {
                 printf("\n");
+                current_indent -= 4;
                 print_indent();
             }
             else{
@@ -189,7 +195,10 @@ void pretty_print_token(int token) {
             printf("else");
             if (next_token == TIF) {
                 printf(" ");
-            } else if (next_token != TBEGIN && next_token != TIF) {
+            } else if (next_token == TBEGIN) {
+                current_indent -= 4;
+                print_indent();
+            } else {
                 printf("\n");
                 current_indent += 4;
                 print_indent();
