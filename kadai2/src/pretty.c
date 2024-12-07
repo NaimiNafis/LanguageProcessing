@@ -9,7 +9,10 @@
 #define PROCEDURE_LEVEL 4
 #define NESTED_LEVEL 8
 #define VAR_DECLARATION_LEVEL 4
+#define MAX_BLOCKS 100
 
+static int block_stack[MAX_BLOCKS];
+static int stack_top = -1;
 static int current_indent = 0;
 static int need_space = 0;
 static int block_level = 0;
@@ -44,6 +47,27 @@ static void update_token_history(int new_token) {
     curr_token = next_token;
     next_token = new_token;
 }
+
+static void push_block(int level) {
+    if (stack_top < MAX_BLOCKS - 1) {
+        block_stack[++stack_top] = level;
+    }
+}
+
+static int pop_block() {
+    if (stack_top >= 0) {
+        return block_stack[stack_top--];
+    }
+    return 0;
+}
+
+static int peek_block() {
+    if (stack_top >= 0) {
+        return block_stack[stack_top];
+    }
+    return 0;
+}
+
 
 void init_pretty_printer(void) {
     current_indent = GLOBAL_LEVEL;
@@ -136,6 +160,7 @@ void pretty_print_token(int token) {
                 need_space = 0;
                 last_printed_newline = 1;
             }
+            push_block(block_level); 
             block_level++;
             break;
 
@@ -150,8 +175,10 @@ void pretty_print_token(int token) {
                     current_indent = PROCEDURE_LEVEL;
                 } else if (block_level == 0) {
                     current_indent = GLOBAL_LEVEL;
+                } else if (in_loop) {
+                    current_indent = pop_block() * 4;  // Maintain proper nesting level
                 } else {
-                    current_indent -= 4;
+                    current_indent = pop_block() * 4;  // Align with corresponding begin
                 }
                 print_indent();
                 printf("end");
@@ -170,6 +197,7 @@ void pretty_print_token(int token) {
             in_loop = 1;
             printf("if ");
             need_space = 0;
+            block_level++;
             break;
 
         case TTHEN:
@@ -189,7 +217,6 @@ void pretty_print_token(int token) {
             in_then = 0;
             if (prev_token == TEND || prev_token == TSEMI || prev_token == TDOT) {
                 printf("\n");
-                current_indent -= 4;
                 print_indent();
             }
             else{
@@ -204,6 +231,7 @@ void pretty_print_token(int token) {
                 print_indent();
             } else if (next_token == TBEGIN) {
                 current_indent = current_indent;
+                block_level++;
             } else {
                 printf("\n");
                 current_indent += 4;
@@ -216,6 +244,7 @@ void pretty_print_token(int token) {
             in_loop = 1;
             printf("while ");
             need_space = 0;
+            block_level++;
             break;
 
         case TDO:
@@ -284,19 +313,21 @@ void pretty_print_token(int token) {
                 }
             } else if (next_token == TPROCEDURE){
                 printf("\n");
-            } else if (block_level > 0) {
+            } else if(prev_token == TEND){
+                if (next_token == TWRITELN || next_token == TWRITE || next_token == TREADLN || next_token == TREAD){
                 printf("\n");
-                if (in_loop && block_level == 1) {  // Only reset at end of entire loop block
-                    in_loop = 0;
-                    current_indent = 4;
-                }
+                current_indent -= 4;
                 print_indent();
+                }
             } else if (in_procedure_header) {
                 printf("\n");
                 current_indent = PROCEDURE_LEVEL;
                 print_indent();
                 in_procedure_header = 0;
-            } 
+            } else {
+                printf("\n");
+                print_indent();
+            }
             need_space = 0;
             last_printed_newline = 1;
             break;

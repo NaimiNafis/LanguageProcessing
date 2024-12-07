@@ -18,7 +18,8 @@ program sample14;
         x := x div y
     end;
     var
-        com : char;endflag : boolean;
+        com : char;
+        endflag : boolean;
 begin
     writeln ( '   *** Calculator -- h for help ***' );
     x := 0;
@@ -55,10 +56,9 @@ begin
                                         writeln ( '  / number : divide it' );
                                         writeln ( '  o        : off(terminate execution)' );
                                         writeln
-                                    end;
-                                    if endflag then
-                                        writeln ( 'Final Result =' , x )
-                                    else
-                                        writeln ( 'Temporary Result =' , x )
-                                    end
+                                        end;if endflag then
+                                            writeln ( 'Final Result =' , x )
+                                        else
+                                            writeln ( 'Temporary Result =' , x )
+        end
 end.

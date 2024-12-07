@@ -15,15 +15,13 @@ begin
                                 begin
                                     k := k + 1
                                 end
-                            else
-                                begin
-                                    k := k + 1
-                                end
-                            end;
-                            j := j + 1;
-                            
-                        end;
-                        i := i + 1
-                    end;
+                                else
+                                    begin
+                                        k := k + 1
+                                    end
+                        end;j := j + 1;
+                        
+                end;i := i + 1
+        end;
     writeln ( 'All End' )
 end.

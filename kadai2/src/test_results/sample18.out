@@ -1,6 +1,7 @@
 program primefactor;
     var
-        factor : array[200] of integer;i , n , can : integer;
+        factor : array[200] of integer;
+        i , n , can : integer;
 begin
     i := 0;
     while i < 200 do
@@ -19,23 +20,19 @@ begin
                 begin
                     factor[can] := factor[can] + 1;
                     n := n div can
-                end
-            end;
-    i := 0;
-    if n < 200 then
-        begin
-            factor[n] := factor[n] + 1;
-            n := 1
-        end;
-    while i < 200 do
-        begin
-            if factor[i] <> 0 then
+                        end
+            end;i := 0;
+            if n < 200 then
                 begin
-                    writeln ( '    ' , i , ' ** ' , factor[i] );
-                    
-                end;
-                i := i + 1
-            end;
-    if n > 1 then
-        writeln ( '    ' , n , ' ** ' , 1 )
+                    factor[n] := factor[n] + 1;
+                    n := 1
+                        end;while i < 200 do
+                            begin
+                                if factor[i] <> 0 then
+                                    begin
+                                        writeln ( '    ' , i , ' ** ' , factor[i] );
+                                        
+                                    end;i := i + 1
+                            end;if n > 1 then
+                                writeln ( '    ' , n , ' ** ' , 1 )
 end.

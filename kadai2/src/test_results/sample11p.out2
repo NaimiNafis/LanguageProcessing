@@ -4,7 +4,7 @@ program sample11p;
     procedure kazuyomikomi;
     begin
         writeln ( 'input the number of data' );
-        readln ( n )
+    readln ( n )
     end;
     var
         sum : integer;
@@ -17,15 +17,16 @@ program sample11p;
     procedure goukei;
     begin
         sum := 0;
-        while n > 0 do
-            begin
-                readln ( data );
-                sum := sum + data;
-                n := n - 1
-            end
-    end;
-begin
-    call kazuyomikomi;
-    call goukei;
-    call wakakidasi
-end.
+    while n > 0 do
+        begin
+            readln ( data );
+            sum := sum + data;
+            n := n - 1
+        end
+end;
+
+    begin
+        call kazuyomikomi;
+        call goukei;
+        call wakakidasi
+    end.
