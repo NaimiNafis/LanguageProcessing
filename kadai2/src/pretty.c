@@ -16,7 +16,7 @@ static int block_level = 0;
 static int in_procedure = 0;
 static int in_procedure_header = 0;
 static int in_loop = 0;
-static int in_if_else = 0;
+static int in_then = 0;
 static int last_printed_newline = 0;
 static int in_var_declaration = 0;
 static int prev_token = 0;
@@ -54,7 +54,7 @@ void init_pretty_printer(void) {
     in_loop = 0;
     last_printed_newline = 0;
     in_var_declaration = 0;
-    in_if_else = 0;
+    in_then = 0;
 }
 
 void pretty_print_token(int token) {
@@ -100,7 +100,9 @@ void pretty_print_token(int token) {
         // compound statements
         case TBEGIN:
             if (last_printed_newline) {
-                if (in_loop) {
+                if (in_then) {
+                    current_indent = current_indent;
+                } else if (in_loop) {
                     // Maintain current indentation for nested blocks
                     print_indent();
                 } else {
@@ -166,14 +168,16 @@ void pretty_print_token(int token) {
         // Statements
         case TIF:
             in_loop = 1;
-            in_if_else = 1;
             printf("if ");
             need_space = 0;
             break;
 
         case TTHEN:
-            printf(" then");
-            if (next_token != TBEGIN) {
+            in_then = 1;
+            printf(" then");  // Just print then with one leading space
+            if (next_token == TBEGIN) {
+                current_indent = current_indent;
+            } else {
                 printf("\n");
                 current_indent += 4;
                 print_indent();
@@ -182,6 +186,7 @@ void pretty_print_token(int token) {
             break;
 
         case TELSE:
+            in_then = 0;
             if (prev_token == TEND || prev_token == TSEMI || prev_token == TDOT) {
                 printf("\n");
                 current_indent -= 4;
@@ -196,8 +201,7 @@ void pretty_print_token(int token) {
             if (next_token == TIF) {
                 printf(" ");
             } else if (next_token == TBEGIN) {
-                current_indent -= 4;
-                print_indent();
+                current_indent = current_indent;
             } else {
                 printf("\n");
                 current_indent += 4;

@@ -13,7 +13,7 @@ begin
     i := 2;
     while i < 2000 do
         begin
-            if furui[i] then            
+            if furui[i] then
                 begin
                     writeln ( i , ' is a prime number' );
                     j := i;

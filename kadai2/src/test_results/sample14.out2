@@ -9,7 +9,7 @@ begin
         begin
             writeln ( ' Please input command :' );
             readln ( com , y );
-            if  ( com = 'c' ) or  ( com = 'C' ) then            
+            if  ( com = 'c' ) or  ( com = 'C' ) then
                 begin
                     x := y;
                     
@@ -38,21 +38,21 @@ begin
                 begin
                     endflag := true
                 end
-            else        
-            begin
-                writeln;
-                writeln ( 'Calculator Usage:' );
-                writeln ( '  c number : clear & set it' );
-                writeln ( '  + number : add it' );
-                writeln ( '  - number : subtract it' );
-                writeln ( '  * number : multiply it' );
-                writeln ( '  / number : divide it' );
-                writeln ( '  o        : off(terminate execution)' );
-                writeln
-            end;
-            if endflag then
-                writeln ( 'Final Result =' , x )
             else
-                writeln ( 'Temporary Result =' , x )
-            end
+                begin
+                    writeln;
+                    writeln ( 'Calculator Usage:' );
+                    writeln ( '  c number : clear & set it' );
+                    writeln ( '  + number : add it' );
+                    writeln ( '  - number : subtract it' );
+                    writeln ( '  * number : multiply it' );
+                    writeln ( '  / number : divide it' );
+                    writeln ( '  o        : off(terminate execution)' );
+                    writeln
+                end;
+                if endflag then
+                    writeln ( 'Final Result =' , x )
+                else
+                    writeln ( 'Temporary Result =' , x )
+                end
 end.

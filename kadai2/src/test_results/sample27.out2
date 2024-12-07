@@ -11,19 +11,19 @@ begin
                     k := 1;
                     while k < 10 do
                         begin
-                            if  ( k div 2 ) * 2 = k then                            
+                            if  ( k div 2 ) * 2 = k then
                                 begin
                                     k := k + 1
                                 end
-                            else                        
-                            begin
-                                k := k + 1
-                            end
+                            else
+                                begin
+                                    k := k + 1
+                                end
+                            end;
+                            j := j + 1;
+                            
                         end;
-                        j := j + 1;
-                        
+                        i := i + 1
                     end;
-                    i := i + 1
-                end;
     writeln ( 'All End' )
 end.
