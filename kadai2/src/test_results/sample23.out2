@@ -1,10 +1,7 @@
-program assignchar;
-
-var
-
-x , y : char;
-
-    begin
+program  assignchar;
+    var
+        x ,  y : char;
+begin
 x := 'X';
 y := 'Y'
 end.
