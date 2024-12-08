@@ -1,13 +1,20 @@
 program sample28p;
+
     procedure p;
+
     begin
-        writeln ( 'Hello!' )
+
+    writeln ('Hello!' )
     end;
+
     procedure q;
+
     begin
-        writeln ( 'Everyone!' )
+
+    writeln ('Everyone!' )
     end;
-begin
+
+    begin
     call p;
     call q
-end.
+    end.

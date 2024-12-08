@@ -1,4 +1,6 @@
 program Write;
-begin
-    writeln ( 'It's OK?' )
+
+    begin
+
+    writeln ('It's OK?' )
 end.
