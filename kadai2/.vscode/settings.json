@@ -63,6 +63,7 @@
     "pretty.h": "c",
     "scan.h": "c",
     "debug.h": "c",
-    "debug_pretty.h": "c"
+    "debug_pretty.h": "c",
+    "stdarg.h": "c"
   }
 }

@@ -2,21 +2,21 @@ program change;
     var
         n , count : integer;
 begin
-writeln ( 'please input change' );
-readln ( n );
-count := 0;
-while n > 0 do
+    writeln ( 'please input change' );
+    readln ( n );
+    count := 0;
+    while n > 0 do
         begin
-        while n >= 10 do
+            while n >= 10 do
                 begin
-                while n >= 100 do
+                    while n >= 100 do
                         begin
-                        while n >= 1000 do
+                            while n >= 1000 do
                                 begin
-                                while n >= 10000 do
+                                    while n >= 10000 do
                                         begin
-                                        count := count + 1;
-                                        n := n - 10000;
+                                            count := count + 1;
+                                            n := n - 10000;
                                     end;
                                     if count > 0 then
                                         writeln ( '10000 yen : ' , count );

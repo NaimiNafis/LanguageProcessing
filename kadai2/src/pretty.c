@@ -32,8 +32,7 @@ static int context_top = -1;
 static int need_space = 0;
 static int last_printed_newline = 1; 
 static int prev_token = 0, curr_token = 0, next_token = 0;
-static int in_procedure_header = 0; // tracks if we're in procedure header
-
+static int in_procedure_header = 0;
 extern int num_attr;
 extern char string_attr[];
 extern char *tokenstr[];
@@ -94,7 +93,16 @@ static ContextType current_context_type(void) {
 
 static int compute_indent_level(void) {
     if (context_top < 0) return 0;
+    
+    ContextType curr_type = context_stack[context_top].type;
     int base_level = context_stack[context_top].base_indent_level;
+    
+    // Only add extra indentation for statements INSIDE begin blocks
+    // Check if we're printing a statement (not the 'begin' keyword itself)
+    if (curr_type == CTX_BEGIN_BLOCK && curr_token != TBEGIN && curr_token != TEND) {
+        base_level++;  // Indent statements one more level
+    }
+    
     return base_level * INDENT_SPACES;
 }
 
