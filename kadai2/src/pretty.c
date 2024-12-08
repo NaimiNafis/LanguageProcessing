@@ -4,270 +4,325 @@
 #include "token.h"
 #include "debug_pretty.h"
 
-// Constants for indentation levels
-#define GLOBAL_LEVEL 0
-#define PROCEDURE_LEVEL 4
-#define NESTED_LEVEL 8
-#define VAR_DECLARATION_LEVEL 4
-#define MAX_BLOCKS 100
+/*
+ * This version introduces a context stack and a unified indentation calculation approach.
+ * It removes the scattered logic of directly manipulating current_indent and replaces it
+ * with contexts that store the indentation "type" and base level. The indentation rules are
+ * all computed in one place, making it easier to tweak and maintain formatting.
+ *
+ * IMPORTANT: 
+ * - You will need to adjust indentation rules in compute_indent_level() to match exactly 
+ *   your desired formatting.
+ * - The code below is a template. Integrate it with your environment, test, and refine.
+ * - Not all special cases may be fully handled. Use this as a starting point.
+ */
 
-static int block_stack[MAX_BLOCKS];
-static int stack_top = -1;
-static int current_indent = 0;
+// For indentation
+#define INDENT_SPACES 4
+#define MAX_CONTEXTS  100
+
+// Context types define what kind of block we are in
+typedef enum {
+    CTX_GLOBAL,      // Top-level (under program)
+    CTX_PROCEDURE,   // Inside a procedure declaration
+    CTX_VAR_BLOCK,   // Inside a var block
+    CTX_BEGIN_BLOCK, // A begin-end block
+    CTX_IF_THEN,     // An if-then block
+    CTX_ELSE_BLOCK,  // An else block
+    CTX_WHILE_DO     // A while-do block
+} ContextType;
+
+typedef struct {
+    ContextType type;
+    int base_indent_level; // Logical indentation level (not directly spaces)
+    // Add flags if needed, for example to differentiate between var under program vs procedure
+    int is_var_under_program;
+    int is_var_under_procedure;
+} Context;
+
+// Global state
+static Context context_stack[MAX_CONTEXTS];
+static int context_top = -1;
+
 static int need_space = 0;
-static int block_level = 0;
-static int begin_level = 0;
-static int in_procedure = 0;
-static int in_procedure_header = 0;
-static int in_loop = 0;
-static int in_then = 0;
-static int last_printed_newline = 0;
-static int in_var_declaration = 0;
-static int prev_token = 0;
-static int curr_token = 0;
-static int next_token = 0;
+static int last_printed_newline = 1; 
+static int prev_token = 0, curr_token = 0, next_token = 0;
+static int num_attr;
+extern char string_attr[]; // provided by scan.c
+extern char *tokenstr[];   // provided by token.c
 
-extern char string_attr[];
-extern int num_attr;
+// Forward declarations
+static void push_context(ContextType type, int base_indent, int var_prog, int var_proc);
+static void pop_context(void);
+static ContextType current_context_type(void);
+static int compute_indent_level(void);
+static void print_indent(void);
+static void print_newline(void);
+static void print_token(const char *text);
+static void update_token_history(int new_token);
+static void handle_var_context_on_entry(void);
+static void handle_var_context_on_exit(void);
+
+
+// Initialize the pretty printer
+void init_pretty_printer(void) {
+    context_top = -1;
+    // Start at global context, indent=0
+    push_context(CTX_GLOBAL, 0, 0, 0);
+    need_space = 0;
+    last_printed_newline = 1;
+    prev_token = curr_token = next_token = 0;
+}
+
+// Push a new context on the stack
+static void push_context(ContextType type, int base_indent, int var_prog, int var_proc) {
+    if (context_top < MAX_CONTEXTS - 1) {
+        context_top++;
+        context_stack[context_top].type = type;
+        context_stack[context_top].base_indent_level = base_indent;
+        context_stack[context_top].is_var_under_program = var_prog;
+        context_stack[context_top].is_var_under_procedure = var_proc;
+    }
+}
+
+// Pop the current context
+static void pop_context(void) {
+    if (context_top >= 0) {
+        context_top--;
+    }
+}
+
+// Get the current context type
+static ContextType current_context_type(void) {
+    if (context_top >= 0) {
+        return context_stack[context_top].type;
+    }
+    return CTX_GLOBAL;
+}
+
+// Compute the actual indentation level in spaces
+// Adjust this logic to achieve desired indentation rules.
+static int compute_indent_level(void) {
+    int indent = 0;
+
+    // Walk through stack and determine indentation based on context order
+    // The highest level context (top of stack) usually determines how much to indent.
+    // You can refine these rules as needed.
+
+    // Example heuristic:
+    // CTX_GLOBAL: base indentation = 0
+    // CTX_PROCEDURE: procedure header lines at base_indent (often 1)
+    // CTX_VAR_BLOCK under program: var line at level 1, variables at level 2
+    // CTX_VAR_BLOCK under procedure: var line at level 2, variables at level 3
+    // CTX_BEGIN_BLOCK: usually one more level than parent
+    // CTX_IF_THEN, CTX_ELSE_BLOCK, CTX_WHILE_DO: usually indent one more level for their statements
+
+    // In this simplified approach, we use the base_indent_level stored in the context.
+    // You can store the indentation logic in the push_context calls or compute differently.
+    if (context_top >= 0) {
+        indent = context_stack[context_top].base_indent_level;
+    }
+
+    return indent * INDENT_SPACES;
+}
 
 static void print_indent(void) {
-    for (int i = 0; i < current_indent; i++) {
+    int spaces = compute_indent_level();
+    for (int i = 0; i < spaces; i++) {
         printf(" ");
     }
 }
 
-static void print_newline_if_needed(void) {
-    if (!last_printed_newline) {
-        printf("\n");
-        last_printed_newline = 1;
-    }
+static void print_newline(void) {
+    printf("\n");
+    last_printed_newline = 1;
 }
 
+// print_token prints a token with proper spacing and indentation
+static void print_token(const char *text) {
+    if (last_printed_newline) {
+        // At the start of a line, print indentation first
+        print_indent();
+    } else {
+        // If continuing the same line, print a space if needed
+        if (need_space) printf(" ");
+    }
+    printf("%s", text);
+    need_space = 1;             // Next token may need space before it
+    last_printed_newline = 0;   // We are now mid-line
+}
+
+// Update token history to know prev/curr/next tokens
 static void update_token_history(int new_token) {
     prev_token = curr_token;
     curr_token = next_token;
     next_token = new_token;
 }
 
-static void push_block(int level) {
-    if (stack_top < MAX_BLOCKS - 1) {
-        block_stack[++stack_top] = level;
+// Helper: when we enter a var block, decide indent rules based on current context
+static void handle_var_context_on_entry(void) {
+    // Check if we are under program or procedure
+    // CTX_GLOBAL means we are at program level, CTX_PROCEDURE means at procedure level
+    ContextType ctype = current_context_type();
+    if (ctype == CTX_GLOBAL) {
+        // var under program: var line at level 1
+        push_context(CTX_VAR_BLOCK, 1, 1, 0);
+    } else if (ctype == CTX_PROCEDURE) {
+        // var under procedure: var line at level 2
+        push_context(CTX_VAR_BLOCK, 2, 0, 1);
+    } else {
+        // Nested var block? Adjust as needed. For now, treat like global
+        push_context(CTX_VAR_BLOCK, 1, 1, 0);
     }
 }
 
-static int pop_block() {
-    if (stack_top >= 0) {
-        return block_stack[stack_top--];
+// Helper: When exiting var block, pop the context
+static void handle_var_context_on_exit(void) {
+    // If we are in a var block, pop it
+    if (current_context_type() == CTX_VAR_BLOCK) {
+        pop_context();
     }
-    return 0;
 }
 
-static int peek_block() {
-    if (stack_top >= 0) {
-        return block_stack[stack_top];
-    }
-    return 0;
-}
-
-
-void init_pretty_printer(void) {
-    current_indent = GLOBAL_LEVEL;
-    need_space = 0;
-    block_level = 0;
-    in_procedure = 0;
-    in_procedure_header = 0;
-    in_loop = 0;
-    last_printed_newline = 0;
-    in_var_declaration = 0;
-    in_then = 0;
-}
-
+// Main token printing function
 void pretty_print_token(int token) {
-    debug_pretty_printf("Token: %s, Indent: %d, Block: %d, InProc: %d, InProcHeader: %d, InLoopIf: %d\n",
-            tokenstr[token],
-            current_indent,
-            block_level, 
-            in_procedure,
-            in_procedure_header,
-            in_loop);
+    debug_pretty_printf("Token: %s, Prev: %s, CurrCtx: %d\n",
+        tokenstr[token],
+        tokenstr[prev_token],
+        current_context_type());
+
+    // Before handling this token, consider if certain tokens (like TSEMI) ended a line, etc.
     switch (token) {
         // Program structure
         case TPROGRAM:
-            current_indent = GLOBAL_LEVEL;
-            printf("program ");
-            need_space = 0;
+            // program at global, indent = 0
+            print_token("program");
+            need_space = 0; // expecting a program name next
             break;
 
         case TPROCEDURE:
-            print_newline_if_needed();
-            current_indent = PROCEDURE_LEVEL;
-            print_indent();
-            printf("procedure ");
-            in_procedure = 1;
-            in_procedure_header = 1;
-            need_space = 0;
-            last_printed_newline = 0;
+            // procedure: push a context at level 1
+            // print on a new line from the global or after var
+            print_newline();
+            push_context(CTX_PROCEDURE, 1, 0, 0);
+            print_token("procedure");
+            need_space = 1;
             break;
 
         case TVAR:
-            if (!in_procedure_header && current_indent == GLOBAL_LEVEL) {
-                printf("    ");  // Direct indentation for global var
-                current_indent = 4;
-            } 
-            printf("var\n");
-            in_var_declaration = 1;
-            current_indent += 4;
-            print_indent();
+            // var keyword: depends if under program or procedure
+            // handle_var_context_on_entry decides correct indentation
+            print_newline();
+            handle_var_context_on_entry();
+            print_token("var");
+            print_newline();
             need_space = 0;
-            last_printed_newline = 1;
             break;
 
-        // compound statements
+        // Begin-End Blocks
         case TBEGIN:
-            if (last_printed_newline) {
-                if (in_then || prev_token == TELSE) {
-                    current_indent = current_indent;
-                } else if (in_loop) {
-                    // Maintain current indentation for nested blocks
-                    print_indent();
+            // Decide indentation based on context:
+            // - In PROGRAM: begin at level 0
+            // - In PROCEDURE: begin at level 1
+            // - Nested blocks: begin one level more than parent
+            {
+                int parent_indent = context_stack[context_top].base_indent_level;
+                ContextType ctype = current_context_type();
+                int new_indent = parent_indent;
+                if (ctype == CTX_GLOBAL) {
+                    new_indent = 0;  // Program-level begin
+                } else if (ctype == CTX_PROCEDURE) {
+                    new_indent = 1;  // Procedure-level begin
                 } else {
-                    current_indent = GLOBAL_LEVEL;
-                    print_indent();
+                    // Nested begin block: increment parent by 1
+                    new_indent = parent_indent + 1;
                 }
+
+                print_newline();
+                push_context(CTX_BEGIN_BLOCK, new_indent, 0, 0);
+                print_token("begin");
+                print_newline();
             }
-            // Check if block is empty (next token is END)
-            if (next_token == TEND) {
-                printf("begin");  // No newline for empty block
-                need_space = 0;
-                last_printed_newline = 0;
-            } else {
-                if (in_loop) {
-                    printf("\n");
-                    current_indent += 4;
-                    print_indent();
-                    printf("begin\n");
-                    current_indent += 4;
-                } else if (in_procedure) {
-                    print_indent();
-                    printf("begin\n");
-                    current_indent = PROCEDURE_LEVEL + 4;
-                } else {
-                    current_indent = GLOBAL_LEVEL;
-                    print_indent();
-                    printf("begin\n");
-                    current_indent = 4;
-                }
-                print_indent();
-                need_space = 0;
-                last_printed_newline = 1;
-            }
-            begin_level = block_level;
-            push_block(begin_level); 
-            block_level++;
+            need_space = 0;
             break;
 
         case TEND:
-            block_level--;
-            if (prev_token == TBEGIN) {
-                // Empty block - no newline
-                printf("\nend");
+            // end must match the indentation of corresponding begin
+            // Just pop the begin context
+            if (current_context_type() == CTX_BEGIN_BLOCK) {
+                pop_context();
             } else {
-                printf("\n");
-                if (in_procedure && block_level == 0) {
-                    current_indent = PROCEDURE_LEVEL;
-                } else if (block_level == 0) {
-                    current_indent = GLOBAL_LEVEL;
-                } else if (in_loop) {
-                    current_indent = pop_block() * 4;  // Maintain proper nesting level
-                } else {
-                    current_indent = pop_block() * 4;  // Align with corresponding begin
-                }
-                print_indent();
-                printf("end");
+                // handle error or unexpected token scenario
             }
-            if (block_level == 0) {
-                in_procedure = 0;
-                in_loop = 0;
-            }
-            in_procedure_header = 0;
-            need_space = 1;
-            last_printed_newline = 0;
+            print_newline();
+            print_token("end");
+            need_space = 0; // next might be ';'
             break;
 
         // Statements
         case TIF:
-            in_loop = 1;
-            printf("if ");
-            need_space = 0;
-            block_level++;
+            // if: print on new line, same indent as parent, then after "then" we indent more
+            print_newline();
+            print_token("if");
             break;
 
         case TTHEN:
-            in_then = 1;
-            printf(" then");  // Just print then with one leading space
-            if (next_token == TBEGIN) {
-                current_indent = current_indent;
-            } else {
-                printf("\n");
-                current_indent += 4;
-                print_indent();
+            // if and then on same line
+            print_token("then");
+            // after then, we indent one more level for the block
+            {
+                int parent_indent = context_stack[context_top].base_indent_level;
+                // Push if-then block with one more level
+                push_context(CTX_IF_THEN, parent_indent + 1, 0, 0);
             }
+            print_newline();
             need_space = 0;
             break;
 
         case TELSE:
-            in_then = 0;
-            if (prev_token == TEND || prev_token == TSEMI || prev_token == TDOT) {
-                printf("\n");
-                print_indent();
+            // else on new line at the same indent as if
+            // pop if-then context first
+            if (current_context_type() == CTX_IF_THEN) {
+                pop_context();
             }
-            else{
-                current_indent -= 4;
-                printf("\n");
-                print_indent();
-            }
-            printf("else");
-            if (next_token == TIF) {
-                printf("\n");
-                current_indent += 4;
-                print_indent();
-            } else if (next_token == TBEGIN) {
-                current_indent = current_indent;
-                block_level++;
-            } else {
-                printf("\n");
-                current_indent += 4;
-                print_indent();
+            {
+                int parent_indent = context_stack[context_top].base_indent_level;
+                // else block with one more level
+                print_newline();
+                push_context(CTX_ELSE_BLOCK, parent_indent + 1, 0, 0);
+                print_token("else");
+                print_newline();
             }
             need_space = 0;
             break;
 
         case TWHILE:
-            in_loop = 1;
-            printf("while ");
-            need_space = 0;
-            block_level++;
+            print_newline();
+            print_token("while");
+            need_space = 1;
             break;
 
         case TDO:
-            print_newline_if_needed();
-            printf(" do");
-            if (!in_loop) {
-                current_indent += 4;
+            // while and do on same line
+            print_token("do");
+            // after do, one more indent level
+            {
+                int parent_indent = context_stack[context_top].base_indent_level;
+                push_context(CTX_WHILE_DO, parent_indent + 1, 0, 0);
             }
+            print_newline();
             need_space = 0;
-            last_printed_newline = 0;
             break;
 
         case TCALL:
-            printf("call ");
-            need_space = 0;
+            print_token("call");
+            need_space = 1;
             break;
 
         // Operators
         case TASSIGN:
-            printf(" := ");
-            need_space = 0;
+            print_token(":=");
+            need_space = 1;
             break;
 
         case TPLUS:
@@ -276,8 +331,10 @@ void pretty_print_token(int token) {
         case TDIV:
         case TAND:
         case TOR:
+            // Binary operators surrounded by spaces
             printf(" %s ", tokenstr[token]);
             need_space = 0;
+            last_printed_newline = 0;
             break;
 
         case TEQUAL:
@@ -286,104 +343,66 @@ void pretty_print_token(int token) {
         case TLEEQ:
         case TGR:
         case TGREQ:
+            // Relational operators with spaces
             printf(" %s ", tokenstr[token]);
             need_space = 0;
+            last_printed_newline = 0;
             break;
 
         // Punctuation
         case TSEMI:
+            // Semicolon ends the statement line
             printf(";");
-            if (next_token == TVAR){
-                if(in_procedure_header){
-                    printf("\n");
-                    current_indent = NESTED_LEVEL;
-                    print_indent();
-                } else {
-                    printf("\n");
-                    current_indent = PROCEDURE_LEVEL;
-                    print_indent();
-                }
-            } else if (next_token == TBEGIN){
-                if(in_procedure_header){
-                    printf("\n");
-                    current_indent = PROCEDURE_LEVEL;
-                    print_indent();
-                } else {
-                    printf("\n");
-                    current_indent = GLOBAL_LEVEL;
-                    print_indent();
-                }
-            } else if (next_token == TPROCEDURE){
-                printf("\n");
-            } else if(prev_token == TEND){
-                if (next_token == TWRITELN || next_token == TWRITE || next_token == TREADLN || next_token == TREAD){
-                printf("\n");
-                current_indent -= 4;
-                print_indent();
-                }
-            } else if (in_procedure_header) {
-                printf("\n");
-                current_indent = PROCEDURE_LEVEL;
-                print_indent();
-                in_procedure_header = 0;
-            } else {
-                printf("\n");
-                print_indent();
-            }
+            // Newline after semicolon, same indentation as the current block
+            print_newline();
             need_space = 0;
-            last_printed_newline = 1;
             break;
 
         case TCOMMA:
-            printf(" ,");
+            print_token(",");
             need_space = 1;
             break;
 
         case TCOLON:
-            printf(" :");
+            print_token(":");
             need_space = 1;
             break;
 
         case TDOT:
-            printf(".");
+            print_token(".");
             need_space = 0;
             break;
 
         // Grouping symbols
         case TLPAREN:
-            if (prev_token == TWHILE || prev_token == TASSIGN || prev_token == TIF || prev_token == TELSE) {
-                printf("( ");
-            } else {
-                printf(" ( ");
-            }
+            print_token("(");
             need_space = 0;
             break;
 
         case TRPAREN:
-            printf(" )");
+            print_token(")");
             need_space = 1;
             break;
 
         case TLSQPAREN:
-            printf("[");
+            print_token("[");
             need_space = 0;
             break;
 
         case TRSQPAREN:
-            printf("]");
+            print_token("]");
             need_space = 1;
             break;
 
         // I/O statements
         case TREADLN:
         case TREAD:
-            printf("%s", tokenstr[token]);
-            need_space = 1;
-            break;
-
-        case TWRITELN:
         case TWRITE:
-            printf("%s", tokenstr[token]);
+        case TWRITELN:
+            // These appear often at the start of a statement line
+            // If needed, print a newline first
+            print_newline();
+            print_token(tokenstr[token]);
             need_space = 1;
             break;
 
@@ -392,28 +411,34 @@ void pretty_print_token(int token) {
             if (need_space) printf(" ");
             printf("%s", string_attr);
             need_space = 1;
+            last_printed_newline = 0;
             break;
 
         case TNUMBER:
             if (need_space) printf(" ");
             printf("%d", num_attr);
             need_space = 1;
+            last_printed_newline = 0;
             break;
 
         case TSTRING:
             if (need_space) printf(" ");
             printf("'%s'", string_attr);
             need_space = 1;
+            last_printed_newline = 0;
             break;
 
         default:
+            // For any other tokens not explicitly handled
             if (need_space) printf(" ");
             printf("%s", tokenstr[token]);
             need_space = 1;
+            last_printed_newline = 0;
             break;
     }
 }
 
+// Main pretty-print function
 void pretty_print_program(void) {
     init_pretty_printer();
     
