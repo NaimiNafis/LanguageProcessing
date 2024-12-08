@@ -5,8 +5,10 @@
 #include "debug_pretty.h"
 
 /*
- * Refined version to minimize extra newlines and spaces.
- * We use conditional newlines and careful `need_space` handling.
+ * Adjusted version:
+ * - `begin` indentation logic changed depending on context.
+ * - Var blocks after procedures: once we pop CTX_PROCEDURE at `end;`, we are at CTX_GLOBAL, so var after that is global.
+ * - Call `handle_var_end_if_needed()` before pushing new contexts for `begin`, procedures, etc., to ensure correct stack state.
  */
 
 // For indentation
@@ -97,34 +99,8 @@ static ContextType current_context_type(void) {
 static int compute_indent_level(void) {
     if (context_top < 0) return 0;
     ContextType curr_type = context_stack[context_top].type;
-    ContextType parent_type = (context_top > 0) ? context_stack[context_top - 1].type : CTX_GLOBAL;
     int base_level = context_stack[context_top].base_indent_level;
-    int indent = 0;
-    switch (curr_type) {
-        case CTX_GLOBAL:
-            indent = 0;
-            break;
-        case CTX_PROCEDURE:
-            indent = 1;
-            break;
-        case CTX_VAR_BLOCK:
-            indent = base_level;
-            break;
-        case CTX_VAR_DECL:
-            indent = base_level + 1;
-            break;
-        case CTX_BEGIN_BLOCK:
-            indent = base_level;
-            break;
-        case CTX_IF_THEN:
-        case CTX_ELSE_BLOCK:
-        case CTX_WHILE_DO:
-            indent = base_level;
-            break;
-        default:
-            indent = base_level;
-            break;
-    }
+    int indent = base_level;
     return indent * INDENT_SPACES;
 }
 
@@ -140,7 +116,6 @@ static void print_newline(void) {
     last_printed_newline = 1;
 }
 
-// Only print a newline if we're not already on a new line
 static void print_newline_if_needed(void) {
     if (!last_printed_newline) {
         print_newline();
@@ -192,70 +167,94 @@ void pretty_print_token(int token) {
 
     switch (token) {
         case TPROGRAM:
-            // "program sample11;"
             print_token("program");
-            need_space = 1; // space before program name
+            need_space = 1; 
             break;
+
         case TPROCEDURE:
-            // Start a procedure: newline before procedure if needed
+            // Before procedure, ensure var end if needed
+            handle_var_end_if_needed();
             print_newline_if_needed();
+            // Procedure at indent=1 from global
             push_context(CTX_PROCEDURE, 1, 0, 0);
             print_token("procedure");
+            need_space = 1;
             break;
+
         case TVAR:
+            handle_var_end_if_needed();
             {
+                // Determine if var is under program or procedure
                 ContextType ctype = current_context_type();
-                int base_indent = (ctype == CTX_GLOBAL) ? 1 : 2;
+                int base_indent;
+                if (ctype == CTX_GLOBAL) {
+                    // var under program
+                    base_indent = 1;
+                } else if (ctype == CTX_PROCEDURE) {
+                    // var under procedure header
+                    base_indent = 2;
+                } else {
+                    // If not in procedure or global, treat as global
+                    base_indent = 1;
+                }
+                print_newline_if_needed();
                 push_context(CTX_VAR_BLOCK, base_indent, (ctype == CTX_GLOBAL), (ctype == CTX_PROCEDURE));
             }
-            // after ";" from program line, we are already on a new line or we should ensure one
-            print_newline_if_needed();
             print_token("var");
             need_space = 0;
-            print_newline();  // newline after var to start declarations
+            print_newline();  
             break;
+
         case TNAME:
             if (current_context_type() == CTX_VAR_BLOCK) {
                 push_context(CTX_VAR_DECL, context_stack[context_top].base_indent_level, 0, 0);
                 debug_pretty_printf("Started var declarations line\n");
-                // already after var newline, so just ensure indentation
                 last_printed_newline = 1; 
             } else if (current_context_type() == CTX_VAR_DECL && prev_token == TSEMI) {
-                // New line of var declarations
                 print_newline_if_needed();
                 last_printed_newline = 1;
             }
-            if (need_space && !last_printed_newline) printf(" ");
             print_token(string_attr); 
             need_space = 1;
             break;
+
         case TASSIGN:
             print_token(":=");
             need_space = 1;
             break;
+
         case TBEGIN:
-            // end var block if needed first
             handle_var_end_if_needed();
-            // After var block and declarations, we should be at a new line
             print_newline_if_needed();
             {
+                // Set indent for begin block based on context
+                // If at global: begin block at indent=0
+                // If in procedure: begin block at indent=1
+                // If in while-do or nested blocks: indent = parent_indent+1
                 ContextType ctype = current_context_type();
-                int parent_indent = context_stack[context_top].base_indent_level;
-                int new_indent = parent_indent;
-                if (ctype == CTX_GLOBAL) {
+                int new_indent = 0;
+                if (ctype == CTX_GLOBAL && context_top == 0) {
+                    // main program begin
                     new_indent = 0;
                 } else if (ctype == CTX_PROCEDURE) {
+                    // begin under procedure
                     new_indent = 1;
+                } else if (ctype == CTX_WHILE_DO) {
+                    new_indent = context_stack[context_top].base_indent_level + 1;
                 } else {
-                    new_indent = parent_indent + 1;
+                    // Default nested
+                    new_indent = context_stack[context_top].base_indent_level + 1;
                 }
+
                 push_context(CTX_BEGIN_BLOCK, new_indent, 0, 0);
                 print_token("begin");
+                print_newline();
                 need_space = 0;
-                print_newline(); // after begin
             }
             break;
+
         case TEND:
+            // End might close a begin block, procedure, or while-do
             if (current_context_type() == CTX_BEGIN_BLOCK) {
                 pop_context();
             } else if (current_context_type() == CTX_PROCEDURE) {
@@ -267,20 +266,22 @@ void pretty_print_token(int token) {
             print_token("end");
             need_space = 0;
             break;
+
         case TIF:
-            // start an if statement on a new line if not already
             print_newline_if_needed();
             print_token("if");
             break;
+
         case TTHEN:
             print_token("then");
             {
                 int parent_indent = context_stack[context_top].base_indent_level;
                 push_context(CTX_IF_THEN, parent_indent + 1, 0, 0);
             }
-            print_newline(); // after then
+            print_newline();
             need_space = 0;
             break;
+
         case TELSE:
             if (current_context_type() == CTX_IF_THEN) {
                 pop_context();
@@ -294,42 +295,51 @@ void pretty_print_token(int token) {
             }
             need_space = 0;
             break;
+
         case TWHILE:
             print_newline_if_needed();
             print_token("while");
             need_space = 1;
             break;
+
         case TDO:
             print_token("do");
             {
                 int parent_indent = context_stack[context_top].base_indent_level;
                 push_context(CTX_WHILE_DO, parent_indent + 1, 0, 0);
             }
-            print_newline(); // after do
+            print_newline();
             need_space = 0;
             break;
+
         case TCALL:
             print_newline_if_needed();
             print_token("call");
             need_space = 1;
             break;
+
         case TSEMI:
             printf(";");
             print_newline();
             need_space = 0;
             break;
+
         case TCOMMA:
             print_token(",");
             need_space = 1;
             break;
+
         case TCOLON:
             print_token(":");
             need_space = 1;
             break;
+
         case TDOT:
             print_token(".");
             need_space = 0;
             break;
+
+        // Operators with spacing
         case TPLUS:
         case TMINUS:
         case TSTAR:
@@ -346,43 +356,50 @@ void pretty_print_token(int token) {
             need_space = 0;
             last_printed_newline = 0;
             break;
+
         case TLPAREN:
-            print_token("(");
+            print_token("( ");
             need_space = 0;
             break;
+
         case TRPAREN:
             print_token(")");
             need_space = 1;
             break;
+
         case TLSQPAREN:
             print_token("[");
             need_space = 0;
             break;
+
         case TRSQPAREN:
             print_token("]");
             need_space = 1;
             break;
+
         case TREADLN:
         case TREAD:
         case TWRITE:
         case TWRITELN:
-            // Just ensure we start a statement on a new line if needed
             print_newline_if_needed();
             print_token(tokenstr[token]);
             need_space = 1;
             break;
+
         case TNUMBER:
             if (need_space) printf(" ");
             printf("%d", num_attr);
             need_space = 1;
             last_printed_newline = 0;
             break;
+
         case TSTRING:
             if (need_space) printf(" ");
             printf("'%s'", string_attr);
             need_space = 1;
             last_printed_newline = 0;
             break;
+
         default:
             if (need_space) printf(" ");
             printf("%s", tokenstr[token]);
@@ -411,6 +428,7 @@ void pretty_print_program(void) {
     }
     debug_pretty_printf("Finished pretty_print_program\n");
 }
+
 
 /*
  * NOTES:

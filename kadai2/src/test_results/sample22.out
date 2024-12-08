@@ -1,6 +1,6 @@
-program  assignboolean;
+program assignboolean;
     var
-        x ,  y : boolean;
+    x , y : boolean;
 begin
 x := true;
 y := false;
