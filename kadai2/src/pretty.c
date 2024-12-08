@@ -249,22 +249,16 @@ void pretty_print_token(int token) {
             print_newline_if_needed();
             {
                 ContextType ctype = current_context_type();
-                int parent_indent = current_base_indent();
-                int new_indent = 0;
+                int new_indent;
 
-                // If at global and context_top=0 => main begin at indent=0
-                if (ctype == CTX_GLOBAL && context_top == 0) {
-                    new_indent = 0;
+                // Program's main begin block
+                if (ctype == CTX_GLOBAL || context_top == 0) {
+                    new_indent = 0;  // Align with program
                 } else if (ctype == CTX_PROCEDURE && in_procedure_header == 1) {
-                    // This begin ends the header and starts body at indent=1
                     new_indent = 1;
-                    in_procedure_header = 0; 
-                } else if (ctype == CTX_WHILE_DO) {
-                    // One level deeper than while
-                    new_indent = parent_indent + 1;
+                    in_procedure_header = 0;
                 } else {
-                    // Nested block: parent_indent+1
-                    new_indent = parent_indent + 1;
+                    new_indent = current_base_indent() + 1;
                 }
 
                 push_context(CTX_BEGIN_BLOCK, new_indent, 0, 0);
@@ -275,20 +269,22 @@ void pretty_print_token(int token) {
             break;
 
         case TEND:
-            // Print 'end' before popping the context to align correctly
             print_newline_if_needed();
             print_token("end");
             need_space = 0;
-            // Now pop the context
+
             if (current_context_type() == CTX_BEGIN_BLOCK) {
-                pop_context();  // Pop the begin block
-                // If we're in a while-do after popping, pop that too
-                if (current_context_type() == CTX_WHILE_DO) {
-                    pop_context();
+                ContextType parent_type;
+                pop_context();  // Pop BEGIN_BLOCK
+                
+                // Check parent context
+                parent_type = current_context_type();
+                if (parent_type == CTX_PROCEDURE) {
+                    pop_context();  // Also pop PROCEDURE if it was a procedure's begin-end
+                    in_procedure_header = 0;
+                } else if (parent_type == CTX_WHILE_DO) {
+                    pop_context();  // Pop WHILE_DO for while blocks
                 }
-            } else if (current_context_type() == CTX_PROCEDURE) {
-                pop_context();
-                in_procedure_header = 0;
             }
             break;
 

@@ -26,8 +26,8 @@ program sample11pp;
     end;
     var
         n : integer;
-        begin
-            call kazuyomikomi ( n );
-            call goukei ( n * 2 , sum );
-            call wakakidasi
-        end.
+begin
+    call kazuyomikomi ( n );
+    call goukei ( n * 2 , sum );
+    call wakakidasi
+end.

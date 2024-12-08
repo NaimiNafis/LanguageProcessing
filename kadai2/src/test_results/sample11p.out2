@@ -24,8 +24,8 @@ program sample11p;
                 n := n - 1
             end
     end;
-        begin
-            call kazuyomikomi;
-            call goukei;
-            call wakakidasi
-        end.
+begin
+    call kazuyomikomi;
+    call goukei;
+    call wakakidasi
+end.
