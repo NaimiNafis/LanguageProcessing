@@ -1,6 +1,6 @@
 program numberlist;
     var
-    e , n : integer;
+        e , n : integer;
 begin
 writeln ( 'Number list' );
 writeln ( '    n  ' , '   2n  ' , ' n**2  ' , ' n**3  ' , ' 2**n  ' );

@@ -4,13 +4,6 @@
 #include "token.h"
 #include "debug_pretty.h"
 
-/*
- * Adjusted version:
- * - `begin` indentation logic changed depending on context.
- * - Var blocks after procedures: once we pop CTX_PROCEDURE at `end;`, we are at CTX_GLOBAL, so var after that is global.
- * - Call `handle_var_end_if_needed()` before pushing new contexts for `begin`, procedures, etc., to ensure correct stack state.
- */
-
 // For indentation
 #define INDENT_SPACES 4
 #define MAX_CONTEXTS  100
@@ -33,13 +26,14 @@ typedef struct {
     int is_var_under_procedure;
 } Context;
 
-// Global state
 static Context context_stack[MAX_CONTEXTS];
 static int context_top = -1;
 
 static int need_space = 0;
 static int last_printed_newline = 1; 
 static int prev_token = 0, curr_token = 0, next_token = 0;
+static int in_procedure_header = 0; // tracks if we're in procedure header
+
 extern int num_attr;
 extern char string_attr[];
 extern char *tokenstr[];
@@ -55,6 +49,7 @@ static void print_newline_if_needed(void);
 static void print_token(const char *text);
 static void update_token_history(int new_token);
 static void handle_var_end_if_needed(void);
+static int current_base_indent(void);
 
 void init_pretty_printer(void) {
     debug_pretty_printf("Initializing pretty printer\n");
@@ -63,6 +58,7 @@ void init_pretty_printer(void) {
     need_space = 0;
     last_printed_newline = 1;
     prev_token = curr_token = next_token = 0;
+    in_procedure_header = 0;
     debug_pretty_printf("Initialization complete, global context pushed\n");
 }
 
@@ -98,10 +94,13 @@ static ContextType current_context_type(void) {
 
 static int compute_indent_level(void) {
     if (context_top < 0) return 0;
-    ContextType curr_type = context_stack[context_top].type;
     int base_level = context_stack[context_top].base_indent_level;
-    int indent = base_level;
-    return indent * INDENT_SPACES;
+    return base_level * INDENT_SPACES;
+}
+
+static int current_base_indent(void) {
+    if (context_top < 0) return 0;
+    return context_stack[context_top].base_indent_level;
 }
 
 static void print_indent(void) {
@@ -160,10 +159,11 @@ static void handle_var_end_if_needed(void) {
 }
 
 void pretty_print_token(int token) {
-    debug_pretty_printf("Token: %s (%d), Prev: %s (%d), CurrCtx: %d\n",
+    debug_pretty_printf("Token: %s (%d), Prev: %s (%d), CurrCtx: %d, InProcHeader: %d\n",
         tokenstr[token], token,
         tokenstr[prev_token], prev_token,
-        current_context_type());
+        current_context_type(),
+        in_procedure_header);
 
     switch (token) {
         case TPROGRAM:
@@ -172,11 +172,11 @@ void pretty_print_token(int token) {
             break;
 
         case TPROCEDURE:
-            // Before procedure, ensure var end if needed
             handle_var_end_if_needed();
             print_newline_if_needed();
-            // Procedure at indent=1 from global
+            // New procedure at indent=1 from global
             push_context(CTX_PROCEDURE, 1, 0, 0);
+            in_procedure_header = 1;
             print_token("procedure");
             need_space = 1;
             break;
@@ -184,21 +184,23 @@ void pretty_print_token(int token) {
         case TVAR:
             handle_var_end_if_needed();
             {
-                // Determine if var is under program or procedure
+                // Determine var indent:
+                // If global: indent=1
+                // If procedure header: indent=2
+                // If after procedure ended (back to global): indent=1
+                // If still in procedure body: indent=1 from procedure perspective since outside header
                 ContextType ctype = current_context_type();
                 int base_indent;
                 if (ctype == CTX_GLOBAL) {
-                    // var under program
                     base_indent = 1;
-                } else if (ctype == CTX_PROCEDURE) {
-                    // var under procedure header
-                    base_indent = 2;
+                } else if (ctype == CTX_PROCEDURE && in_procedure_header == 1) {
+                    base_indent = 2; 
                 } else {
-                    // If not in procedure or global, treat as global
+                    // If not in header now, treat as global-level var
                     base_indent = 1;
                 }
                 print_newline_if_needed();
-                push_context(CTX_VAR_BLOCK, base_indent, (ctype == CTX_GLOBAL), (ctype == CTX_PROCEDURE));
+                push_context(CTX_VAR_BLOCK, base_indent, (ctype == CTX_GLOBAL), (ctype == CTX_PROCEDURE && in_procedure_header == 1));
             }
             print_token("var");
             need_space = 0;
@@ -207,7 +209,10 @@ void pretty_print_token(int token) {
 
         case TNAME:
             if (current_context_type() == CTX_VAR_BLOCK) {
-                push_context(CTX_VAR_DECL, context_stack[context_top].base_indent_level, 0, 0);
+                // var decl line is one deeper than var block:
+                // var block at base_indent, decl line at base_indent+1
+                int var_base = current_base_indent();
+                push_context(CTX_VAR_DECL, var_base+1, 0, 0);
                 debug_pretty_printf("Started var declarations line\n");
                 last_printed_newline = 1; 
             } else if (current_context_type() == CTX_VAR_DECL && prev_token == TSEMI) {
@@ -227,23 +232,23 @@ void pretty_print_token(int token) {
             handle_var_end_if_needed();
             print_newline_if_needed();
             {
-                // Set indent for begin block based on context
-                // If at global: begin block at indent=0
-                // If in procedure: begin block at indent=1
-                // If in while-do or nested blocks: indent = parent_indent+1
                 ContextType ctype = current_context_type();
+                int parent_indent = current_base_indent();
                 int new_indent = 0;
+
+                // If at global and context_top=0 => main begin at indent=0
                 if (ctype == CTX_GLOBAL && context_top == 0) {
-                    // main program begin
                     new_indent = 0;
-                } else if (ctype == CTX_PROCEDURE) {
-                    // begin under procedure
+                } else if (ctype == CTX_PROCEDURE && in_procedure_header == 1) {
+                    // This begin ends the header and starts body at indent=1
                     new_indent = 1;
+                    in_procedure_header = 0; 
                 } else if (ctype == CTX_WHILE_DO) {
-                    new_indent = context_stack[context_top].base_indent_level + 1;
+                    // One level deeper than while
+                    new_indent = parent_indent + 1;
                 } else {
-                    // Default nested
-                    new_indent = context_stack[context_top].base_indent_level + 1;
+                    // Nested block: parent_indent+1
+                    new_indent = parent_indent + 1;
                 }
 
                 push_context(CTX_BEGIN_BLOCK, new_indent, 0, 0);
@@ -254,11 +259,12 @@ void pretty_print_token(int token) {
             break;
 
         case TEND:
-            // End might close a begin block, procedure, or while-do
+            // end might close begin block, procedure, or while-do
             if (current_context_type() == CTX_BEGIN_BLOCK) {
                 pop_context();
             } else if (current_context_type() == CTX_PROCEDURE) {
                 pop_context();
+                in_procedure_header = 0; // procedure ended
             } else if (current_context_type() == CTX_WHILE_DO) {
                 pop_context();
             }
@@ -275,7 +281,7 @@ void pretty_print_token(int token) {
         case TTHEN:
             print_token("then");
             {
-                int parent_indent = context_stack[context_top].base_indent_level;
+                int parent_indent = current_base_indent();
                 push_context(CTX_IF_THEN, parent_indent + 1, 0, 0);
             }
             print_newline();
@@ -287,7 +293,7 @@ void pretty_print_token(int token) {
                 pop_context();
             }
             {
-                int parent_indent = context_stack[context_top].base_indent_level;
+                int parent_indent = current_base_indent();
                 push_context(CTX_ELSE_BLOCK, parent_indent + 1, 0, 0);
                 print_newline_if_needed();
                 print_token("else");
@@ -305,7 +311,8 @@ void pretty_print_token(int token) {
         case TDO:
             print_token("do");
             {
-                int parent_indent = context_stack[context_top].base_indent_level;
+                int parent_indent = current_base_indent();
+                // while-do block at parent_indent+1
                 push_context(CTX_WHILE_DO, parent_indent + 1, 0, 0);
             }
             print_newline();
@@ -428,6 +435,7 @@ void pretty_print_program(void) {
     }
     debug_pretty_printf("Finished pretty_print_program\n");
 }
+
 
 
 /*

@@ -1,6 +1,6 @@
 program change;
     var
-    n , count : integer;
+        n , count : integer;
 begin
 writeln ( 'please input change' );
 readln ( n );

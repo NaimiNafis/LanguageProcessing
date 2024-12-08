@@ -1,6 +1,6 @@
 program whilest;
     var
-    n , i , sum : integer;
+        n , i , sum : integer;
 begin
 readln ( n );
 i := n;

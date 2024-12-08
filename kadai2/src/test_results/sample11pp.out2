@@ -4,17 +4,17 @@ program sample11pp;
     writeln ( 'input the number of data' );
     readln ( n )
     end;
-        var
+    var
         sum : integer;
     procedure wakakidasi;
     begin
     writeln ( 'Sum of data = ' , sum )
     end;
-        var
+    var
         data : integer;
     procedure goukei ( n , s : integer );
         var
-        data : integer;
+            data : integer;
     begin
     s := 0;
     while n > 0 do
@@ -25,7 +25,7 @@ program sample11pp;
         end
     end;
     var
-    n : integer;
+        n : integer;
         begin
         call kazuyomikomi ( n );
         call goukei ( n * 2 , sum );

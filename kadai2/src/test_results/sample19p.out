@@ -1,7 +1,7 @@
 program sample19;
     procedure gcmlcm ( m , n , gc , lc : integer );
         var
-        a , b , r : integer;
+            a , b , r : integer;
     begin
     a := m;
     b := n;
@@ -23,7 +23,7 @@ program sample19;
         end;
     procedure gcm ( a , b , gc : integer );
         var
-        lc , aa , bb : integer;
+            lc , aa , bb : integer;
     begin
     if ( a = 0 ) or ( b = 0 ) then
         gc := 1
@@ -36,7 +36,7 @@ program sample19;
         end;
     procedure lcm ( a , b , lc : integer );
         var
-        gc , aa , bb : integer;
+            gc , aa , bb : integer;
     begin
     if ( a = 0 ) or ( b = 0 ) then
         lc := 1
@@ -49,7 +49,7 @@ program sample19;
         end;
     procedure reduce ( a1 , a2 : integer );
         var
-        gc : integer;
+            gc : integer;
     begin
     if a1 = 0 then
             begin
@@ -72,7 +72,7 @@ return
                 end;
     procedure sum ( x1 , x2 , y1 , y2 : integer );
         var
-        lc , y11 : integer;
+            lc , y11 : integer;
     begin
     call lcm ( x2 , y2 , lc );
     x1 := x1 * ( lc div x2 );
@@ -83,13 +83,13 @@ return
     end;
     procedure sub ( x1 , x2 , y1 , y2 : integer );
         var
-        lc , y11 : integer;
+            lc , y11 : integer;
     begin
     call sum ( x1 , x2 , - y1 , y2 )
     end;
     procedure mult ( x1 , x2 , y1 , y2 : integer );
         var
-        gc , y11 , y22 : integer;
+            gc , y11 , y22 : integer;
     begin
     call gcm ( x1 , y2 , gc );
     x1 := x1 div gc;
@@ -126,10 +126,10 @@ return
             writeln ( 'Temporary Result =' , a , '/' , b )
             end;
     var
-    x1 , x2 , y1 , y2 : integer;
+        x1 , x2 , y1 , y2 : integer;
     var
-    com : char;
-    endflag : boolean;
+        com : char;
+        endflag : boolean;
                 begin
                 writeln ( '   *** Calculator -- h for help ***' );
                 x1 := 0;

@@ -1,6 +1,6 @@
 program sample24a;
     var
-    a : integer;
+        a : integer;
 begin
 a := 1;
 writeln ( a );

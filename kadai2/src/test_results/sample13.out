@@ -1,6 +1,6 @@
 program sample13;
     var
-    x , high , low , mid , can : integer;
+        x , high , low , mid , can : integer;
 begin
 writeln ( 'Input x for calculating root x' );
 readln ( x );

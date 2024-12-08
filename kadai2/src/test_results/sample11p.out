@@ -1,18 +1,18 @@
 program sample11p;
     var
-    n : integer;
+        n : integer;
     procedure kazuyomikomi;
     begin
     writeln ( 'input the number of data' );
     readln ( n )
     end;
-        var
+    var
         sum : integer;
     procedure wakakidasi;
     begin
     writeln ( 'Sum of data = ' , sum )
     end;
-        var
+    var
         data : integer;
     procedure goukei;
     begin
