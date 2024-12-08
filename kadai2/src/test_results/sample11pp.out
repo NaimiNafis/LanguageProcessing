@@ -22,7 +22,7 @@ program sample11pp;
                 readln ( data );
                 s := s + data;
                 n := n - 1
-        end
+            end
     end;
     var
         n : integer;
@@ -30,4 +30,4 @@ program sample11pp;
             call kazuyomikomi ( n );
             call goukei ( n * 2 , sum );
             call wakakidasi
-    end.
+        end.

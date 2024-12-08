@@ -14,32 +14,32 @@ begin
             if ( com = 'c' ) or ( com = 'C' ) then
                 begin
                     x := y;
-            end
+                end
             else
             if com = '+' then
                     begin
                         x := x + y;
-                end
+                    end
                 else
                 if com = '-' then
                         begin
                             x := x - y;
-                    end
+                        end
                     else
                     if com = '*' then
                             begin
                                 x := x * y;
-                        end
+                            end
                         else
                         if com = '/' then
                                 begin
                                     x := x div y;
-                            end
+                                end
                             else
                             if ( com = 'o' ) or ( com = 'O' ) then
                                     begin
                                         endflag := true
-                                end
+                                    end
                                 else
                                     begin
                                         writeln;
@@ -51,7 +51,7 @@ begin
                                         writeln ( '  / number : divide it' );
                                         writeln ( '  o        : off(terminate execution)' );
                                         writeln
-                                end;
+                                    end;
                                 if endflag then
                                     writeln ( 'Final Result =' , x )
                                     else

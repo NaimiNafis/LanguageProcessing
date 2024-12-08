@@ -97,10 +97,18 @@ static int compute_indent_level(void) {
     ContextType curr_type = context_stack[context_top].type;
     int base_level = context_stack[context_top].base_indent_level;
     
-    // Only add extra indentation for statements INSIDE begin blocks
-    // Check if we're printing a statement (not the 'begin' keyword itself)
-    if (curr_type == CTX_BEGIN_BLOCK && curr_token != TBEGIN && curr_token != TEND) {
-        base_level++;  // Indent statements one more level
+    if (curr_type == CTX_BEGIN_BLOCK) {
+        // For nested blocks, maintain parent's indentation level
+        if (curr_token == TBEGIN || curr_token == TEND) {
+            // Keep begin/end aligned with each other
+            return base_level * INDENT_SPACES;
+        } else {
+            // Indent contents one level deeper
+            return (base_level + 1) * INDENT_SPACES;
+        }
+    } else if (curr_type == CTX_WHILE_DO) {
+        // For while-do blocks, maintain correct nesting
+        return base_level * INDENT_SPACES;
     }
     
     return base_level * INDENT_SPACES;
@@ -267,19 +275,23 @@ void pretty_print_token(int token) {
             break;
 
         case TEND:
-            // end might close begin block, procedure, or while-do
-            if (current_context_type() == CTX_BEGIN_BLOCK) {
-                pop_context();
-            } else if (current_context_type() == CTX_PROCEDURE) {
-                pop_context();
-                in_procedure_header = 0; // procedure ended
-            } else if (current_context_type() == CTX_WHILE_DO) {
-                pop_context();
-            }
+            // Print 'end' before popping the context to align correctly
             print_newline_if_needed();
             print_token("end");
             need_space = 0;
+            // Now pop the context
+            if (current_context_type() == CTX_BEGIN_BLOCK) {
+                pop_context();  // Pop the begin block
+                // If we're in a while-do after popping, pop that too
+                if (current_context_type() == CTX_WHILE_DO) {
+                    pop_context();
+                }
+            } else if (current_context_type() == CTX_PROCEDURE) {
+                pop_context();
+                in_procedure_header = 0;
+            }
             break;
+
 
         case TIF:
             print_newline_if_needed();

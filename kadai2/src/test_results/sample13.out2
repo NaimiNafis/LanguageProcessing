@@ -7,7 +7,7 @@ begin
     if x < 0 then
         begin
             writeln ( 'can not calculate a root of negative number' )
-    end
+        end
     else
         begin
             low := 0;
@@ -25,7 +25,7 @@ begin
                             begin
                                 high := mid;
                                 low := mid
-                        end
+                            end
                         end;
                         if high = low then
                             writeln ( 'root ' , x , ' = ' , low )

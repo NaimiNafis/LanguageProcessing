@@ -13,7 +13,7 @@ program sample29;
                 r := a - ( a div b ) * b;
                 a := b;
                 b := r
-        end;
+            end;
         gc := a;
         lc := ( m div gc ) * n
     end;
@@ -35,7 +35,7 @@ program sample29;
                 call abs ( a , aa );
                 call abs ( b , bb );
                 call gcmlcm ( aa , bb , gc , lc )
-        end
+            end
         end;
     procedure lcm ( a , b , lc : integer );
         var
@@ -48,7 +48,7 @@ program sample29;
                 call abs ( a , aa );
                 call abs ( b , bb );
                 call gcmlcm ( aa , bb , gc , lc )
-        end
+            end
         end;
     var
         unusedchar : char;
@@ -60,17 +60,17 @@ program sample29;
             begin
                 a2 := 1;
 return
-        end;
+            end;
         if a2 = 0 then
                 begin
                     a1 := 1;
 return
-            end;
+                end;
             if a2 < 0 then
                     begin
                         a1 := - a1;
                         a2 := - a2
-                end;
+                    end;
                 call gcm ( a1 , a2 , gc );
                 a1 := a1 div gc;
                 a2 := a2 div gc
@@ -151,7 +151,7 @@ return
                                 begin
                                     x1 := y1;
                                     x2 := y2
-                            end
+                                end
                             else
                             if com = '+' then
                                 call sum ( x1 , x2 , y1 , y2 )
@@ -178,7 +178,7 @@ return
                                                         writeln ( '  / number : divide by it' );
                                                         writeln ( '  o        : off(terminate execution)' );
                                                         writeln
-                                                end;
+                                                    end;
                                                 if endflag then
                                                     call printfinal ( x1 , x2 )
                                                     else

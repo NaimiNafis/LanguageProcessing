@@ -10,4 +10,4 @@ program sample28p;
         begin
             call p;
             call q
-    end.
+        end.

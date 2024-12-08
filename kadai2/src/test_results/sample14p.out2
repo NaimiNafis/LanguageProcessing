@@ -56,7 +56,7 @@ program sample14;
                                                 writeln ( '  / number : divide it' );
                                                 writeln ( '  o        : off(terminate execution)' );
                                                 writeln
-                                        end;
+                                            end;
                                         if endflag then
                                             writeln ( 'Final Result =' , x )
                                             else

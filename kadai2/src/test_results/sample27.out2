@@ -14,11 +14,11 @@ begin
                             if ( k div 2 ) * 2 = k then
                                 begin
                                     k := k + 1
-                            end
+                                end
                             else
                                 begin
                                     k := k + 1
-                            end
+                                end
                             end;
                             j := j + 1;
                             end;

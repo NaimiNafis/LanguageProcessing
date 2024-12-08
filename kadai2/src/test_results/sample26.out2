@@ -9,6 +9,6 @@ begin
         begin
             sum := sum + i;
             i := i - 1
-    end;
+        end;
     writeln ( 'Summention of 1 - ' , n , '  is ' , sum )
 end.

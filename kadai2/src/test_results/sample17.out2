@@ -12,7 +12,7 @@ begin
             r := a - ( a div b ) * b;
             a := b;
             b := r
-    end;
+        end;
     gcm := a;
     lcm := ( m div gcm ) * n;
     writeln ( 'GCM = ' , gcm , '   LCM = ' , lcm )

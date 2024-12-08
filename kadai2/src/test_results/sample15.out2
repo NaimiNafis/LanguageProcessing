@@ -11,5 +11,5 @@ begin
             writeln ( n : 6 , ' ' , 2 * n : 6 , ' ' , n * n : 6 , ' ' , n * n * n : 6 , ' ' , e : 6 );
             e := e * 2;
             n := n + 1;
-    end
+        end
 end.

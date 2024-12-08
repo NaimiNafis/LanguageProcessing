@@ -10,6 +10,6 @@ begin
             readln ( data );
             sum := sum + data;
             n := n - 1
-    end;
+        end;
     writeln ( 'Sum of data = ' , sum )
 end.

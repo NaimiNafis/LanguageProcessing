@@ -22,10 +22,10 @@ program sample11p;
                 readln ( data );
                 sum := sum + data;
                 n := n - 1
-        end
+            end
     end;
         begin
             call kazuyomikomi;
             call goukei;
             call wakakidasi
-    end.
+        end.
