@@ -49,6 +49,8 @@ static void print_token(const char *text);
 static void update_token_history(int new_token);
 static void handle_var_end_if_needed(void);
 static int current_base_indent(void);
+static void print_context_stack(const char* action);
+static const char* context_type_name(ContextType type);  // Add this line
 
 void init_pretty_printer(void) {
     debug_pretty_printf("Initializing pretty printer\n");
@@ -68,8 +70,9 @@ static void push_context(ContextType type, int base_indent, int var_prog, int va
         context_stack[context_top].base_indent_level = base_indent;
         context_stack[context_top].is_var_under_program = var_prog;
         context_stack[context_top].is_var_under_procedure = var_proc;
-        debug_pretty_printf("Pushed context: %d (base_indent=%d, var_prog=%d, var_proc=%d)\n", 
-                            type, base_indent, var_prog, var_proc);
+        debug_pretty_printf("Pushed context: %s (base_indent=%d, var_prog=%d, var_proc=%d)\n", 
+                            context_type_name(type), base_indent, var_prog, var_proc);
+        print_context_stack("After push");
     } else {
         debug_pretty_printf("Error: Context stack overflow!\n");
     }
@@ -91,22 +94,13 @@ static const char* context_type_name(ContextType type) {
 
 static void pop_context(void) {
     if (context_top >= 0) {
-        debug_pretty_printf("Popping context: %d (%s, base_indent=%d)\n",
-            context_stack[context_top].type,
+        debug_pretty_printf("Popping context: %s (base_indent=%d)\n",
             context_type_name(context_stack[context_top].type),
             context_stack[context_top].base_indent_level);
         context_top--;
-
-        // Print the current stack after popping
-        debug_pretty_printf("Current stack after pop:\n");
-        for (int i = 0; i <= context_top; i++) {
-            debug_pretty_printf("  %d: CTX_%s (base_indent=%d)\n",
-                i,
-                context_type_name(context_stack[i].type),
-                context_stack[i].base_indent_level);
-        }
+        print_context_stack("After pop");
     } else {
-        debug_pretty_printf("Error: Pop on empty context stack!\n");
+        debug_pretty_printf("Error: Attempted to pop from empty context stack!\n");
     }
 }
 
@@ -305,24 +299,37 @@ void pretty_print_token(int token) {
             print_token("end");
             need_space = 0;
 
-            // Check if the current context is CTX_BEGIN_BLOCK
-            if (current_context_type() == CTX_BEGIN_BLOCK) {
-                pop_context();  // Pop the BEGIN_BLOCK
-
-                // Check the new top context to decide if additional pop is needed
-                ContextType parent_type = current_context_type();
-                if (parent_type == CTX_IF_THEN || 
-                    parent_type == CTX_ELSE_BLOCK || 
-                    parent_type == CTX_WHILE_DO || 
-                    parent_type == CTX_PROCEDURE) {
+            // Get current context type before any modifications
+            ContextType curr_type = current_context_type();
+            
+            // Pop contexts until we find a BEGIN_BLOCK or run out of contexts
+            while (curr_type != CTX_GLOBAL) {
+                if (curr_type == CTX_BEGIN_BLOCK) {
+                    pop_context();  // Pop the BEGIN_BLOCK
+                    
+                    // Check if we need to pop additional context
+                    ContextType parent_type = current_context_type();
+                    if (parent_type == CTX_IF_THEN || 
+                        parent_type == CTX_ELSE_BLOCK || 
+                        parent_type == CTX_WHILE_DO || 
+                        parent_type == CTX_PROCEDURE) {
+                        pop_context();
+                    }
+                    break;  // Found and handled BEGIN_BLOCK, stop popping
+                } else if (curr_type == CTX_IF_THEN || 
+                          curr_type == CTX_ELSE_BLOCK || 
+                          curr_type == CTX_WHILE_DO) {
                     pop_context();
+                    curr_type = current_context_type();
+                } else {
+                    // Unexpected context type
+                    debug_pretty_printf("Warning: Unexpected context %s while processing 'end'\n", 
+                        context_type_name(curr_type));
+                    break;
                 }
-            } else {
-                // Handle unexpected 'end' without matching 'begin'
-                debug_pretty_printf("Warning: 'end' encountered without matching 'begin'\n");
             }
             break;
-            
+
         case TIF:
             print_newline_if_needed();
             print_token("if");
@@ -503,47 +510,17 @@ void pretty_print_program(void) {
     debug_pretty_printf("Finished pretty_print_program\n");
 }
 
-
-
-/*
- * NOTES:
- * - The logic for var and var declarations is now simplified:
- *   - On 'var', push CTX_VAR_BLOCK.
- *   - On first TNAME after var, push CTX_VAR_DECL.
- *   - End of var line (TSEMI) pops CTX_VAR_DECL but stays in CTX_VAR_BLOCK if more vars follow.
- *   - Encountering TBEGIN, TPROCEDURE, or TEND pops CTX_VAR_DECL (if any) and CTX_VAR_BLOCK.
- * 
- * - debug_pretty_printf calls are included at critical steps to help diagnose the flow.
- *   Make sure you have debug_pretty_printf defined and working.
- * 
- * - Adjust indentation rules in compute_indent_level() as needed.
- * 
- * - Test and refine with various sample inputs.
- */
-
-
-/*
- * COMMENTS AND FUTURE DIRECTIONS:
- * 
- * 1. Deciding When to Pop Context:
- *    - BEGIN-END: Pop on 'end' token.
- *    - PROCEDURE: Pop on the 'end' that terminates the procedure. 
- *      You may need to look ahead to confirm it's the procedure end, or rely on grammar rules.
- *    - WHILE-DO: Pop on 'end' that closes the while block.
- *    - VAR Block: Pop when you move out of var declarations (e.g., on 'begin', 'procedure', or 'end').
- *    - IF-THEN: Pop after the then-statement ends. If the statement is a single line ending in ';', pop after printing that semicolon.
- *      If it's a begin-end block, pop after the end of that block.
- *    - ELSE: Same logic as IF-THEN. Once else-statement finishes, pop CTX_ELSE_BLOCK.
- * 
- * 2. Look for patterns in the grammar:
- *    You may need to detect the end of a statement or var block more explicitly. 
- *    Sometimes this requires looking at next_token or using a small state machine.
- * 
- * 3. AST Approach:
- *    Another approach would be to build a parse tree first, then pretty-print from the AST, 
- *    which can make it much easier to know exactly when blocks start and end.
- * 
- * 4. Testing:
- *    Test with small programs and incrementally adjust the logic and indentation rules.
- * 
- */
+static void print_context_stack(const char* action) {
+    debug_pretty_printf("%s - Current context stack (from bottom to top):\n", action);
+    if (context_top < 0) {
+        debug_pretty_printf("  Stack is empty\n");
+    } else {
+        for (int i = 0; i <= context_top; i++) {
+            debug_pretty_printf("  Level %d: %s (base_indent=%d)\n",
+                i,
+                context_type_name(context_stack[i].type),
+                context_stack[i].base_indent_level);
+        }
+    }
+    debug_pretty_printf("Stack trace end\n");
+}

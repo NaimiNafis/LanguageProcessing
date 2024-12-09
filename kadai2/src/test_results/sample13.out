@@ -27,12 +27,12 @@ begin
                                 low := mid
                             end
                         end;
-                    if high = low then
-                        writeln ( 'root ' , x , ' = ' , low )
-                    else
-                        if ( high * high - x ) > ( x - low * low ) then
-                            writeln ( 'root ' , x , ' = ' , low )
-                        else
-                            writeln ( 'root ' , x , ' = ' , high )
-                            end
-                            end.
+            if high = low then
+                writeln ( 'root ' , x , ' = ' , low )
+            else
+                if ( high * high - x ) > ( x - low * low ) then
+                    writeln ( 'root ' , x , ' = ' , low )
+                else
+                    writeln ( 'root ' , x , ' = ' , high )
+                    end
+end.
