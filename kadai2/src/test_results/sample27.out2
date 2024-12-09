@@ -19,7 +19,7 @@ begin
                                 begin
                                     k := k + 1
                                 end
-                                end;
+                        end;
                     j := j + 1;
                 end;
             i := i + 1

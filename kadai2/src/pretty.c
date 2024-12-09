@@ -75,12 +75,36 @@ static void push_context(ContextType type, int base_indent, int var_prog, int va
     }
 }
 
+static const char* context_type_name(ContextType type) {
+    switch(type) {
+        case CTX_GLOBAL: return "GLOBAL";
+        case CTX_PROCEDURE: return "PROCEDURE";
+        case CTX_VAR_BLOCK: return "VAR_BLOCK";
+        case CTX_VAR_DECL: return "VAR_DECL";
+        case CTX_BEGIN_BLOCK: return "BEGIN_BLOCK";
+        case CTX_IF_THEN: return "IF_THEN";
+        case CTX_ELSE_BLOCK: return "ELSE_BLOCK";
+        case CTX_WHILE_DO: return "WHILE_DO";
+        default: return "UNKNOWN";
+    }
+}
+
 static void pop_context(void) {
     if (context_top >= 0) {
-        debug_pretty_printf("Popping context: %d (base_indent=%d)\n",
-               context_stack[context_top].type,
-               context_stack[context_top].base_indent_level);
+        debug_pretty_printf("Popping context: %d (%s, base_indent=%d)\n",
+            context_stack[context_top].type,
+            context_type_name(context_stack[context_top].type),
+            context_stack[context_top].base_indent_level);
         context_top--;
+
+        // Print the current stack after popping
+        debug_pretty_printf("Current stack after pop:\n");
+        for (int i = 0; i <= context_top; i++) {
+            debug_pretty_printf("  %d: CTX_%s (base_indent=%d)\n",
+                i,
+                context_type_name(context_stack[i].type),
+                context_stack[i].base_indent_level);
+        }
     } else {
         debug_pretty_printf("Error: Pop on empty context stack!\n");
     }
@@ -281,22 +305,21 @@ void pretty_print_token(int token) {
             print_token("end");
             need_space = 0;
 
-            // Pop until we find the matching BEGIN_BLOCK
-            while (context_top >= 0 && current_context_type() != CTX_BEGIN_BLOCK) {
-                pop_context();
-            }
-
-            // Now pop the CTX_BEGIN_BLOCK if present
+            // Check if the current context is CTX_BEGIN_BLOCK
             if (current_context_type() == CTX_BEGIN_BLOCK) {
-                pop_context();  
-            }
+                pop_context();  // Pop the BEGIN_BLOCK
 
-            // If we ended a procedure or while/do block, pop those too
-            if (current_context_type() == CTX_PROCEDURE) {
-                pop_context();
-                in_procedure_header = 0;
-            } else if (current_context_type() == CTX_WHILE_DO) {
-                pop_context();
+                // Check the new top context to decide if additional pop is needed
+                ContextType parent_type = current_context_type();
+                if (parent_type == CTX_IF_THEN || 
+                    parent_type == CTX_ELSE_BLOCK || 
+                    parent_type == CTX_WHILE_DO || 
+                    parent_type == CTX_PROCEDURE) {
+                    pop_context();
+                }
+            } else {
+                // Handle unexpected 'end' without matching 'begin'
+                debug_pretty_printf("Warning: 'end' encountered without matching 'begin'\n");
             }
             break;
             
@@ -437,7 +460,16 @@ void pretty_print_token(int token) {
 
         case TSTRING:
             if (need_space) printf(" ");
-            printf("'%s'", string_attr);
+            printf("'");
+            // Loop through string and double any single quotes
+            for (int i = 0; string_attr[i] != '\0'; i++) {
+                if (string_attr[i] == '\'') {
+                    printf("''");  // Double the quote
+                } else {
+                    printf("%c", string_attr[i]);
+                }
+            }
+            printf("'");
             need_space = 1;
             last_printed_newline = 0;
             break;

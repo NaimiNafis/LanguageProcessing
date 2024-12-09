@@ -1,5 +1,4 @@
-program NAME;
-
+program Write;
 begin
-    writeln ( NAME )
-end .
+    writeln ( 'It''s OK?' )
+end.

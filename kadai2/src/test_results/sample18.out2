@@ -21,7 +21,7 @@ begin
                     factor [ can ] := factor [ can ] + 1;
                     n := n div can
                 end
-                end;
+        end;
     i := 0;
     if n < 200 then
         begin
