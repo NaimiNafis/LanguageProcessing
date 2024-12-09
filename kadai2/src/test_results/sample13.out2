@@ -17,22 +17,22 @@ begin
                     mid := ( high + low ) div 2;
                     can := mid * mid;
                     if x < can then
-                    high := mid
+                        high := mid
                     else
-                    if can < x then
-                        low := mid
+                        if can < x then
+                            low := mid
                         else
                             begin
                                 high := mid;
                                 low := mid
                             end
-                        end;
-                        if high = low then
-                            writeln ( 'root ' , x , ' = ' , low )
-                            else
-                            if ( high * high - x ) > ( x - low * low ) then
-                                writeln ( 'root ' , x , ' = ' , low )
-                                else
-                                writeln ( 'root ' , x , ' = ' , high )
-                                end
-                                end.
+                            end;
+            if high = low then
+                writeln ( 'root ' , x , ' = ' , low )
+            else
+                if ( high * high - x ) > ( x - low * low ) then
+                    writeln ( 'root ' , x , ' = ' , low )
+                else
+                    writeln ( 'root ' , x , ' = ' , high )
+                    end
+        end.

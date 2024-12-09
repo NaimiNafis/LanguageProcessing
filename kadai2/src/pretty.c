@@ -77,7 +77,9 @@ static void push_context(ContextType type, int base_indent, int var_prog, int va
 
 static void pop_context(void) {
     if (context_top >= 0) {
-        debug_pretty_printf("Popping context: %d\n", context_stack[context_top].type);
+        debug_pretty_printf("Popping context: %d (base_indent=%d)\n",
+               context_stack[context_top].type,
+               context_stack[context_top].base_indent_level);
         context_top--;
     } else {
         debug_pretty_printf("Error: Pop on empty context stack!\n");
@@ -93,24 +95,30 @@ static ContextType current_context_type(void) {
 
 static int compute_indent_level(void) {
     if (context_top < 0) return 0;
-    
+
     ContextType curr_type = context_stack[context_top].type;
     int base_level = context_stack[context_top].base_indent_level;
-    
+
     if (curr_type == CTX_BEGIN_BLOCK) {
-        // For nested blocks, maintain parent's indentation level
         if (curr_token == TBEGIN || curr_token == TEND) {
-            // Keep begin/end aligned with each other
             return base_level * INDENT_SPACES;
         } else {
-            // Indent contents one level deeper
             return (base_level + 1) * INDENT_SPACES;
         }
+    } else if (curr_type == CTX_IF_THEN || curr_type == CTX_ELSE_BLOCK) {
+        // Contents of if/else blocks are indented one level deeper
+        if (curr_token == TELSE) {
+            return base_level * INDENT_SPACES;  // 'else' aligns with 'if'
+        }
+        return (base_level + 1) * INDENT_SPACES;
     } else if (curr_type == CTX_WHILE_DO) {
-        // For while-do blocks, maintain correct nesting
-        return base_level * INDENT_SPACES;
+        if (curr_token == TBEGIN || curr_token == TEND) {
+            return base_level * INDENT_SPACES;
+        } else {
+            return (base_level + 1) * INDENT_SPACES;
+        }
     }
-    
+
     return base_level * INDENT_SPACES;
 }
 
@@ -273,22 +281,25 @@ void pretty_print_token(int token) {
             print_token("end");
             need_space = 0;
 
+            // Pop until we find the matching BEGIN_BLOCK
+            while (context_top >= 0 && current_context_type() != CTX_BEGIN_BLOCK) {
+                pop_context();
+            }
+
+            // Now pop the CTX_BEGIN_BLOCK if present
             if (current_context_type() == CTX_BEGIN_BLOCK) {
-                ContextType parent_type;
-                pop_context();  // Pop BEGIN_BLOCK
-                
-                // Check parent context
-                parent_type = current_context_type();
-                if (parent_type == CTX_PROCEDURE) {
-                    pop_context();  // Also pop PROCEDURE if it was a procedure's begin-end
-                    in_procedure_header = 0;
-                } else if (parent_type == CTX_WHILE_DO) {
-                    pop_context();  // Pop WHILE_DO for while blocks
-                }
+                pop_context();  
+            }
+
+            // If we ended a procedure or while/do block, pop those too
+            if (current_context_type() == CTX_PROCEDURE) {
+                pop_context();
+                in_procedure_header = 0;
+            } else if (current_context_type() == CTX_WHILE_DO) {
+                pop_context();
             }
             break;
-
-
+            
         case TIF:
             print_newline_if_needed();
             print_token("if");
@@ -306,16 +317,19 @@ void pretty_print_token(int token) {
 
         case TELSE:
             if (current_context_type() == CTX_IF_THEN) {
-                pop_context();
+                // Retrieve and store the base indentation level of the 'if' statement
+                int if_indent = context_stack[context_top].base_indent_level;
+                pop_context();  // Pop CTX_IF_THEN context
+                // Push CTX_ELSE_BLOCK with the same base_indent as the 'if'
+                push_context(CTX_ELSE_BLOCK, if_indent, 0, 0);
+            } else { // outside if-then block context
+                int if_indent = current_base_indent();  // Get current base indent
+                push_context(CTX_ELSE_BLOCK, if_indent + 1, 0, 0);  // Increase indent level by 1
             }
-            {
-                int parent_indent = current_base_indent();
-                push_context(CTX_ELSE_BLOCK, parent_indent + 1, 0, 0);
-                print_newline_if_needed();
-                print_token("else");
-                print_newline();
-            }
+            print_newline_if_needed();
+            print_token("else");
             need_space = 0;
+            print_newline();
             break;
 
         case TWHILE:
@@ -343,6 +357,11 @@ void pretty_print_token(int token) {
 
         case TSEMI:
             printf(";");
+            // Pop IF_THEN context if this semicolon ends an if statement
+            if (current_context_type() == CTX_IF_THEN || 
+                current_context_type() == CTX_ELSE_BLOCK) {
+                pop_context();
+            }
             print_newline();
             need_space = 0;
             break;
@@ -391,7 +410,7 @@ void pretty_print_token(int token) {
             break;
 
         case TLSQPAREN:
-            print_token("[");
+            print_token("[ ");
             need_space = 0;
             break;
 

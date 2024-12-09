@@ -16,27 +16,27 @@ begin
                     x := y;
                 end
             else
-            if com = '+' then
+                if com = '+' then
                     begin
                         x := x + y;
                     end
                 else
-                if com = '-' then
+                    if com = '-' then
                         begin
                             x := x - y;
                         end
                     else
-                    if com = '*' then
+                        if com = '*' then
                             begin
                                 x := x * y;
                             end
                         else
-                        if com = '/' then
+                            if com = '/' then
                                 begin
                                     x := x div y;
                                 end
                             else
-                            if ( com = 'o' ) or ( com = 'O' ) then
+                                if ( com = 'o' ) or ( com = 'O' ) then
                                     begin
                                         endflag := true
                                     end
@@ -54,7 +54,7 @@ begin
                                     end;
                                 if endflag then
                                     writeln ( 'Final Result =' , x )
-                                    else
+                                else
                                     writeln ( 'Temporary Result =' , x )
                                     end
-                                    end.
+end.

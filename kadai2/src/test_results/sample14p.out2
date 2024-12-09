@@ -29,22 +29,22 @@ begin
             writeln ( ' Please input command :' );
             readln ( com , y );
             if ( com = 'c' ) or ( com = 'C' ) then
-            x := y
+                x := y
             else
-            if com = '+' then
-                call sum
+                if com = '+' then
+                    call sum
                 else
-                if com = '-' then
-                    call sub
+                    if com = '-' then
+                        call sub
                     else
-                    if com = '*' then
-                        call mult
+                        if com = '*' then
+                            call mult
                         else
-                        if com = '/' then
-                            call divide
+                            if com = '/' then
+                                call divide
                             else
-                            if ( com = 'o' ) or ( com = 'O' ) then
-                                endflag := true
+                                if ( com = 'o' ) or ( com = 'O' ) then
+                                    endflag := true
                                 else
                                     begin
                                         writeln;
@@ -59,7 +59,7 @@ begin
                                     end;
                                 if endflag then
                                     writeln ( 'Final Result =' , x )
-                                    else
+                                else
                                     writeln ( 'Temporary Result =' , x )
                                     end
-                                    end.
+end.

@@ -1,7 +1,7 @@
 program sample29;
     var
         unused1 : integer;
-        UnusedArrayForTest : array [200 ] of char;
+        UnusedArrayForTest : array [ 200 ] of char;
     procedure gcmlcm ( m , n , gc , lc : integer );
         var
             a , b , r : integer;
@@ -20,36 +20,36 @@ program sample29;
     procedure abs ( a , b : integer );
     begin
         if a < 0 then
-        b := - a
+            b := - a
         else
-        b := a
-        end;
+            b := a
+            end;
     procedure gcm ( a , b , gc : integer );
         var
             lc , aa , bb : integer;
     begin
         if ( a = 0 ) or ( b = 0 ) then
-        gc := 1
+            gc := 1
         else
             begin
                 call abs ( a , aa );
                 call abs ( b , bb );
                 call gcmlcm ( aa , bb , gc , lc )
             end
-        end;
+            end;
     procedure lcm ( a , b , lc : integer );
         var
             gc , aa , bb : integer;
     begin
         if ( a = 0 ) or ( b = 0 ) then
-        lc := 1
+            lc := 1
         else
             begin
                 call abs ( a , aa );
                 call abs ( b , bb );
                 call gcmlcm ( aa , bb , gc , lc )
             end
-        end;
+            end;
     var
         unusedchar : char;
     procedure reduce ( a1 , a2 : integer );
@@ -62,19 +62,19 @@ program sample29;
 return
             end;
         if a2 = 0 then
-                begin
-                    a1 := 1;
+            begin
+                a1 := 1;
 return
-                end;
-            if a2 < 0 then
-                    begin
-                        a1 := - a1;
-                        a2 := - a2
-                    end;
-                call gcm ( a1 , a2 , gc );
-                a1 := a1 div gc;
-                a2 := a2 div gc
-                end;
+            end;
+        if a2 < 0 then
+            begin
+                a1 := - a1;
+                a2 := - a2
+            end;
+        call gcm ( a1 , a2 , gc );
+        a1 := a1 div gc;
+        a2 := a2 div gc
+    end;
     procedure sum ( x1 , x2 , y1 , y2 : integer );
         var
             lc , y11 : integer;
@@ -111,77 +111,77 @@ return
         call mult ( x1 , x2 , y2 , y1 )
     end;
     var
-        unusedarray : array [100 ] of char;
+        unusedarray : array [ 100 ] of char;
     procedure printfinal ( a , b : integer );
     begin
         if a = 0 then
-        writeln ( 'Final Result =' , a )
-        else
-        if b = 1 then
             writeln ( 'Final Result =' , a )
+        else
+            if b = 1 then
+                writeln ( 'Final Result =' , a )
             else
-            writeln ( 'Final Result =' , a , '/' , b )
-            end;
+                writeln ( 'Final Result =' , a , '/' , b )
+                end;
     procedure printtemp ( a , b : integer );
     begin
         if a = 0 then
-        writeln ( 'Temporary Result =' , a )
-        else
-        if b = 1 then
             writeln ( 'Temporary Result =' , a )
+        else
+            if b = 1 then
+                writeln ( 'Temporary Result =' , a )
             else
-            writeln ( 'Temporary Result =' , a , '/' , b )
-            end;
+                writeln ( 'Temporary Result =' , a , '/' , b )
+                end;
     var
         x1 , x2 , y1 , y2 : integer;
     var
         com : char;
         endflag : boolean;
+begin
+    writeln ( '   *** Calculator -- h for help ***' );
+    x1 := 0;
+    x2 := 1;
+    endflag := false;
+    while not endflag do
+        begin
+            writeln ( ' Please input command :' );
+            readln ( com , y1 );
+            y2 := 1;
+            if ( com = 'c' ) or ( com = 'C' ) then
                 begin
-                    writeln ( '   *** Calculator -- h for help ***' );
-                    x1 := 0;
-                    x2 := 1;
-                    endflag := false;
-                    while not endflag do
-                        begin
-                            writeln ( ' Please input command :' );
-                            readln ( com , y1 );
-                            y2 := 1;
-                            if ( com = 'c' ) or ( com = 'C' ) then
-                                begin
-                                    x1 := y1;
-                                    x2 := y2
-                                end
+                    x1 := y1;
+                    x2 := y2
+                end
+            else
+                if com = '+' then
+                    call sum ( x1 , x2 , y1 , y2 )
+                else
+                    if com = '-' then
+                        call sub ( x1 , x2 , y1 , y2 )
+                    else
+                        if com = '*' then
+                            call mult ( x1 , x2 , y1 , y2 )
+                        else
+                            if com = '/' then
+                                call divide ( x1 , x2 , y1 , y2 )
                             else
-                            if com = '+' then
-                                call sum ( x1 , x2 , y1 , y2 )
+                                if ( com = 'o' ) or ( com = 'O' ) then
+                                    endflag := true
                                 else
-                                if com = '-' then
-                                    call sub ( x1 , x2 , y1 , y2 )
-                                    else
-                                    if com = '*' then
-                                        call mult ( x1 , x2 , y1 , y2 )
-                                        else
-                                        if com = '/' then
-                                            call divide ( x1 , x2 , y1 , y2 )
-                                            else
-                                            if ( com = 'o' ) or ( com = 'O' ) then
-                                                endflag := true
-                                                else
-                                                    begin
-                                                        writeln;
-                                                        writeln ( 'Calculator Usage:' );
-                                                        writeln ( '  c number : clear & set it' );
-                                                        writeln ( '  + number : add it' );
-                                                        writeln ( '  - number : subtract it' );
-                                                        writeln ( '  * number : multiply it' );
-                                                        writeln ( '  / number : divide by it' );
-                                                        writeln ( '  o        : off(terminate execution)' );
-                                                        writeln
-                                                    end;
-                                                if endflag then
-                                                    call printfinal ( x1 , x2 )
-                                                    else
-                                                    call printtemp ( x1 , x2 )
-                                                    end
-                                                    end.
+                                    begin
+                                        writeln;
+                                        writeln ( 'Calculator Usage:' );
+                                        writeln ( '  c number : clear & set it' );
+                                        writeln ( '  + number : add it' );
+                                        writeln ( '  - number : subtract it' );
+                                        writeln ( '  * number : multiply it' );
+                                        writeln ( '  / number : divide by it' );
+                                        writeln ( '  o        : off(terminate execution)' );
+                                        writeln
+                                    end;
+                                if endflag then
+                                    call printfinal ( x1 , x2 )
+                                else
+                                    call printtemp ( x1 , x2 )
+                                    end
+end.
