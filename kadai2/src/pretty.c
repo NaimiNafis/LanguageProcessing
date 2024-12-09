@@ -437,7 +437,16 @@ void pretty_print_token(int token) {
 
         case TSTRING:
             if (need_space) printf(" ");
-            printf("'%s'", string_attr);
+            printf("'");
+            // Loop through string and double any single quotes
+            for (int i = 0; string_attr[i] != '\0'; i++) {
+                if (string_attr[i] == '\'') {
+                    printf("''");  // Double the quote
+                } else {
+                    printf("%c", string_attr[i]);
+                }
+            }
+            printf("'");
             need_space = 1;
             last_printed_newline = 0;
             break;

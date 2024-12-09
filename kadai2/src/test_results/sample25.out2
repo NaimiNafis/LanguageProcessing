@@ -1,12 +1,10 @@
-program NAME;
-
+program ifst;
     var
-        NAME : char;
-        
+        ch : char;
 begin
-            readln ( NAME );
-            if NAME = NAME then
-                writeln ( NAME )
-            else
-                writeln ( NAME )
-            end .
+    readln ( ch );
+    if ch = 'a' then
+        writeln ( 'It is ''a'' ' )
+    else
+        writeln ( 'It is not ''a'' ' )
+        end.
