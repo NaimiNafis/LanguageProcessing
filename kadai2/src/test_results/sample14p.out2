@@ -57,9 +57,9 @@ begin
                                         writeln ( '  o        : off(terminate execution)' );
                                         writeln
                                     end;
-                            if endflag then
-                                writeln ( 'Final Result =' , x )
-                            else
-                                writeln ( 'Temporary Result =' , x )
+            if endflag then
+                writeln ( 'Final Result =' , x )
+            else
+                writeln ( 'Temporary Result =' , x )
         end
 end.

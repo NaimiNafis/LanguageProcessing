@@ -179,9 +179,9 @@ begin
                                         writeln ( '  o        : off(terminate execution)' );
                                         writeln
                                     end;
-                            if endflag then
-                                call printfinal ( x1 , x2 )
-                            else
-                                call printtemp ( x1 , x2 )
+            if endflag then
+                call printfinal ( x1 , x2 )
+            else
+                call printtemp ( x1 , x2 )
         end
 end.

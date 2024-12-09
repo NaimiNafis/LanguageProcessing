@@ -297,23 +297,36 @@ void pretty_print_token(int token) {
         case TEND:
             print_newline_if_needed();
             
-            // Special handling for IF_THEN and ELSE_BLOCK contexts
+            // Get base indent level before popping
+            int restore_indent = -1;
             ContextType curr_type = current_context_type();
+            
+            // Find the parent while-do or begin block's indent level to restore after
+            for (int i = context_top - 1; i >= 0; i--) {
+                if (context_stack[i].type == CTX_WHILE_DO || 
+                    (context_stack[i].type == CTX_BEGIN_BLOCK && 
+                     i > 0 && context_stack[i-1].type == CTX_WHILE_DO)) {
+                    restore_indent = context_stack[i].base_indent_level;
+                    break;
+                }
+            }
+
             if (curr_type == CTX_IF_THEN || curr_type == CTX_ELSE_BLOCK) {
-                // Pop IF_THEN or ELSE_BLOCK contexts until we find BEGIN_BLOCK
+                // Pop contexts until we find BEGIN_BLOCK
                 while (curr_type != CTX_BEGIN_BLOCK && curr_type != CTX_GLOBAL) {
                     pop_context();
                     curr_type = current_context_type();
                 }
-                // Now print end at the proper indentation level
                 print_token("end");
                 need_space = 0;
                 
-                // Pop the BEGIN_BLOCK if we found one
                 if (curr_type == CTX_BEGIN_BLOCK) {
                     pop_context();
-                    // Check and pop any parent context if needed
                     curr_type = current_context_type();
+                    // If we found a while-do level to restore to, use it
+                    if (restore_indent >= 0 && curr_type != CTX_GLOBAL) {
+                        context_stack[context_top].base_indent_level = restore_indent;
+                    }
                     if (curr_type == CTX_IF_THEN || 
                         curr_type == CTX_ELSE_BLOCK || 
                         curr_type == CTX_WHILE_DO || 
@@ -401,10 +414,14 @@ void pretty_print_token(int token) {
 
         case TSEMI:
             printf(";");
-            // Pop IF_THEN context if this semicolon ends an if statement
-            if (current_context_type() == CTX_IF_THEN || 
-                current_context_type() == CTX_ELSE_BLOCK) {
+            // Pop all nested IF_THEN and ELSE_BLOCK contexts until we reach a BEGIN_BLOCK or WHILE_DO
+            curr_type = current_context_type();
+            while (curr_type == CTX_IF_THEN || curr_type == CTX_ELSE_BLOCK) {
                 pop_context();
+                curr_type = current_context_type();
+                if (curr_type == CTX_BEGIN_BLOCK || curr_type == CTX_WHILE_DO) {
+                    break;
+                }
             }
             print_newline();
             need_space = 0;
