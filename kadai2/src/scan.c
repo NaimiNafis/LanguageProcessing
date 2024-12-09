@@ -22,6 +22,7 @@ int process_number(const char *token_str);
 int process_string_literal(void);
 int skip_whitespace_and_comments(void);
 int check_token_size(int length);
+static int scan_number(void);  // Add this line with other forward declarations
 
 // Define the scanner variable
 Scanner scanner = {0};  // Initialize all fields to 0
@@ -115,18 +116,7 @@ int scan(void) {
             }
 
             if (isdigit(cbuf)) {  // Number
-                buffer[0] = cbuf;
-                for (i = 1; (cbuf = (char) fgetc(fp)) != EOF; i++) {
-                    if (check_token_size(i) == -1) return -1;
-                    if (isdigit(cbuf)) {
-                        buffer[i] = cbuf;
-                    } else {
-                        break;
-                    }
-                }
-                buffer[i] = '\0';  // Null-terminate the buffer
-                debug_printf("Processing number: %s at line %d\n", buffer, get_linenum());
-                return process_number(buffer);
+                return scan_number();
             }
 
             // Handle unexpected tokens
@@ -300,4 +290,30 @@ void end_scan(void) {
         fclose(fp);
         fp = NULL;
     }
+}
+
+int scan_number() {
+    char num_buffer[MAXSTRSIZE] = {0};  // Use MAXSTRSIZE instead of 256
+    int num_len = 0;
+    num_attr = 0;
+
+    // Store the original format while parsing with bounds checking
+    while (isdigit(cbuf) && num_len < MAXSTRSIZE - 1) {  // Leave room for null terminator
+        num_buffer[num_len++] = cbuf;  // Store original character
+        num_attr = num_attr * 10 + (cbuf - '0');
+        cbuf = (char) fgetc(fp);
+    }
+    num_buffer[num_len] = '\0';
+    
+    // Check for buffer overflow
+    if (isdigit(cbuf)) {
+        error("Number too long");  // Use the existing error function
+        return -1;
+    }
+    
+    // Store original format in string_attr using strncpy for safety
+    strncpy(string_attr, num_buffer, MAXSTRSIZE - 1);
+    string_attr[MAXSTRSIZE - 1] = '\0';  // Ensure null termination
+    
+    return TNUMBER;
 }

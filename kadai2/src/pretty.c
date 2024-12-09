@@ -419,7 +419,8 @@ void pretty_print_token(int token) {
             break;
 
         case TSEMI:
-            printf(";");
+            need_space = 0;
+            print_token(";");
             // Pop all nested IF_THEN and ELSE_BLOCK contexts until we reach a BEGIN_BLOCK or WHILE_DO
             curr_type = current_context_type();
             while (curr_type == CTX_IF_THEN || curr_type == CTX_ELSE_BLOCK) {
@@ -497,7 +498,7 @@ void pretty_print_token(int token) {
 
         case TNUMBER:
             if (need_space) printf(" ");
-            printf("%d", num_attr);
+            printf("%s", string_attr);  // Use string_attr instead of num_attr
             need_space = 1;
             last_printed_newline = 0;
             break;

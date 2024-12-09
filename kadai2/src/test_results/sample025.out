@@ -1,1 +1,1 @@
-Syntax error at line 6: Expected 'end' (token: 10)
+Syntax error at line 6: Expected token 7 but found 10 (token: 10)

@@ -1,1 +1,1 @@
-Syntax error at line 2: Expected ':' after variable names (token: -1)
+Syntax error at line 2: Expected token 45 but found -1 (token: -1)

@@ -1,1 +1,1 @@
-Error: Number exceeds maximum allowable value. at line 3
+Syntax error at line 3: program expected (token: 27)
