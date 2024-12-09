@@ -38,4 +38,4 @@ begin
         end;
     if n > 1 then
         writeln ( '    ' , n , ' ** ' , 1 )
-        end.
+end.

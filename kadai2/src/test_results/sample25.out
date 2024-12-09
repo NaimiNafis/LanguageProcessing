@@ -7,4 +7,4 @@ begin
         writeln ( 'It is ''a'' ' )
     else
         writeln ( 'It is not ''a'' ' )
-        end.
+end.

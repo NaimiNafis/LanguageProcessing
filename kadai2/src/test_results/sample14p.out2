@@ -61,5 +61,5 @@ begin
                                 writeln ( 'Final Result =' , x )
                             else
                                 writeln ( 'Temporary Result =' , x )
-                                end
+        end
 end.

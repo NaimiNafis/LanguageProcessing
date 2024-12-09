@@ -20,7 +20,7 @@ program sample19;
             b := - a
         else
             b := a
-            end;
+    end;
     procedure gcm ( a , b , gc : integer );
         var
             lc , aa , bb : integer;
@@ -114,7 +114,7 @@ return
                 writeln ( 'Final Result =' , a )
             else
                 writeln ( 'Final Result =' , a , '/' , b )
-                end;
+    end;
     procedure printtemp ( a , b : integer );
     begin
         if a = 0 then
@@ -124,7 +124,7 @@ return
                 writeln ( 'Temporary Result =' , a )
             else
                 writeln ( 'Temporary Result =' , a , '/' , b )
-                end;
+    end;
     var
         x1 , x2 , y1 , y2 : integer;
     var
@@ -179,5 +179,5 @@ begin
                                         call printfinal ( x1 , x2 )
                                     else
                                         call printtemp ( x1 , x2 )
-                                        end
+        end
 end.

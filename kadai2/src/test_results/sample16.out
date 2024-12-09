@@ -24,7 +24,7 @@ begin
                                 furui [ j ] := false;
                                 j := j + i
                             end
-                        end;
+                end;
             i := i + 1
         end
 end.

@@ -296,36 +296,50 @@ void pretty_print_token(int token) {
 
         case TEND:
             print_newline_if_needed();
-            print_token("end");
-            need_space = 0;
-
-            // Get current context type before any modifications
-            ContextType curr_type = current_context_type();
             
-            // Pop contexts until we find a BEGIN_BLOCK or run out of contexts
-            while (curr_type != CTX_GLOBAL) {
-                if (curr_type == CTX_BEGIN_BLOCK) {
-                    pop_context();  // Pop the BEGIN_BLOCK
-                    
-                    // Check if we need to pop additional context
-                    ContextType parent_type = current_context_type();
-                    if (parent_type == CTX_IF_THEN || 
-                        parent_type == CTX_ELSE_BLOCK || 
-                        parent_type == CTX_WHILE_DO || 
-                        parent_type == CTX_PROCEDURE) {
-                        pop_context();
-                    }
-                    break;  // Found and handled BEGIN_BLOCK, stop popping
-                } else if (curr_type == CTX_IF_THEN || 
-                          curr_type == CTX_ELSE_BLOCK || 
-                          curr_type == CTX_WHILE_DO) {
+            // Special handling for IF_THEN and ELSE_BLOCK contexts
+            ContextType curr_type = current_context_type();
+            if (curr_type == CTX_IF_THEN || curr_type == CTX_ELSE_BLOCK) {
+                // Pop IF_THEN or ELSE_BLOCK contexts until we find BEGIN_BLOCK
+                while (curr_type != CTX_BEGIN_BLOCK && curr_type != CTX_GLOBAL) {
                     pop_context();
                     curr_type = current_context_type();
-                } else {
-                    // Unexpected context type
-                    debug_pretty_printf("Warning: Unexpected context %s while processing 'end'\n", 
-                        context_type_name(curr_type));
-                    break;
+                }
+                // Now print end at the proper indentation level
+                print_token("end");
+                need_space = 0;
+                
+                // Pop the BEGIN_BLOCK if we found one
+                if (curr_type == CTX_BEGIN_BLOCK) {
+                    pop_context();
+                    // Check and pop any parent context if needed
+                    curr_type = current_context_type();
+                    if (curr_type == CTX_IF_THEN || 
+                        curr_type == CTX_ELSE_BLOCK || 
+                        curr_type == CTX_WHILE_DO || 
+                        curr_type == CTX_PROCEDURE) {
+                        pop_context();
+                    }
+                }
+            } else {
+                // Original handling for other contexts
+                print_token("end");
+                need_space = 0;
+                
+                while (curr_type != CTX_GLOBAL) {
+                    if (curr_type == CTX_BEGIN_BLOCK) {
+                        pop_context();
+                        curr_type = current_context_type();
+                        if (curr_type == CTX_IF_THEN || 
+                            curr_type == CTX_ELSE_BLOCK || 
+                            curr_type == CTX_WHILE_DO || 
+                            curr_type == CTX_PROCEDURE) {
+                            pop_context();
+                        }
+                        break;
+                    }
+                    pop_context();
+                    curr_type = current_context_type();
                 }
             }
             break;
