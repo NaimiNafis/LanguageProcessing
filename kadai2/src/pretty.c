@@ -373,15 +373,21 @@ void pretty_print_token(int token) {
             break;
 
         case TELSE:
-            if (current_context_type() == CTX_IF_THEN) {
-                // Retrieve and store the base indentation level of the 'if' statement
-                int if_indent = context_stack[context_top].base_indent_level;
-                pop_context();  // Pop CTX_IF_THEN context
-                // Push CTX_ELSE_BLOCK with the same base_indent as the 'if'
-                push_context(CTX_ELSE_BLOCK, if_indent, 0, 0);
-            } else { // outside if-then block context
-                int if_indent = current_base_indent();  // Get current base indent
-                push_context(CTX_ELSE_BLOCK, if_indent + 1, 0, 0);  // Increase indent level by 1
+            {
+                ContextType curr_type = current_context_type();
+                int if_indent;
+                
+                if (curr_type == CTX_IF_THEN) {
+                    // Retrieve the if's indent level before popping
+                    if_indent = context_stack[context_top].base_indent_level - 1;  // Subtract 1 to match if level
+                    pop_context();  // Pop CTX_IF_THEN context
+                } else {
+                    // If we're not in an if-then context, use current indent
+                    if_indent = current_base_indent();
+                }
+                
+                // Push ELSE_BLOCK with proper indentation
+                push_context(CTX_ELSE_BLOCK, if_indent + 1, 0, 0);
             }
             print_newline_if_needed();
             print_token("else");
@@ -510,6 +516,18 @@ void pretty_print_token(int token) {
             printf("'");
             need_space = 1;
             last_printed_newline = 0;
+            break;
+
+        case TBREAK:
+            print_newline_if_needed();
+            print_token("break");
+            need_space = 0;
+            break;
+
+        case TRETURN:
+            print_newline_if_needed();
+            print_token("return");
+            need_space = 0;
             break;
 
         default:

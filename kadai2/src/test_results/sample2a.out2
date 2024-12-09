@@ -22,7 +22,7 @@ begin
                                         writeln ( '10000 yen : ' , count );
                                     count := 0;
                                     if n < 1000 then
-break;
+                                        break;
                                     count := count + 1;
                                     n := n - 1000;
                                 end;
@@ -30,7 +30,7 @@ break;
                                 writeln ( ' 1000 yen : ' , count );
                             count := 0;
                             if n < 100 then
-break;
+                                break;
                             count := count + 1;
                             n := n - 100;
                         end;
@@ -38,7 +38,7 @@ break;
                         writeln ( '  100 yen : ' , count );
                     count := 0;
                     if n < 10 then
-break;
+                        break;
                     count := count + 1;
                     n := n - 10;
                 end;
@@ -46,7 +46,7 @@ break;
                 writeln ( '   10 yen : ' , count );
             count := 0;
             if n < 1 then
-break;
+                break;
             count := count + 1;
             n := n - 1;
         end;

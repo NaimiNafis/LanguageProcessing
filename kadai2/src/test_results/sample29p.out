@@ -59,12 +59,12 @@ program sample29;
         if a1 = 0 then
             begin
                 a2 := 1;
-return
+                return
             end;
         if a2 = 0 then
             begin
                 a1 := 1;
-return
+                return
             end;
         if a2 < 0 then
             begin
