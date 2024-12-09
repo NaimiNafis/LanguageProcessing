@@ -25,6 +25,6 @@ begin
                                 j := j + i
                             end
                         end;
-            i := i + 1
-        end
-end.
+                    i := i + 1
+                end
+        end.
