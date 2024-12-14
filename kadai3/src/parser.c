@@ -8,18 +8,17 @@
 #include "debug.h"
 #include "cross_referencer.h"
 
-// Define a constant for EOF
+// Parser configuration
 #define EOF_TOKEN -1
 #define MAX_ERRORS 5
 #define SYNC_TOKENS_COUNT 6
 
-// Forward declarations for parsing functions
+// Forward declarations for recursive descent parsing
+static int parse_block(void);
 static int parse_variable_declaration(void);
 static int parse_name_list(void);
 static int parse_type(void);
 static int parse_procedure(void);
-static int parse_procedure_declaration(void);
-static int parse_parameter_list(void);
 static int parse_statement_list(void);
 static int parse_statement(void);
 static int parse_if_statement(void);
@@ -35,10 +34,8 @@ static int parse_comparison(void);
 static int parse_condition(void);
 static int parse_assignment(void);
 static int match(int expected_token);
-static int parse_block(void);
-void parse_error(const char* message);
 
-// Add these at the top with other forward declarations
+// Helper functions for error handling and validation
 static int check_recursive_call(const char* proc_name);
 static int check_malformed_declaration(int start_line);
 
@@ -140,7 +137,7 @@ static int parse_block(void) {
                     match(TNAME);
                 }
 
-                // ...process type declaration...
+                // Process type declaration
                 match(TCOLON);
                 int var_type = parser.current_token;
                 parse_type();

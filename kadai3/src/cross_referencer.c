@@ -3,21 +3,22 @@
 #include <string.h>
 #include "cross_referencer.h"
 #include "debug.h"
-#include "scan.h"  // Add this include to get num_attr
+#include "scan.h"
 
+// Global state management for symbol processing
 static ID *symbol_table = NULL;
-static char *current_procedure = NULL;  // Add this at the top with other globals
-static ID *current_procedure_id = NULL; // Add this to track current procedure ID
-static Type* current_symbol_type = NULL; // Add at the top with other static variables
-static int error_state = 0; // Add this to track error state
+static char *current_procedure = NULL;
+static ID *current_procedure_id = NULL;
+static Type* current_symbol_type = NULL;
+static int error_state = 0;
 
-// Add new struct to track procedure parameters
+// Parameter type tracking for procedures
 struct ParamType {
     int type;
     struct ParamType *next;
 };
 
-// Add static variables to store array info
+// Array type construction state
 static int current_array_size = 0;
 static int current_base_type = 0;
 
@@ -68,7 +69,7 @@ const char* type_to_string(int type) {
         case TPROCEDURE: return "procedure";
         case TARRAY: {
             // Get array info from symbol being processed
-            Type* array_type_info = current_symbol_type;  // You'll need to add this as a static variable
+            Type* array_type_info = current_symbol_type;
             if (array_type_info) {
                 snprintf(array_type, sizeof(array_type), "array[%d]of%s",
                         array_type_info->arraysize,
@@ -193,7 +194,7 @@ void add_symbol(char *name, int type, int linenum, int is_definition) {
     }
 }
 
-// Add function to add parameter type to procedure
+// Helper function to add parameter type to procedure
 void add_procedure_parameter(int type) {
     if (!current_procedure_id || current_procedure_id->itp->ttype != TPROCEDURE) return;
     
@@ -266,7 +267,7 @@ void add_reference(char *name, int linenum) {
     free(global_name);
 }
 
-// Add these functions to manage procedure scope
+// Helper function to manage procedure scope
 void enter_procedure(const char *name) {
     if (current_procedure) free(current_procedure);
     current_procedure = strdup(name);
@@ -282,7 +283,7 @@ void exit_procedure(void) {
     }
 }
 
-// Add this function to access current_procedure
+// Helper function to access current_procedure
 const char* get_current_procedure(void) {
     return current_procedure;
 }
@@ -294,7 +295,7 @@ int compare_ids(const void *a, const void *b) {
     return strcmp(id1->name, id2->name);
 }
 
-// Add a function to sort references by line number
+// Helper function to sort references by line number
 void sort_references(Line** head) {
     if (*head == NULL || (*head)->nextlinep == NULL) return;
     

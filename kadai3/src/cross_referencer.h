@@ -2,55 +2,55 @@
 #define CROSS_REFERENCER_H
 
 #include "token.h"
-#include "scan.h"  // Add this include
+#include "scan.h"
 
-// Forward declaration of ParamType
+// Forward declaration for type system
 struct ParamType;
 
+// Type system structure for handling variable and procedure types
 typedef struct TYPE {
-    int ttype;  // TPINT, TPCHAR, TPBOOL, etc.
-    int arraysize;  // Size of array if applicable
-    struct TYPE *etp;  // Element type for array types
-    struct ParamType *paratp;  // Parameter types for procedure types
+    int ttype;      
+    int arraysize;   
+    struct TYPE *etp;    
+    struct ParamType *paratp;  
 } Type;
 
+// Reference line tracking
 typedef struct LINE {
     int reflinenum;
     struct LINE *nextlinep;
 } Line;
 
+// Symbol table entry structure
 typedef struct ID {
-    char *name;
-    char *procname;  // Procedure name if defined within a procedure
-    Type *itp;  // Type information
-    int ispara;  // 1 if it's a parameter, 0 if it's a variable
-    int deflinenum;  // Declaration line number
-    Line *irefp;  // List of reference line numbers
+    char *name;        
+    char *procname;    
+    Type *itp;        
+    int ispara;       
+    int deflinenum;   
+    Line *irefp;      
     struct ID *nextp;
 } ID;
 
+// Core functionality
 void init_cross_referencer(void);
 void add_symbol(char *name, int type, int linenum, int is_definition);
 void add_reference(char *name, int linenum);
-extern void print_cross_reference_table(void);
+void print_cross_reference_table(void);
 
-// Keep only the getter function declaration
+// Procedure handling
 const char* get_current_procedure(void);
-
-// Add new function declarations
 void enter_procedure(const char *name);
 void exit_procedure(void);
 void add_procedure_parameter(int type);
 
-// Add new function declaration
+// Type system utilities
 const char* type_to_string(int type);
-
-// Add new function declarations for array handling
 void set_array_info(int size, int base_type);
 Type* create_array_type(int size, int base_type);
 
-// Add these declarations
+// Error management
 void set_error_state(void);
 int is_error_state(void);
 
-#endif // CROSS_REFERENCER_H
+#endif

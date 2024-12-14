@@ -2,6 +2,7 @@
     "files.associations": {
         "debug.h": "c",
         "cross_referencer.h": "c",
-        "parser.h": "c"
+        "parser.h": "c",
+        "stdbool.h": "c"
     }
 }

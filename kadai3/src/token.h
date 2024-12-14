@@ -52,29 +52,25 @@
 #define TWRITE      48  /* write : Keyword */
 #define TBREAK      49  /* break : Keyword */
 
-#define NUMOFTOKEN  49
+#define NUMOFTOKEN  49  /* Number of tokens */
 #define KEYWORDSIZE 28  /* Number of keywords */
 
-// Define the keyword struct
 typedef struct {
     char* keyword;
     int keytoken;
 } keyword;
 
 typedef struct {
-    int kind;           // Uses existing token defines (TNAME, etc)
+    int kind;
     union {
-        char *str;      // For TNAME and string literals
-        int num;        // For TNUMBER
+        char *str;
+        int num;
     } value;
 } Token;
 
-// Declare the keyword array
 extern keyword key[KEYWORDSIZE];
 extern char* tokenstr[NUMOFTOKEN + 1];
-
-// Add new declarations for parser
 extern Token current_token;
-extern int token;  // Holds current token kind
+extern int token;
 
 #endif

@@ -5,6 +5,7 @@
 #include "debug.h" 
 
 int main(int argc, char *argv[]) {
+    // Validate input and handle debug mode
     if (argc < 2 || argc > 3) {
         fprintf(stderr, "Usage: ./pp <filename.mpl> [--debug]\n");
         return 1;
@@ -14,29 +15,18 @@ int main(int argc, char *argv[]) {
         debug_mode = 1;
     }
 
-    debug_printf("Initializing scanner...\n");
-    if (init_scan(argv[1]) < 0) {
-        return 1;
-    }
-
-    debug_printf("Initializing parser...\n");
+    // Initialize components
+    if (init_scan(argv[1]) < 0) return 1;
     init_parser();
+    init_cross_referencer();
 
-    debug_printf("Initializing cross referencer...\n");
-    init_cross_referencer();  // Initialize cross referencer
-
-    debug_printf("Starting parsing...\n");
+    // Execute parsing
     int parse_result = parse_program();
-    debug_printf("Parsing completed with result: %d\n", parse_result);
     end_scan();
 
-    if (parse_result != 0) {
-        // If parsing failed, exit with an error code
-        return 1;
-    }
-
-    // Print cross reference table
+    // Handle results
+    if (parse_result != 0) return 1;
     print_cross_reference_table();
 
-    return 0;  // Successful execution
+    return 0;
 }
