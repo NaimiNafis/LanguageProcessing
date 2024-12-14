@@ -75,6 +75,7 @@ const char* type_to_string(int type) {
         case TINTEGER: return "integer";
         case TBOOLEAN: return "boolean";
         case TCHAR: return "char";
+        case TPROCEDURE: return "procedure";
         default: return "unknown";
     }
 }

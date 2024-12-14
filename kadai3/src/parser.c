@@ -582,9 +582,105 @@ static int parse_while_statement(void) {
     return NORMAL;
 }
 
+static int parse_procedure(void) {
+    debug_printf("Entering parse_procedure\n");
+    
+    if (match(TPROCEDURE) == ERROR) {
+        parse_error("Expected 'procedure' keyword");
+        return ERROR;
+    }
+
+    // Store procedure name before matching
+    char *proc_name = strdup(string_attr);
+    int def_line = get_linenum();
+
+    if (parser.current_token != TNAME) {
+        parse_error("Procedure name expected");
+        free(proc_name);
+        return ERROR;
+    }
+    
+    // Add procedure definition to symbol table
+    add_symbol(proc_name, TPROCEDURE, def_line, 1);
+    free(proc_name);
+    match(TNAME);
+
+    // Handle parameter list
+    if (parser.current_token == TLPAREN) {
+        match(TLPAREN);
+
+        // Parse parameter groups
+        do {
+            // Parse parameter names
+            if (parser.current_token != TNAME) {
+                parse_error("Parameter name expected");
+                return ERROR;
+            }
+            match(TNAME);
+
+            while (parser.current_token == TCOMMA) {
+                match(TCOMMA);
+                if (parser.current_token != TNAME) {
+                    parse_error("Parameter name expected after comma");
+                    return ERROR;
+                }
+                match(TNAME);
+            }
+
+            // Parse parameter type
+            if (match(TCOLON) == ERROR) {
+                parse_error("Expected ':' after parameter names");
+                return ERROR;
+            }
+
+            if (parse_type() == ERROR) {
+                parse_error("Invalid parameter type");
+                return ERROR;
+            }
+
+        } while (parser.current_token == TSEMI && match(TSEMI) == NORMAL); // Continue if more parameter groups
+
+        if (match(TRPAREN) == ERROR) {
+            parse_error("Expected ')' after parameters");
+            return ERROR;
+        }
+    }
+
+    // Parse procedure body
+    if (match(TSEMI) == ERROR) {
+        parse_error("Expected semicolon after procedure header");
+        return ERROR;
+    }
+
+    if (parse_block() == ERROR) {
+        parse_error("Invalid procedure body");
+        return ERROR;
+    }
+
+    if (match(TSEMI) == ERROR) {
+        parse_error("Expected semicolon after procedure body");
+        return ERROR;
+    }
+
+    debug_printf("Exiting parse_procedure successfully\n");
+    return NORMAL;
+}
+
 static int parse_procedure_call(void) {
     if (match(TCALL) == ERROR) return ERROR;
-    if (match(TNAME) == ERROR) return ERROR;
+
+    // Store procedure name before matching
+    char *proc_name = strdup(string_attr);
+    int call_line = get_linenum();
+    
+    if (match(TNAME) == ERROR) {
+        free(proc_name);
+        return ERROR;
+    }
+
+    // Add procedure reference
+    add_symbol(proc_name, TPROCEDURE, call_line, 0);
+    free(proc_name);
     
     if (parser.current_token == TLPAREN) {
         if (match(TLPAREN) == ERROR) return ERROR;
@@ -935,82 +1031,6 @@ static int match(int expected_token) {
     debug_printf("After match: current=%d, prev=%d, prev_prev=%d\n",
                 parser.current_token, parser.previous_token,
                 parser.previous_previous_token);
-    return NORMAL;
-}
-
-static int parse_procedure(void) {
-    debug_printf("Entering parse_procedure\n");
-    
-    if (match(TPROCEDURE) == ERROR) {
-        parse_error("Expected 'procedure' keyword");
-        return ERROR;
-    }
-
-    // Parse procedure name
-    if (parser.current_token != TNAME) {
-        parse_error("Procedure name expected");
-        return ERROR;
-    }
-    match(TNAME);
-
-    // Handle parameter list
-    if (parser.current_token == TLPAREN) {
-        match(TLPAREN);
-
-        // Parse parameter groups
-        do {
-            // Parse parameter names
-            if (parser.current_token != TNAME) {
-                parse_error("Parameter name expected");
-                return ERROR;
-            }
-            match(TNAME);
-
-            while (parser.current_token == TCOMMA) {
-                match(TCOMMA);
-                if (parser.current_token != TNAME) {
-                    parse_error("Parameter name expected after comma");
-                    return ERROR;
-                }
-                match(TNAME);
-            }
-
-            // Parse parameter type
-            if (match(TCOLON) == ERROR) {
-                parse_error("Expected ':' after parameter names");
-                return ERROR;
-            }
-
-            if (parse_type() == ERROR) {
-                parse_error("Invalid parameter type");
-                return ERROR;
-            }
-
-        } while (parser.current_token == TSEMI && match(TSEMI) == NORMAL); // Continue if more parameter groups
-
-        if (match(TRPAREN) == ERROR) {
-            parse_error("Expected ')' after parameters");
-            return ERROR;
-        }
-    }
-
-    // Parse procedure body
-    if (match(TSEMI) == ERROR) {
-        parse_error("Expected semicolon after procedure header");
-        return ERROR;
-    }
-
-    if (parse_block() == ERROR) {
-        parse_error("Invalid procedure body");
-        return ERROR;
-    }
-
-    if (match(TSEMI) == ERROR) {
-        parse_error("Expected semicolon after procedure body");
-        return ERROR;
-    }
-
-    debug_printf("Exiting parse_procedure successfully\n");
     return NORMAL;
 }
 
