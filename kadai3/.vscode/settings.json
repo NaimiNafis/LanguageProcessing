@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "debug.h": "c",
-        "cross_referencer.h": "c"
+        "cross_referencer.h": "c",
+        "parser.h": "c"
     }
 }

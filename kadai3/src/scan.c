@@ -313,27 +313,36 @@ void end_scan(void) {
 }
 
 int scan_number() {
-    char num_buffer[MAXSTRSIZE] = {0};  // Use MAXSTRSIZE instead of 256
+    char num_buffer[MAXSTRSIZE] = {0};
     int num_len = 0;
     num_attr = 0;
+    long temp_num = 0;  // Use long for overflow checking
 
     // Store the original format while parsing with bounds checking
-    while (isdigit(cbuf) && num_len < MAXSTRSIZE - 1) {  // Leave room for null terminator
-        num_buffer[num_len++] = cbuf;  // Store original character
-        num_attr = num_attr * 10 + (cbuf - '0');
-        cbuf = (char) fgetc(fp);
+    while (isdigit(cbuf) && num_len < MAXSTRSIZE - 1) {
+        num_buffer[num_len++] = cbuf;
+        
+        // Check for numeric overflow
+        temp_num = temp_num * 10 + (cbuf - '0');
+        if (temp_num > 32767) {  // Max value for 16-bit integer
+            error("Number too large");
+            return -1;
+        }
+        
+        num_attr = (int)temp_num;
+        cbuf = (char)fgetc(fp);
     }
     num_buffer[num_len] = '\0';
     
     // Check for buffer overflow
     if (isdigit(cbuf)) {
-        error("Number too long");  // Use the existing error function
+        error("Number too long");
         return -1;
     }
     
-    // Store original format in string_attr using strncpy for safety
+    // Store original format in string_attr
     strncpy(string_attr, num_buffer, MAXSTRSIZE - 1);
-    string_attr[MAXSTRSIZE - 1] = '\0';  // Ensure null termination
+    string_attr[MAXSTRSIZE - 1] = '\0';
     
     return TNUMBER;
 }

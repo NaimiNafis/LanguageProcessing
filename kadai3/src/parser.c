@@ -346,9 +346,8 @@ static int parse_type(void) {
             return ERROR;
         }
 
-        // Store array size for cross referencer
-        int array_size = num_attr;
-        int base_type;
+        // Store array size before matching the number token
+        int array_size = num_attr;  // Get size from scanner's num_attr
 
         if (parser.current_token != TNUMBER) {
             parse_error("Expected number for array size");
@@ -356,27 +355,19 @@ static int parse_type(void) {
         }
         match(TNUMBER);
 
-        if (match(TRSQPAREN) == ERROR) {
-            parse_error("Expected ']' after array size");
-            return ERROR;
-        }
+        // Rest of array parsing
+        if (match(TRSQPAREN) == ERROR) return ERROR;
+        if (match(TOF) == ERROR) return ERROR;
 
-        if (match(TOF) == ERROR) {
-            parse_error("Expected 'OF' after array declaration");
-            return ERROR;
-        }
-
-        // Store base type for cross referencer
-        base_type = parser.current_token;
+        int base_type = parser.current_token;
         if (base_type != TINTEGER && base_type != TBOOLEAN && base_type != TCHAR) {
             parse_error("Expected valid base type after OF");
             return ERROR;
         }
         match(parser.current_token);
         
-        // Store array information in global variables for cross referencer
+        // Set array info with the stored size
         set_array_info(array_size, base_type);
-
         return TARRAY;
     }
 

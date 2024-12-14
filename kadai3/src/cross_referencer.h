@@ -11,7 +11,7 @@ typedef struct TYPE {
     int ttype;  // TPINT, TPCHAR, TPBOOL, etc.
     int arraysize;  // Size of array if applicable
     struct TYPE *etp;  // Element type for array types
-    struct ParamType *paratp;  // Parameter types for procedure types - changed from TYPE* to ParamType*
+    struct ParamType *paratp;  // Parameter types for procedure types
 } Type;
 
 typedef struct LINE {

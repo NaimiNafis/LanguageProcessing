@@ -8,6 +8,7 @@
 static ID *symbol_table = NULL;
 static char *current_procedure = NULL;  // Add this at the top with other globals
 static ID *current_procedure_id = NULL; // Add this to track current procedure ID
+static Type* current_symbol_type = NULL; // Add at the top with other static variables
 
 // Add new struct to track procedure parameters
 struct ParamType {
@@ -20,19 +21,35 @@ static int current_array_size = 0;
 static int current_base_type = 0;
 
 void set_array_info(int size, int base_type) {
+    debug_printf("Setting array info: size=%d, base_type=%d\n", size, base_type);
     current_array_size = size;
     current_base_type = base_type;
 }
 
 Type* create_array_type(int size, int base_type) {
     Type* array_type = (Type*)malloc(sizeof(Type));
+    if (!array_type) {
+        error("Memory allocation failed for array type");
+        return NULL;
+    }
+    
     array_type->ttype = TARRAY;
-    array_type->arraysize = size;
+    array_type->arraysize = size;  // Use the size directly
     array_type->etp = (Type*)malloc(sizeof(Type));
+    if (!array_type->etp) {
+        free(array_type);
+        error("Memory allocation failed for array element type");
+        return NULL;
+    }
+    
     array_type->etp->ttype = base_type;
     array_type->etp->arraysize = 0;
     array_type->etp->etp = NULL;
     array_type->paratp = NULL;
+    
+    debug_printf("Created array type: size=%d, base_type=%d\n", 
+                size, base_type);
+    
     return array_type;
 }
 
@@ -48,11 +65,20 @@ const char* type_to_string(int type) {
         case TBOOLEAN: return "boolean";
         case TCHAR: return "char";
         case TPROCEDURE: return "procedure";
-        case TARRAY:
-            snprintf(array_type, sizeof(array_type), "array[%d]of%s",
-                    current_array_size,
-                    type_to_string(current_base_type));
+        case TARRAY: {
+            // Get array info from symbol being processed
+            Type* array_type_info = current_symbol_type;  // You'll need to add this as a static variable
+            if (array_type_info) {
+                snprintf(array_type, sizeof(array_type), "array[%d]of%s",
+                        array_type_info->arraysize,
+                        type_to_string(array_type_info->etp->ttype));
+            } else {
+                snprintf(array_type, sizeof(array_type), "array[%d]of%s",
+                        current_array_size,
+                        type_to_string(current_base_type));
+            }
             return array_type;
+        }
         default: return "unknown";
     }
 }
@@ -361,6 +387,9 @@ void print_cross_reference_table(void) {
         id = id_array[i];
         char* display_name = normalize_name(id->name);
         
+        // Set the current symbol type before printing
+        current_symbol_type = id->itp;
+        
         if (id->itp->ttype == TPROCEDURE && id->itp->paratp) {
             // Print procedure with parameter types
             char* param_str = get_param_string((struct ParamType*)id->itp->paratp);
@@ -373,6 +402,9 @@ void print_cross_reference_table(void) {
                    id->deflinenum);
         }
         free(display_name);
+        
+        // Reset the current symbol type
+        current_symbol_type = NULL;
         
         // Sort references before printing
         sort_references(&id->irefp);

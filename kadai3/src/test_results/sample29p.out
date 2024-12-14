@@ -1,4 +1,4 @@
-UnusedArrayForTest|array[100]ofchar|10|
+UnusedArrayForTest|array[200]ofchar|10|
 a1:reduce|integer|49|52,53,54,54,55,56,56
 a2:reduce|integer|49|52,53,54,54,54,55,57,57
 a:abs|integer|26|28,28,28
