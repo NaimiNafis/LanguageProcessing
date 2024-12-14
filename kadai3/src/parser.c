@@ -100,26 +100,39 @@ static int parse_block(void) {
     // Existing VAR and PROCEDURE handling stays exactly the same
     while (parser.current_token == TVAR || parser.current_token == TPROCEDURE) {
         if (parser.current_token == TVAR) {
+            int def_line = get_linenum();  // Store definition line
             if (match(TVAR) == ERROR) {
                 parse_error("Error parsing var keyword");
                 return ERROR;
             }
 
+            // Process variable declarations
             while (parser.current_token == TNAME) {
-                debug_printf("Parsing variable declaration starting with: %d\n", parser.current_token);
-                match(TNAME);  // Here's where it processes 'n'
+                struct VarList {
+                    char *name;
+                    struct VarList *next;
+                } *head = NULL;
 
+                // First variable
+                char *var_name = strdup(string_attr);
+                struct VarList *new_var = malloc(sizeof(struct VarList));
+                new_var->name = var_name;
+                new_var->next = head;
+                head = new_var;
+
+                debug_printf("Processing variable: %s at line %d\n", var_name, def_line);
+                match(TNAME);
+
+                // Additional variables after commas
                 while (parser.current_token == TCOMMA) {
-                    if (match(TCOMMA) == ERROR) {
-                        parse_error("Error parsing comma in variable list");
-                        return ERROR;
-                    }
-                    
-                    if (parser.current_token != TNAME) {
-                        parse_error("Variable name expected after comma");
-                        return ERROR;
-                    }
-                    match(TNAME);  // Here's where it processes 'count'
+                    match(TCOMMA);
+                    var_name = strdup(string_attr);
+                    new_var = malloc(sizeof(struct VarList));
+                    new_var->name = var_name;
+                    new_var->next = head;
+                    head = new_var;
+                    debug_printf("Processing additional variable: %s at line %d\n", var_name, def_line);
+                    match(TNAME);
                 }
 
                 if (match(TCOLON) == ERROR) {
@@ -127,15 +140,25 @@ static int parse_block(void) {
                     return ERROR;
                 }
 
+                // Get type before processing variables
+                int var_type = parser.current_token;
                 if (parse_type() == ERROR) {
-                    parse_error("Invalid variable type");
-                    return ERROR;  
-                }
-
-                if (match(TSEMI) == ERROR) {
-                    parse_error("Expected semicolon after variable declaration");
+                    parse_error("Invalid type");
                     return ERROR;
                 }
+
+                // Now add all variables with their type and line number
+                while (head != NULL) {
+                    struct VarList *current = head;
+                    debug_printf("Adding definition for %s at line %d with type %d\n", 
+                               current->name, def_line, var_type);
+                    add_symbol(current->name, var_type, def_line, 1);
+                    head = head->next;
+                    free(current->name);
+                    free(current);
+                }
+
+                if (match(TSEMI) == ERROR) return ERROR;
             }
         }
         
@@ -229,6 +252,9 @@ static int parse_statement_list(void) {
 }
 
 static int parse_variable_declaration(void) {
+    int def_line = get_linenum();  // Store the definition line number
+    debug_printf("Variable declaration at line: %d\n", def_line);
+    
     if (parser.current_token != TVAR) {
         parse_error("Expected 'var' keyword");
         return ERROR;
@@ -236,51 +262,60 @@ static int parse_variable_declaration(void) {
     match(TVAR);
 
     do {
-        // Store variable name before matching
+        // Store variables and their names before processing type
+        struct VarNode {
+            char *name;
+            struct VarNode *next;
+        };
+        struct VarNode *head = NULL;
+        
+        // First variable
         char *var_name = strdup(string_attr);
+        struct VarNode *new_var = malloc(sizeof(struct VarNode));
+        new_var->name = var_name;
+        new_var->next = head;
+        head = new_var;
         
         if (parser.current_token != TNAME) {
             parse_error("Variable name expected");
-            free(var_name);
             return ERROR;
         }
-        
-        // Add symbol for first variable
-        add_symbol(var_name, TINTEGER, parser.line_number, 1);
         match(TNAME);
-        free(var_name);
 
         // Handle multiple variables separated by commas
         while (parser.current_token == TCOMMA) {
             match(TCOMMA);
             var_name = strdup(string_attr);
+            new_var = malloc(sizeof(struct VarNode));
+            new_var->name = var_name;
+            new_var->next = head;
+            head = new_var;
             
             if (parser.current_token != TNAME) {
                 parse_error("Variable name expected after comma");
-                free(var_name);
                 return ERROR;
             }
-            
-            add_symbol(var_name, TINTEGER, parser.line_number, 1);
             match(TNAME);
-            free(var_name);
         }
 
-        if (parser.current_token != TCOLON) {
-            parse_error("Expected ':' after variable names");
-            return ERROR;
+        if (match(TCOLON) == ERROR) return ERROR;
+        
+        // Store the type
+        int var_type = parser.current_token;
+        if (parse_type() == ERROR) return ERROR;
+        
+        // Now add all variables with their type
+        while (head != NULL) {
+            struct VarNode *current = head;
+            debug_printf("Adding definition for %s at line %d with type %d\n", 
+                        current->name, def_line, var_type);
+            add_symbol(current->name, var_type, def_line, 1);
+            head = head->next;
+            free(current->name);
+            free(current);
         }
-        match(TCOLON);
 
-        if (parse_type() == ERROR) {
-            return ERROR;
-        }
-
-        if (parser.current_token != TSEMI) {
-            parse_error("Expected semicolon after variable declaration");
-            return ERROR;
-        }
-        match(TSEMI);
+        if (match(TSEMI) == ERROR) return ERROR;
 
     } while (parser.current_token == TNAME);
 
@@ -656,14 +691,15 @@ static int parse_write_statement(void) {
 
 static int parse_variable(void) {
     char *var_name = strdup(string_attr);
+    int current_line = get_linenum();
+    debug_printf("Processing variable reference: %s at line %d\n", var_name, current_line);
     
     if (match(TNAME) == ERROR) {
         free(var_name);
         return ERROR;
     }
     
-    // Add reference (not definition)
-    add_symbol(var_name, TINTEGER, parser.line_number, 0);
+    add_symbol(var_name, TINTEGER, current_line, 0);  // Add as reference
     free(var_name);
     
     // Handle array indexing

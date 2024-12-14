@@ -1,12 +1,2 @@
-ch|integer|14|14
-ch|integer|17|17
-ch|integer|6|6
-ch|integer|9|9
-num|integer|10|10
-num|integer|10|10
-num|integer|14|14
-num|integer|16|16
-num|integer|18|18
-num|integer|18|18
-num|integer|6|6
-num|integer|8|8
+ch|char|2|6,9,14,17
+num|integer|2|6,8,10,10,14,16,18,18

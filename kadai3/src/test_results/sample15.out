@@ -1,15 +1,2 @@
-e|integer|10|10
-e|integer|10|10
-e|integer|7|7
-e|integer|9|9
-n|integer|11|11
-n|integer|11|11
-n|integer|6|6
-n|integer|8|8
-n|integer|9|9
-n|integer|9|9
-n|integer|9|9
-n|integer|9|9
-n|integer|9|9
-n|integer|9|9
-n|integer|9|9
+e|integer|2|7,9,10,10
+n|integer|2|6,8,9,9,9,9,9,9,9,11,11

@@ -1,13 +1,3 @@
-data|integer|18|18
-data|integer|19|19
-n|integer|17|17
-n|integer|20|20
-n|integer|20|20
-n|integer|25|25
-n|integer|26|26
-n|integer|5|5
-sum|integer|10|10
-sum|integer|26|26
-s|integer|16|16
-s|integer|19|19
-s|integer|19|19
+data|integer|12|18,19
+n|integer|23|25,26
+sum|integer|7|10,26

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cross_referencer.h"
+#include "debug.h"
 
 static ID *symbol_table = NULL;
 
@@ -10,23 +11,42 @@ void init_cross_referencer(void) {
 }
 
 void add_symbol(char *name, int type, int linenum, int is_definition) {
-    ID *new_id = (ID *)malloc(sizeof(ID));
-    new_id->name = strdup(name);
-    new_id->procname = NULL;
-    new_id->itp = (Type *)malloc(sizeof(Type));
-    new_id->itp->ttype = type;
-    new_id->ispara = 0;
-    new_id->deflinenum = linenum;
-    new_id->irefp = NULL;
-    new_id->nextp = symbol_table;
-    symbol_table = new_id;
+    debug_printf("add_symbol: name=%s, type=%d, line=%d, is_def=%d\n", 
+                name, type, linenum, is_definition);
 
-    if (!is_definition) {
+    ID *existing = NULL;
+    // First check if symbol already exists
+    for (ID *id = symbol_table; id != NULL; id = id->nextp) {
+        if (strcmp(id->name, name) == 0) {
+            existing = id;
+            break;
+        }
+    }
+
+    if (is_definition) {
+        if (existing == NULL) {
+            // Create new symbol for definition
+            ID *new_id = (ID *)malloc(sizeof(ID));
+            new_id->name = strdup(name);
+            new_id->procname = NULL;
+            new_id->itp = (Type *)malloc(sizeof(Type));
+            new_id->itp->ttype = type;
+            new_id->ispara = 0;
+            new_id->deflinenum = linenum;
+            new_id->irefp = NULL;
+            new_id->nextp = symbol_table;
+            symbol_table = new_id;
+            debug_printf("Created new symbol definition: %s at line %d\n", name, linenum);
+        }
+    } else if (existing != NULL) {
+        // Only add reference if symbol exists and it's not a definition
         add_reference(name, linenum);
     }
 }
 
 void add_reference(char *name, int linenum) {
+    debug_printf("add_reference: name=%s, line=%d\n", name, linenum);
+    
     ID *id = symbol_table;
     while (id != NULL) {
         if (strcmp(id->name, name) == 0) {
@@ -34,10 +54,12 @@ void add_reference(char *name, int linenum) {
             new_line->reflinenum = linenum;
             new_line->nextlinep = id->irefp;
             id->irefp = new_line;
+            debug_printf("Added reference for %s at line %d\n", name, linenum);
             return;
         }
         id = id->nextp;
     }
+    debug_printf("Warning: No symbol found for reference: %s\n", name);
 }
 
 // Helper function to compare IDs
