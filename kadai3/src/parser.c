@@ -8,9 +8,6 @@
 #include "debug.h"
 #include "cross_referencer.h"
 
-// Add this line to access current_procedure from cross_referencer.c
-extern char *current_procedure;
-
 // Define a constant for EOF
 #define EOF_TOKEN -1
 #define MAX_ERRORS 5
@@ -40,6 +37,10 @@ static int parse_assignment(void);
 static int match(int expected_token);
 static int parse_block(void);
 void parse_error(const char* message);
+
+// Add these at the top with other forward declarations
+static int check_recursive_call(const char* proc_name);
+static int check_malformed_declaration(int start_line);
 
 // Parser state
 static Parser parser;
@@ -320,9 +321,20 @@ static int parse_variable_declaration(void) {
 
         if (match(TSEMI) == ERROR) return ERROR;
 
+        // Add check for malformed declarations
+        if (get_linenum() - var_section_line > 1) {
+            set_error_state();
+            parse_error("Variable declaration must be on a single line");
+            return ERROR;
+        }
+
     } while (parser.current_token == TNAME);
 
     return NORMAL;
+}
+
+static int check_malformed_declaration(int start_line) {
+    return (get_linenum() - start_line > 1);
 }
 
 static int parse_name_list(void) {
@@ -627,6 +639,15 @@ static int parse_procedure(void) {
     return NORMAL;
 }
 
+static int check_recursive_call(const char* proc_name) {
+    const char* current_proc = get_current_procedure();
+    if (current_proc && strcmp(proc_name, current_proc) == 0) {
+        set_error_state();
+        return 1;
+    }
+    return 0;
+}
+
 static int parse_procedure_call(void) {
     if (match(TCALL) == ERROR) return ERROR;
 
@@ -634,12 +655,24 @@ static int parse_procedure_call(void) {
     char *proc_name = strdup(string_attr);
     int call_line = get_linenum();
     
+    // Check for recursive call before doing anything else
+    if (check_recursive_call(proc_name)) {
+        free(proc_name);
+        parse_error("Direct recursive call detected");
+        return ERROR;
+    }
+    
     if (match(TNAME) == ERROR) {
         free(proc_name);
         return ERROR;
     }
 
     // Add procedure reference
+    if (check_recursive_call(proc_name)) {
+        free(proc_name);
+        parse_error("Direct recursive call detected");
+        return ERROR;
+    }
     add_symbol(proc_name, TPROCEDURE, call_line, 0);
     free(proc_name);
     

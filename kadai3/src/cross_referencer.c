@@ -9,6 +9,7 @@ static ID *symbol_table = NULL;
 static char *current_procedure = NULL;  // Add this at the top with other globals
 static ID *current_procedure_id = NULL; // Add this to track current procedure ID
 static Type* current_symbol_type = NULL; // Add at the top with other static variables
+static int error_state = 0; // Add this to track error state
 
 // Add new struct to track procedure parameters
 struct ParamType {
@@ -357,9 +358,17 @@ char* normalize_name(const char* name) {
     return strdup(name);
 }
 
+void set_error_state(void) {
+    error_state = 1;
+}
+
+int is_error_state(void) {
+    return error_state;
+}
+
 void print_cross_reference_table(void) {
-    // Don't print table if there was a parse error
-    if (scanner.has_error) {
+    // Don't print table if there was a parse error or we're in error state
+    if (scanner.has_error || error_state) {
         return;
     }
 

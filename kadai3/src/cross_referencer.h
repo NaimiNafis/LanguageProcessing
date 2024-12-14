@@ -34,7 +34,7 @@ void add_symbol(char *name, int type, int linenum, int is_definition);
 void add_reference(char *name, int linenum);
 extern void print_cross_reference_table(void);
 
-// Add this declaration
+// Keep only the getter function declaration
 const char* get_current_procedure(void);
 
 // Add new function declarations
@@ -48,5 +48,9 @@ const char* type_to_string(int type);
 // Add new function declarations for array handling
 void set_array_info(int size, int base_type);
 Type* create_array_type(int size, int base_type);
+
+// Add these declarations
+void set_error_state(void);
+int is_error_state(void);
 
 #endif // CROSS_REFERENCER_H

@@ -1,1 +1,1 @@
-f|procedure|2|2,3
+Syntax error at line 2: Direct recursive call detected (token: 1)
