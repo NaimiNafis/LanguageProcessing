@@ -5,6 +5,7 @@
 #include "scan.h"
 #include "token.h"
 #include "debug.h" 
+#include "cross_referencer.h"
 
 FILE *fp;  // File pointer to handle input
 char string_attr[MAXSTRSIZE];  // Store string attributes
@@ -36,7 +37,6 @@ int init_scan(char *filename) {
         error("Unable to open file.");
         return -1;
     }
-    init_cross_referencer();
     linenum = 1;
     cbuf = (char) fgetc(fp);
     return 0;
@@ -109,11 +109,9 @@ int scan(void) {
                 if (temp != -1) {
                     // Keyword matched
                     debug_printf("DEBUG: Keyword token: %d\n", temp);
-                    add_symbol(buffer, temp, linenum, 1);
                     return temp;
                 } else {
                     // Not a keyword, process as identifier
-                    add_symbol(buffer, TNAME, linenum, 1);
                     return process_identifier(buffer);
                 }
             }

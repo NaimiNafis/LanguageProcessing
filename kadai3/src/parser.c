@@ -6,6 +6,7 @@
 #include "scan.h"
 #include "token.h"
 #include "debug.h"
+#include "cross_referencer.h"
 
 // Define a constant for EOF
 #define EOF_TOKEN -1
@@ -242,7 +243,6 @@ static int parse_variable_declaration(void) {
             parse_error("Variable name expected");
             return ERROR;
         }
-        add_symbol(string_attr, TVAR, parser.line_number, 1);
         match(TNAME);
 
         // Handle multiple variables separated by commas
@@ -369,7 +369,6 @@ static int parse_statement(void) {
 
     switch (parser.current_token) {
         case TNAME:
-            add_reference(string_attr, parser.line_number);
             if (parse_variable() == ERROR) return ERROR;
             // Handle assignment or procedure call
             if (parser.current_token == TASSIGN) {

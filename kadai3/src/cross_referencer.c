@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cross-referencer.h"
+#include "cross_referencer.h"
 
 static ID *symbol_table = NULL;
 
@@ -40,6 +40,13 @@ void add_reference(char *name, int linenum) {
     }
 }
 
+// Helper function to compare IDs
+int compare_ids(const void *a, const void *b) {
+    ID *id1 = *(ID **)a;
+    ID *id2 = *(ID **)b;
+    return strcmp(id1->name, id2->name);
+}
+
 // Ensure this function is defined only once
 void print_cross_reference_table(void) {
     // Count symbols
@@ -76,11 +83,4 @@ void print_cross_reference_table(void) {
     }
 
     free(id_array);
-}
-
-// Helper function to compare IDs
-int compare_ids(const void *a, const void *b) {
-    ID *id1 = *(ID **)a;
-    ID *id2 = *(ID **)b;
-    return strcmp(id1->name, id2->name);
 }

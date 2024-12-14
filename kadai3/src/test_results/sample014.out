@@ -1,1 +1,1 @@
-/bin/sh: 1: /workspaces/cr: not found
+Syntax error at line 32: Missing semicolon between statements (token: -1)

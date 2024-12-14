@@ -1,1 +1,1 @@
-/bin/sh: 1: /workspaces/cr: not found
+Syntax error at line 1: program expected (token: 1)

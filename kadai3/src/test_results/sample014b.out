@@ -1,1 +1,1 @@
-/bin/sh: 1: /workspaces/cr: not found
+Syntax error at line 2: Expected token 45 but found -1 (token: -1)
