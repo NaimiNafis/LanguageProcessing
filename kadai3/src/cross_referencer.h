@@ -3,11 +3,14 @@
 
 #include "token.h"
 
+// Forward declaration of ParamType
+struct ParamType;
+
 typedef struct TYPE {
     int ttype;  // TPINT, TPCHAR, TPBOOL, etc.
     int arraysize;  // Size of array if applicable
     struct TYPE *etp;  // Element type for array types
-    struct TYPE *paratp;  // Parameter types for procedure types
+    struct ParamType *paratp;  // Parameter types for procedure types - changed from TYPE* to ParamType*
 } Type;
 
 typedef struct LINE {
@@ -29,5 +32,13 @@ void init_cross_referencer(void);
 void add_symbol(char *name, int type, int linenum, int is_definition);
 void add_reference(char *name, int linenum);
 extern void print_cross_reference_table(void);
+
+// Add new function declarations
+void enter_procedure(const char *name);
+void exit_procedure(void);
+void add_procedure_parameter(int type);
+
+// Add new function declaration
+const char* type_to_string(int type);
 
 #endif // CROSS_REFERENCER_H

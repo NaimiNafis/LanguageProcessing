@@ -602,48 +602,57 @@ static int parse_procedure(void) {
     
     // Add procedure definition to symbol table
     add_symbol(proc_name, TPROCEDURE, def_line, 1);
+    
+    // Enter procedure scope
+    enter_procedure(proc_name);
     free(proc_name);
     match(TNAME);
 
     // Handle parameter list
     if (parser.current_token == TLPAREN) {
         match(TLPAREN);
-
-        // Parse parameter groups
+        
         do {
-            // Parse parameter names
+            // Store all parameter names in this group
+            int param_count = 0;
+            char *param_names[10];  // Reasonable limit for parameters in one group
+            
+            // Parse first parameter name
             if (parser.current_token != TNAME) {
                 parse_error("Parameter name expected");
                 return ERROR;
             }
+            param_names[param_count++] = strdup(string_attr);
             match(TNAME);
 
+            // Parse additional parameter names in this group
             while (parser.current_token == TCOMMA) {
                 match(TCOMMA);
                 if (parser.current_token != TNAME) {
                     parse_error("Parameter name expected after comma");
                     return ERROR;
                 }
+                param_names[param_count++] = strdup(string_attr);
                 match(TNAME);
             }
 
-            // Parse parameter type
-            if (match(TCOLON) == ERROR) {
-                parse_error("Expected ':' after parameter names");
-                return ERROR;
+            if (match(TCOLON) == ERROR) return ERROR;
+
+            // Store parameter type
+            int param_type = parser.current_token;
+            if (parse_type() == ERROR) return ERROR;
+            
+            // Add parameter type to procedure for each parameter in this group
+            for (int i = 0; i < param_count; i++) {
+                add_procedure_parameter(param_type);
+                // Add parameter as a scoped variable
+                add_symbol(param_names[i], param_type, def_line, 1);
+                free(param_names[i]);
             }
 
-            if (parse_type() == ERROR) {
-                parse_error("Invalid parameter type");
-                return ERROR;
-            }
+        } while (parser.current_token == TSEMI && match(TSEMI) == NORMAL);
 
-        } while (parser.current_token == TSEMI && match(TSEMI) == NORMAL); // Continue if more parameter groups
-
-        if (match(TRPAREN) == ERROR) {
-            parse_error("Expected ')' after parameters");
-            return ERROR;
-        }
+        if (match(TRPAREN) == ERROR) return ERROR;
     }
 
     // Parse procedure body
@@ -661,6 +670,9 @@ static int parse_procedure(void) {
         parse_error("Expected semicolon after procedure body");
         return ERROR;
     }
+
+    // Exit procedure scope
+    exit_procedure();
 
     debug_printf("Exiting parse_procedure successfully\n");
     return NORMAL;
@@ -795,16 +807,30 @@ static int parse_variable(void) {
         return ERROR;
     }
     
-    add_symbol(var_name, TINTEGER, current_line, 0);  // Add as reference
+    // Try to add reference - it will handle scoping internally
+    add_symbol(var_name, TINTEGER, current_line, 0);
+    
+    // Store the name before freeing it
+    char *stored_name = strdup(var_name);
     free(var_name);
     
     // Handle array indexing
     if (parser.current_token == TLSQPAREN) {
-        if (match(TLSQPAREN) == ERROR) return ERROR;
-        if (parse_expression() == ERROR) return ERROR;
-        if (match(TRSQPAREN) == ERROR) return ERROR;
+        if (match(TLSQPAREN) == ERROR) {
+            free(stored_name);
+            return ERROR;
+        }
+        if (parse_expression() == ERROR) {
+            free(stored_name);
+            return ERROR;
+        }
+        if (match(TRSQPAREN) == ERROR) {
+            free(stored_name);
+            return ERROR;
+        }
     }
     
+    free(stored_name);
     return NORMAL;
 }
 
