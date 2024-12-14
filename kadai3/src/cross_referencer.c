@@ -47,6 +47,47 @@ int compare_ids(const void *a, const void *b) {
     return strcmp(id1->name, id2->name);
 }
 
+// Helper function to convert type token to string
+const char* type_to_string(int type) {
+    switch(type) {
+        case TINTEGER: return "integer";
+        case TBOOLEAN: return "boolean";
+        case TCHAR: return "char";
+        default: return "unknown";
+    }
+}
+
+// Add a function to sort references by line number
+void sort_references(Line** head) {
+    if (*head == NULL || (*head)->nextlinep == NULL) return;
+    
+    Line *sorted = NULL;
+    Line *current = *head;
+    
+    while (current != NULL) {
+        Line *next = current->nextlinep;
+        Line *scan = sorted;
+        Line *scan_prev = NULL;
+        
+        while (scan != NULL && scan->reflinenum < current->reflinenum) {
+            scan_prev = scan;
+            scan = scan->nextlinep;
+        }
+        
+        if (scan_prev == NULL) {
+            current->nextlinep = sorted;
+            sorted = current;
+        } else {
+            current->nextlinep = scan_prev->nextlinep;
+            scan_prev->nextlinep = current;
+        }
+        
+        current = next;
+    }
+    
+    *head = sorted;
+}
+
 // Ensure this function is defined only once
 void print_cross_reference_table(void) {
     // Count symbols
@@ -75,7 +116,10 @@ void print_cross_reference_table(void) {
     for (int i = 0; i < count; i++) {
         id = id_array[i];
         // Print without spaces: name|type|definitionline|references
-        printf("%s|%d|%d|", id->name, id->itp->ttype, id->deflinenum);
+        printf("%s|%s|%d|", id->name, type_to_string(id->itp->ttype), id->deflinenum);
+        
+        // Sort references before printing
+        sort_references(&id->irefp);
         
         // Print references with commas, no spaces
         Line *line = id->irefp;
