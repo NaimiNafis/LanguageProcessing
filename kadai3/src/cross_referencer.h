@@ -2,6 +2,7 @@
 #define CROSS_REFERENCER_H
 
 #include "token.h"
+#include "scan.h"  // Add this include
 
 // Forward declaration of ParamType
 struct ParamType;

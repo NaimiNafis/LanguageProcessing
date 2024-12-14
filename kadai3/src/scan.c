@@ -37,7 +37,7 @@ int init_scan(char *filename) {
         error("Unable to open file.");
         return -1;
     }
-    linenum = 1;
+    linenum = 1;  // Start from line 1
     cbuf = (char) fgetc(fp);
     return 0;
 }
@@ -131,29 +131,23 @@ int skip_whitespace_and_comments(void) {
     while (1) {
         while (isspace(cbuf)) {
             if (cbuf == '\n') {
-                linenum++;
                 debug_printf("Line number incremented to %d (whitespace)\n", linenum);
+                linenum++;  // Increment before reading next char
             }
             cbuf = (char) fgetc(fp);
         }
 
         // Handle block comments
         if (cbuf == '{') {
-            int prev_char = cbuf;
-            cbuf = (char) fgetc(fp);
-            while (cbuf != EOF) {
+            while ((cbuf = (char) fgetc(fp)) != EOF) {
                 if (cbuf == '\n') {
-                    if (prev_char != '\\') {  // Don't count escaped newlines
-                        linenum++;
-                        debug_printf("Line number incremented to %d (block comment)\n", linenum);
-                    }
+                    debug_printf("Line number incremented to %d (block comment)\n", linenum);
+                    linenum++;  // Increment before reading next char
                 }
                 if (cbuf == '}') {
                     cbuf = (char) fgetc(fp);
                     break;
                 }
-                prev_char = cbuf;
-                cbuf = (char) fgetc(fp);
             }
             continue;
         }
@@ -166,10 +160,10 @@ int skip_whitespace_and_comments(void) {
                     cbuf = (char) fgetc(fp);
                 }
                 if (cbuf == '\n') {
-                    linenum++;
                     debug_printf("Line number incremented to %d (single line comment)\n", linenum);
-                    cbuf = (char) fgetc(fp);
+                    linenum++;  // Increment before reading next char
                 }
+                cbuf = (char) fgetc(fp);
                 continue;
             }
 

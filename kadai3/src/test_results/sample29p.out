@@ -1,4 +1,4 @@
-UnusedArrayForTest|array[100]ofchar|9|
+UnusedArrayForTest|array[100]ofchar|10|
 a1:reduce|integer|49|52,53,54,54,55,56,56
 a2:reduce|integer|49|52,53,54,54,54,55,57,57
 a:abs|integer|26|28,28,28
@@ -20,7 +20,7 @@ bb:gcm|integer|31|35,36
 bb:lcm|integer|40|44,45
 com|char|107|115,116,116,117,118,119,120,121,121
 divide|procedure(integer,integer,integer,integer)|88|120
-endflag|boolean|107|112,113,121,133
+endflag|boolean|108|112,113,121,133
 gc:gcmlcm|integer|11|23,24
 gc:gcm|integer|30|33,36
 gc:lcm|integer|40|45

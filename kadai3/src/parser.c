@@ -255,64 +255,62 @@ static int parse_statement_list(void) {
 }
 
 static int parse_variable_declaration(void) {
-    int def_line = get_linenum();  // Store the definition line number
-    debug_printf("Variable declaration at line: %d\n", def_line);
-    
     if (parser.current_token != TVAR) {
         parse_error("Expected 'var' keyword");
         return ERROR;
     }
+    
+    // Store the line number at the start of variable declaration
+    int var_section_line = get_linenum();
+    
     match(TVAR);
 
     do {
-        // Store variables and their names before processing type
-        struct VarNode {
+        struct VarList {
             char *name;
-            struct VarNode *next;
-        };
-        struct VarNode *head = NULL;
+            struct VarList *next;
+        } *head = NULL;
         
-        // First variable
-        char *var_name = strdup(string_attr);
-        struct VarNode *new_var = malloc(sizeof(struct VarNode));
-        new_var->name = var_name;
-        new_var->next = head;
-        head = new_var;
-        
+        // Process first variable
         if (parser.current_token != TNAME) {
             parse_error("Variable name expected");
             return ERROR;
         }
+        
+        // Store first variable
+        char *var_name = strdup(string_attr);
+        struct VarList *new_var = malloc(sizeof(struct VarList));
+        new_var->name = var_name;
+        new_var->next = head;
+        head = new_var;
+        
         match(TNAME);
 
-        // Handle multiple variables separated by commas
+        // Process additional variables
         while (parser.current_token == TCOMMA) {
             match(TCOMMA);
-            var_name = strdup(string_attr);
-            new_var = malloc(sizeof(struct VarNode));
-            new_var->name = var_name;
-            new_var->next = head;
-            head = new_var;
-            
             if (parser.current_token != TNAME) {
                 parse_error("Variable name expected after comma");
                 return ERROR;
             }
+            var_name = strdup(string_attr);
+            new_var = malloc(sizeof(struct VarList));
+            new_var->name = var_name;
+            new_var->next = head;
+            head = new_var;
             match(TNAME);
         }
 
         if (match(TCOLON) == ERROR) return ERROR;
         
-        // Store the type
+        // Get variable type
         int var_type = parser.current_token;
         if (parse_type() == ERROR) return ERROR;
         
-        // Now add all variables with their type
+        // Add all variables using the stored line number
         while (head != NULL) {
-            struct VarNode *current = head;
-            debug_printf("Adding definition for %s at line %d with type %d\n", 
-                        current->name, def_line, var_type);
-            add_symbol(current->name, var_type, def_line, 1);
+            struct VarList *current = head;
+            add_symbol(current->name, var_type, var_section_line, 1);
             head = head->next;
             free(current->name);
             free(current);

@@ -1,6 +1,6 @@
 com|char|26|34,35,35,36,37,38,39,40,40
 divide|procedure|22|39
-endflag|boolean|26|31,32,40,52
+endflag|boolean|27|31,32,40,52
 mult|procedure|18|38
 sub|procedure|14|37
 sum|procedure|10|36

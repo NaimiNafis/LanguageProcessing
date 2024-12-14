@@ -19,7 +19,7 @@ bb:gcm|integer|29|33,34
 bb:lcm|integer|38|42,43
 com|char|104|112,113,113,114,115,116,117,120,120
 divide|procedure(integer,integer,integer,integer)|85|119
-endflag|boolean|104|109,110,120,132
+endflag|boolean|105|109,110,120,132
 gc:gcmlcm|integer|9|21,22
 gc:gcm|integer|28|31,34
 gc:lcm|integer|38|43
