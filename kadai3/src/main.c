@@ -22,6 +22,9 @@ int main(int argc, char *argv[]) {
     debug_printf("Initializing parser...\n");
     init_parser();
 
+    debug_printf("Initializing cross referencer...\n");
+    init_cross_referencer();  // Initialize cross referencer
+
     debug_printf("Starting parsing...\n");
     int parse_result = parse_program();
     debug_printf("Parsing completed with result: %d\n", parse_result);
@@ -32,12 +35,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    debug_printf("Reinitializing scanner for cross-referencing...\n");
-    if (init_scan(argv[1]) < 0) {
-        return 1;
-    }
+    // Print cross reference table
     print_cross_reference_table();
-    end_scan();
 
     return 0;  // Successful execution
 }

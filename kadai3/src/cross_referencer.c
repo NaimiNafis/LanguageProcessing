@@ -68,16 +68,24 @@ void print_cross_reference_table(void) {
     // Sort array
     qsort(id_array, count, sizeof(ID *), compare_ids);
 
-    // Print sorted table
-    printf("Name | Type | Define | References\n");
+    // Print header line that will be discarded
     printf("----------------------------------\n");
+
+    // Print sorted table - one entry per line, no spaces
     for (int i = 0; i < count; i++) {
         id = id_array[i];
-        printf("%s | %d | %d | ", id->name, id->itp->ttype, id->deflinenum);
+        // Print without spaces: name|type|definitionline|references
+        printf("%s|%d|%d|", id->name, id->itp->ttype, id->deflinenum);
+        
+        // Print references with commas, no spaces
         Line *line = id->irefp;
-        while (line != NULL) {
-            printf("%d ", line->reflinenum);
+        if (line != NULL) {
+            printf("%d", line->reflinenum);
             line = line->nextlinep;
+            while (line != NULL) {
+                printf(",%d", line->reflinenum);
+                line = line->nextlinep;
+            }
         }
         printf("\n");
     }

@@ -229,52 +229,48 @@ static int parse_statement_list(void) {
 }
 
 static int parse_variable_declaration(void) {
-    // Match VAR keyword
     if (parser.current_token != TVAR) {
         parse_error("Expected 'var' keyword");
         return ERROR;
     }
     match(TVAR);
 
-    // Loop to handle multiple variable declarations
     do {
-        // Parse first variable name
+        // Store variable name before matching
+        char *var_name = strdup(string_attr);
+        
         if (parser.current_token != TNAME) {
             parse_error("Variable name expected");
+            free(var_name);
             return ERROR;
         }
+        
+        // Add symbol for first variable
+        add_symbol(var_name, TINTEGER, parser.line_number, 1);
         match(TNAME);
+        free(var_name);
 
         // Handle multiple variables separated by commas
         while (parser.current_token == TCOMMA) {
             match(TCOMMA);
+            var_name = strdup(string_attr);
+            
             if (parser.current_token != TNAME) {
                 parse_error("Variable name expected after comma");
+                free(var_name);
                 return ERROR;
             }
+            
+            add_symbol(var_name, TINTEGER, parser.line_number, 1);
             match(TNAME);
-            // Add extra validation after each variable in the list
-            if (parser.current_token != TCOMMA && parser.current_token != TCOLON) {
-                parse_error("Expected comma or colon after variable name");
-                return ERROR;
-            }
+            free(var_name);
         }
 
-        // Stricter checking for colon
         if (parser.current_token != TCOLON) {
             parse_error("Expected ':' after variable names");
             return ERROR;
         }
         match(TCOLON);
-
-        // More strict type checking
-        if (parser.current_token != TINTEGER && 
-            parser.current_token != TBOOLEAN && 
-            parser.current_token != TCHAR && 
-            parser.current_token != TARRAY) {
-            parse_error("Invalid type declaration");
-            return ERROR;
-        }
 
         if (parse_type() == ERROR) {
             return ERROR;
@@ -659,26 +655,24 @@ static int parse_write_statement(void) {
 } 
 
 static int parse_variable(void) {
-    debug_printf("Entering parse_variable with token: %d\n", parser.current_token);
+    char *var_name = strdup(string_attr);
     
     if (match(TNAME) == ERROR) {
+        free(var_name);
         return ERROR;
     }
     
+    // Add reference (not definition)
+    add_symbol(var_name, TINTEGER, parser.line_number, 0);
+    free(var_name);
+    
     // Handle array indexing
     if (parser.current_token == TLSQPAREN) {
-        if (match(TLSQPAREN) == ERROR) {
-            return ERROR;
-        }
-        if (parse_expression() == ERROR) {  // Parse array index
-            return ERROR;
-        }
-        if (match(TRSQPAREN) == ERROR) {
-            return ERROR;
-        }
+        if (match(TLSQPAREN) == ERROR) return ERROR;
+        if (parse_expression() == ERROR) return ERROR;
+        if (match(TRSQPAREN) == ERROR) return ERROR;
     }
     
-    debug_printf("Exiting parse_variable\n");
     return NORMAL;
 }
 
