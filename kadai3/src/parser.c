@@ -8,6 +8,9 @@
 #include "debug.h"
 #include "cross_referencer.h"
 
+// Add this line to access current_procedure from cross_referencer.c
+extern char *current_procedure;
+
 // Define a constant for EOF
 #define EOF_TOKEN -1
 #define MAX_ERRORS 5
@@ -33,6 +36,7 @@ static int parse_term(void);
 static int parse_factor(void);
 static int parse_comparison(void);
 static int parse_condition(void);
+static int parse_assignment(void);
 static int match(int expected_token);
 static int parse_block(void);
 void parse_error(const char* message);
@@ -200,8 +204,11 @@ static int parse_block(void) {
 static int parse_statement_list(void) {
     debug_printf("Entering parse_statement_list with token: %d at line: %d\n", 
                 parser.current_token, parser.line_number);
-    debug_printf("Previous token: %d, Previous-previous token: %d\n",
-                parser.previous_token, parser.previous_previous_token);
+
+    // Change this line
+    int in_procedure = (get_current_procedure() != NULL);
+    
+    int statement_count = 0;
 
     while (parser.current_token != TEND && 
            parser.current_token != TELSE && 
@@ -212,31 +219,38 @@ static int parse_statement_list(void) {
             if (match(TSEMI) == ERROR) return ERROR;
         }
         
-        // Only try to parse a statement if we're not at END
+        int start_line = parser.line_number;
+        int statement_type = parser.current_token;
+        
         if (parser.current_token != TEND) {
             if (parse_statement() == ERROR) return ERROR;
+            statement_count++;
         }
 
-        debug_printf("After statement: current=%d, prev=%d, prev_prev=%d\n",
-                    parser.current_token, parser.previous_token, 
-                    parser.previous_previous_token);
-
-        // Modified semicolon handling
-        if (parser.current_token != TEND && 
-            parser.current_token != TELSE &&
-            !(parser.previous_token == TBEGIN && 
-              parser.previous_previous_token == TDO)) {
-            
-            debug_printf("Checking semicolon: current=%d at line %d\n", 
-                        parser.current_token, parser.line_number);
-
-            if (parser.current_token != TSEMI) {
-                debug_printf("Missing semicolon before token: %d\n", 
-                            parser.current_token);
-                parse_error("Missing semicolon between statements");
-                return ERROR;
+        // Semicolon handling
+        if (parser.current_token != TEND && parser.current_token != TELSE) {
+            if (statement_type == TIF) {
+                // Special handling for if statements
+                // Only require semicolon if not the last statement in a block
+                if (parser.current_token != TEND && 
+                    !(in_procedure && parser.current_token == TEND)) {
+                    if (parser.current_token != TSEMI) {
+                        parse_error("Missing semicolon between statements");
+                        return ERROR;
+                    }
+                    if (match(TSEMI) == ERROR) return ERROR;
+                }
+            } else {
+                // Normal statement handling
+                if (parser.current_token != TSEMI && 
+                    !(parser.current_token == TEND && statement_count > 0)) {
+                    parse_error("Missing semicolon between statements");
+                    return ERROR;
+                }
+                if (parser.current_token == TSEMI) {
+                    if (match(TSEMI) == ERROR) return ERROR;
+                }
             }
-            if (match(TSEMI) == ERROR) return ERROR;
         }
     }
     return NORMAL;
@@ -375,6 +389,7 @@ static int parse_parameter_list(void) {
     }
 }
 
+// Modify the statement case for TNAME to use assignment parsing
 static int parse_statement(void) {
     debug_printf("Entering parse_statement with token: %d at line: %d\n", 
                 parser.current_token, parser.line_number);
@@ -386,22 +401,7 @@ static int parse_statement(void) {
 
     switch (parser.current_token) {
         case TNAME:
-            if (parse_variable() == ERROR) return ERROR;
-            // Handle assignment or procedure call
-            if (parser.current_token == TASSIGN) {
-                if (match(TASSIGN) == ERROR) return ERROR;
-                if (parse_expression() == ERROR) return ERROR;
-            } else if (parser.current_token == TLPAREN) {
-                if (match(TLPAREN) == ERROR) return ERROR;
-                if (parser.current_token != TRPAREN) {
-                    if (parse_expression() == ERROR) return ERROR;
-                    while (parser.current_token == TCOMMA) {
-                        if (match(TCOMMA) == ERROR) return ERROR;
-                        if (parse_expression() == ERROR) return ERROR;
-                    }
-                }
-                if (match(TRPAREN) == ERROR) return ERROR;
-            }
+            if (parse_assignment() == ERROR) return ERROR;
             return NORMAL;
             
         case TIF:
@@ -458,72 +458,35 @@ static int parse_statement(void) {
 static int parse_if_statement(void) {
     debug_printf("Entering parse_if_statement\n");
     
-    /* Match 'if' keyword */
-    if (match(TIF) == ERROR) {
-        parse_error("Expected 'if' keyword");
-        return ERROR;
-    }
+    if (match(TIF) == ERROR) return ERROR;
+    
+    if (parse_condition() == ERROR) return ERROR;
+    
+    if (match(TTHEN) == ERROR) return ERROR;
 
-    /* Parse condition */
-    if (parser.current_token == -1) {
-        parse_error("Unexpected end of file in condition");
-        return ERROR;
-    }
-    if (parse_condition() == ERROR) {
-        parse_error("Invalid condition in if statement");
-        return ERROR;
-    }
-
-    /* Match 'then' keyword */
-    if (parser.current_token == -1) {
-        parse_error("Unexpected end of file before 'then'");
-        return ERROR;
-    }
-    if (match(TTHEN) == ERROR) {
-        parse_error("Expected 'then' after condition"); 
-        return ERROR;
-    }
-
-    /* Parse then-clause */
-    if (parser.current_token == -1) {
-        parse_error("Unexpected end of file in then-clause");
-        return ERROR;
-    }
+    // Parse then-clause
     if (parser.current_token == TBEGIN) {
-        if (parse_block() == ERROR) {
-            parse_error("Invalid block in then-clause");
-            return ERROR;
-        }
+        if (parse_block() == ERROR) return ERROR;
     } else {
-        if (parse_statement() == ERROR) {
-            parse_error("Invalid statement in then-clause");
-            return ERROR;
-        }
+        if (parse_statement() == ERROR) return ERROR;
     }
 
-    /* Handle optional else-clause */
+    // Handle optional else-clause
     if (parser.current_token == TELSE) {
-        if (match(TELSE) == ERROR) {
-            parse_error("Error parsing else keyword");
-            return ERROR;
-        }
-        
-        if (parser.current_token == -1) {
-            parse_error("Unexpected end of file in else-clause");
-            return ERROR;
-        }
+        if (match(TELSE) == ERROR) return ERROR;
         
         if (parser.current_token == TBEGIN) {
-            if (parse_block() == ERROR) {
-                parse_error("Invalid block in else-clause");
-                return ERROR;
-            }
+            if (parse_block() == ERROR) return ERROR;
         } else {
-            if (parse_statement() == ERROR) {
-                parse_error("Invalid statement in else-clause");
-                return ERROR;
-            }
+            if (parse_statement() == ERROR) return ERROR;
         }
+    }
+
+    // Special handling for if statements
+    // Don't require semicolon if this is the last statement in a block
+    if (parser.current_token == TEND) {
+        debug_printf("If statement followed by END - no semicolon required\n");
+        return NORMAL;
     }
 
     debug_printf("Exiting parse_if_statement successfully\n");
@@ -825,12 +788,30 @@ static int parse_expression(void) {
     
     if (parse_term() == ERROR) return ERROR;
     
-    while (parser.current_token == TPLUS || parser.current_token == TMINUS) {
+    while (parser.current_token == TPLUS || 
+           parser.current_token == TMINUS || 
+           parser.current_token == TEQUAL) {  // Add TEQUAL here
         if (match(parser.current_token) == ERROR) return ERROR;
         if (parse_term() == ERROR) return ERROR;
     }
     
     debug_printf("Exiting parse_expression\n");
+    return NORMAL;
+}
+
+// Add this new function to handle assignment expressions
+static int parse_assignment(void) {
+    if (parse_variable() == ERROR) return ERROR;
+    
+    if (parser.current_token != TASSIGN) {
+        parse_error("Expected ':=' in assignment");
+        return ERROR;
+    }
+    if (match(TASSIGN) == ERROR) return ERROR;
+    
+    // Now parse the right side of the assignment which could be a comparison
+    if (parse_expression() == ERROR) return ERROR;
+    
     return NORMAL;
 }
 

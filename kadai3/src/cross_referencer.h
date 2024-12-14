@@ -34,6 +34,9 @@ void add_symbol(char *name, int type, int linenum, int is_definition);
 void add_reference(char *name, int linenum);
 extern void print_cross_reference_table(void);
 
+// Add this declaration
+const char* get_current_procedure(void);
+
 // Add new function declarations
 void enter_procedure(const char *name);
 void exit_procedure(void);

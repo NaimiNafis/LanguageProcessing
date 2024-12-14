@@ -281,6 +281,11 @@ void exit_procedure(void) {
     }
 }
 
+// Add this function to access current_procedure
+const char* get_current_procedure(void) {
+    return current_procedure;
+}
+
 // Helper function to compare IDs
 int compare_ids(const void *a, const void *b) {
     ID *id1 = *(ID **)a;
