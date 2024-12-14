@@ -119,10 +119,8 @@ void add_symbol(char *name, int type, int linenum, int is_definition) {
     char *scoped_name = NULL;
     char *lookup_name = NULL;
 
-    // For variable definitions, use the line number where the var keyword appears
-    if (is_definition && type != TPROCEDURE) {
-        linenum = get_linenum();
-    }
+    // Use linenum as-is, don't modify it for variable definitions
+    // This ensures we keep the line number from where the variable was declared
 
     // Create scoped name for variables in procedures
     if (current_procedure && type != TPROCEDURE) {

@@ -100,18 +100,15 @@ static int parse_block(void) {
     // Existing VAR and PROCEDURE handling stays exactly the same
     while (parser.current_token == TVAR || parser.current_token == TPROCEDURE) {
         if (parser.current_token == TVAR) {
-            // Store the line number at the start of the var declaration section
-            int var_section_line = get_linenum();
-            
-            if (match(TVAR) == ERROR) {
-                parse_error("Error parsing var keyword");
-                return ERROR;
-            }
+            match(TVAR);
 
             // Process variable declarations
             while (parser.current_token == TNAME) {
+                // Store the actual line number when we see the variable name
+                int var_declaration_line = get_linenum();
                 struct VarList {
                     char *name;
+                    int line;  // Add line number to the structure
                     struct VarList *next;
                 } *head = NULL;
 
@@ -119,49 +116,40 @@ static int parse_block(void) {
                 char *var_name = strdup(string_attr);
                 struct VarList *new_var = malloc(sizeof(struct VarList));
                 new_var->name = var_name;
+                new_var->line = var_declaration_line;  // Store the line number
                 new_var->next = head;
                 head = new_var;
 
-                debug_printf("Processing variable: %s at line %d\n", var_name, var_section_line);
                 match(TNAME);
 
                 // Additional variables after commas
                 while (parser.current_token == TCOMMA) {
                     match(TCOMMA);
+                    var_declaration_line = get_linenum();  // Get line for each variable
                     var_name = strdup(string_attr);
                     new_var = malloc(sizeof(struct VarList));
                     new_var->name = var_name;
+                    new_var->line = var_declaration_line;  // Store the line number
                     new_var->next = head;
                     head = new_var;
-                    debug_printf("Processing additional variable: %s at line %d\n", 
-                               var_name, var_section_line);
                     match(TNAME);
                 }
 
-                if (match(TCOLON) == ERROR) {
-                    parse_error("Expected ':' after variable names");
-                    return ERROR;
-                }
-
-                // Get type before processing variables
+                // ...process type declaration...
+                match(TCOLON);
                 int var_type = parser.current_token;
-                if (parse_type() == ERROR) {
-                    parse_error("Invalid type");
-                    return ERROR;
-                }
+                parse_type();
 
-                // Now add all variables with their type and the original var section line number
+                // Now add all variables with their individual line numbers
                 while (head != NULL) {
                     struct VarList *current = head;
-                    debug_printf("Adding definition for %s at line %d with type %d\n", 
-                               current->name, var_section_line, var_type);
-                    add_symbol(current->name, var_type, var_section_line, 1);
+                    add_symbol(current->name, var_type, current->line, 1);  // Use stored line number
                     head = head->next;
                     free(current->name);
                     free(current);
                 }
 
-                if (match(TSEMI) == ERROR) return ERROR;
+                match(TSEMI);
             }
         }
         
