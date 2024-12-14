@@ -1,4 +1,4 @@
-UnusedArrayForTest|unknown|9|
+UnusedArrayForTest|array[100]ofchar|9|
 a1:reduce|integer|49|52,53,54,54,55,56,56
 a2:reduce|integer|49|52,53,54,54,54,55,57,57
 a:abs|integer|26|28,28,28
@@ -44,7 +44,7 @@ reduce|procedure(integer,integer)|49|68,86
 sub|procedure(integer,integer,integer,integer)|70|118
 sum|procedure(integer,integer,integer,integer)|60|73,117
 unused1|integer|9|
-unusedarray|unknown|92|
+unusedarray|array[100]ofchar|92|
 unusedchar|char|48|
 x1:divide|integer|88|90
 x1:mult|integer|75|78,79,79,84,84,86

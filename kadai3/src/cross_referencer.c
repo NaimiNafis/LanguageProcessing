@@ -3,6 +3,7 @@
 #include <string.h>
 #include "cross_referencer.h"
 #include "debug.h"
+#include "scan.h"  // Add this include to get num_attr
 
 static ID *symbol_table = NULL;
 static char *current_procedure = NULL;  // Add this at the top with other globals
@@ -14,17 +15,44 @@ struct ParamType {
     struct ParamType *next;
 };
 
+// Add static variables to store array info
+static int current_array_size = 0;
+static int current_base_type = 0;
+
+void set_array_info(int size, int base_type) {
+    current_array_size = size;
+    current_base_type = base_type;
+}
+
+Type* create_array_type(int size, int base_type) {
+    Type* array_type = (Type*)malloc(sizeof(Type));
+    array_type->ttype = TARRAY;
+    array_type->arraysize = size;
+    array_type->etp = (Type*)malloc(sizeof(Type));
+    array_type->etp->ttype = base_type;
+    array_type->etp->arraysize = 0;
+    array_type->etp->etp = NULL;
+    array_type->paratp = NULL;
+    return array_type;
+}
+
 void init_cross_referencer(void) {
     symbol_table = NULL;
 }
 
-// Move type_to_string before get_param_string
+// Modify type_to_string to use stored info directly
 const char* type_to_string(int type) {
+    static char array_type[256];  // Static buffer for array type string
     switch(type) {
         case TINTEGER: return "integer";
         case TBOOLEAN: return "boolean";
         case TCHAR: return "char";
         case TPROCEDURE: return "procedure";
+        case TARRAY:
+            snprintf(array_type, sizeof(array_type), "array[%d]of%s",
+                    current_array_size,
+                    type_to_string(current_base_type));
+            return array_type;
         default: return "unknown";
     }
 }
@@ -50,6 +78,7 @@ char* get_param_string(struct ParamType *params) {
     return result;
 }
 
+// Modify add_symbol to handle array types
 void add_symbol(char *name, int type, int linenum, int is_definition) {
     debug_printf("add_symbol: name=%s, type=%d, line=%d, is_def=%d, proc=%s\n", 
                 name, type, linenum, is_definition, current_procedure ? current_procedure : "global");
@@ -81,9 +110,18 @@ void add_symbol(char *name, int type, int linenum, int is_definition) {
             ID *new_id = (ID *)malloc(sizeof(ID));
             new_id->name = scoped_name ? scoped_name : strdup(name);
             new_id->procname = current_procedure ? strdup(current_procedure) : NULL;
-            new_id->itp = (Type *)malloc(sizeof(Type));
-            new_id->itp->ttype = type;
-            new_id->itp->paratp = NULL;
+
+            // Handle array type
+            if (type == TARRAY) {
+                new_id->itp = create_array_type(current_array_size, current_base_type);
+            } else {
+                new_id->itp = (Type *)malloc(sizeof(Type));
+                new_id->itp->ttype = type;
+                new_id->itp->arraysize = 0;
+                new_id->itp->etp = NULL;
+                new_id->itp->paratp = NULL;
+            }
+
             new_id->ispara = (current_procedure != NULL && type != TPROCEDURE);
             new_id->deflinenum = linenum;
             new_id->irefp = NULL;

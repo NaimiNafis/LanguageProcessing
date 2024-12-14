@@ -100,7 +100,9 @@ static int parse_block(void) {
     // Existing VAR and PROCEDURE handling stays exactly the same
     while (parser.current_token == TVAR || parser.current_token == TPROCEDURE) {
         if (parser.current_token == TVAR) {
-            int def_line = get_linenum();  // Store definition line
+            // Store the line number at the start of the var declaration section
+            int var_section_line = get_linenum();
+            
             if (match(TVAR) == ERROR) {
                 parse_error("Error parsing var keyword");
                 return ERROR;
@@ -120,7 +122,7 @@ static int parse_block(void) {
                 new_var->next = head;
                 head = new_var;
 
-                debug_printf("Processing variable: %s at line %d\n", var_name, def_line);
+                debug_printf("Processing variable: %s at line %d\n", var_name, var_section_line);
                 match(TNAME);
 
                 // Additional variables after commas
@@ -131,7 +133,8 @@ static int parse_block(void) {
                     new_var->name = var_name;
                     new_var->next = head;
                     head = new_var;
-                    debug_printf("Processing additional variable: %s at line %d\n", var_name, def_line);
+                    debug_printf("Processing additional variable: %s at line %d\n", 
+                               var_name, var_section_line);
                     match(TNAME);
                 }
 
@@ -147,12 +150,12 @@ static int parse_block(void) {
                     return ERROR;
                 }
 
-                // Now add all variables with their type and line number
+                // Now add all variables with their type and the original var section line number
                 while (head != NULL) {
                     struct VarList *current = head;
                     debug_printf("Adding definition for %s at line %d with type %d\n", 
-                               current->name, def_line, var_type);
-                    add_symbol(current->name, var_type, def_line, 1);
+                               current->name, var_section_line, var_type);
+                    add_symbol(current->name, var_type, var_section_line, 1);
                     head = head->next;
                     free(current->name);
                     free(current);
@@ -333,8 +336,9 @@ static int parse_name_list(void) {
 static int parse_type(void) {
     if (parser.current_token == TINTEGER || parser.current_token == TBOOLEAN || 
         parser.current_token == TCHAR) {
+        int type = parser.current_token;
         match(parser.current_token);
-        return NORMAL;
+        return type;
     }
     else if (parser.current_token == TARRAY) {
         match(TARRAY);
@@ -344,7 +348,10 @@ static int parse_type(void) {
             return ERROR;
         }
 
-        // Handle array size (number)
+        // Store array size for cross referencer
+        int array_size = num_attr;
+        int base_type;
+
         if (parser.current_token != TNUMBER) {
             parse_error("Expected number for array size");
             return ERROR;
@@ -361,16 +368,18 @@ static int parse_type(void) {
             return ERROR;
         }
 
-        // Parse base type
-        if (parser.current_token != TINTEGER && 
-            parser.current_token != TBOOLEAN && 
-            parser.current_token != TCHAR) {
+        // Store base type for cross referencer
+        base_type = parser.current_token;
+        if (base_type != TINTEGER && base_type != TBOOLEAN && base_type != TCHAR) {
             parse_error("Expected valid base type after OF");
             return ERROR;
         }
         match(parser.current_token);
         
-        return NORMAL;
+        // Store array information in global variables for cross referencer
+        set_array_info(array_size, base_type);
+
+        return TARRAY;
     }
 
     parse_error("Invalid type");

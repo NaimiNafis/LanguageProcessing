@@ -130,17 +130,31 @@ int scan(void) {
 int skip_whitespace_and_comments(void) {
     while (1) {
         while (isspace(cbuf)) {
-            if (cbuf == '\n') linenum++;  // Track line breaks
+            if (cbuf == '\n') {
+                linenum++;
+                debug_printf("Line number incremented to %d (whitespace)\n", linenum);
+            }
             cbuf = (char) fgetc(fp);
         }
 
         // Handle block comments
         if (cbuf == '{') {
-            while (cbuf != '}' && cbuf != EOF) {
+            int prev_char = cbuf;
+            cbuf = (char) fgetc(fp);
+            while (cbuf != EOF) {
+                if (cbuf == '\n') {
+                    if (prev_char != '\\') {  // Don't count escaped newlines
+                        linenum++;
+                        debug_printf("Line number incremented to %d (block comment)\n", linenum);
+                    }
+                }
+                if (cbuf == '}') {
+                    cbuf = (char) fgetc(fp);
+                    break;
+                }
+                prev_char = cbuf;
                 cbuf = (char) fgetc(fp);
-                if (cbuf == '\n') linenum++;
             }
-            if (cbuf == '}') cbuf = (char) fgetc(fp);
             continue;
         }
 
@@ -148,30 +162,41 @@ int skip_whitespace_and_comments(void) {
         if (cbuf == '/') {
             cbuf = (char) fgetc(fp);
             if (cbuf == '/') {
-                while (cbuf != '\n' && cbuf != EOF) cbuf = (char) fgetc(fp);
-                linenum++;
-                cbuf = (char) fgetc(fp);
+                while (cbuf != '\n' && cbuf != EOF) {
+                    cbuf = (char) fgetc(fp);
+                }
+                if (cbuf == '\n') {
+                    linenum++;
+                    debug_printf("Line number incremented to %d (single line comment)\n", linenum);
+                    cbuf = (char) fgetc(fp);
+                }
                 continue;
             }
 
             // Handle multi-line comments
             if (cbuf == '*') {
-                while (1) {
-                    cbuf = (char) fgetc(fp);
-                    if (cbuf == '*' && (cbuf = (char) fgetc(fp)) == '/') {
+                cbuf = (char) fgetc(fp);
+                while (cbuf != EOF) {
+                    if (cbuf == '\n') {
+                        linenum++;
+                        debug_printf("Line number incremented to %d (multi-line comment)\n", linenum);
+                    }
+                    if (cbuf == '*') {
                         cbuf = (char) fgetc(fp);
-                        break;
+                        if (cbuf == '/') {
+                            cbuf = (char) fgetc(fp);
+                            break;
+                        }
+                        continue;
                     }
-                    if (cbuf == '\n') linenum++; debug_printf("Line number incremented to: %d\n", linenum);
-                    if (cbuf == EOF) {
-                        debug_printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
-                        return 1;
-                    }
+                    cbuf = (char) fgetc(fp);
                 }
                 continue;
-            } else {
-                break;  // Not a comment, return control to scan
             }
+            
+            // Not a comment, put back the '/'
+            cbuf = '/';
+            break;
         }
         break;
     }

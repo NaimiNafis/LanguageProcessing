@@ -41,4 +41,8 @@ void add_procedure_parameter(int type);
 // Add new function declaration
 const char* type_to_string(int type);
 
+// Add new function declarations for array handling
+void set_array_info(int size, int base_type);
+Type* create_array_type(int size, int base_type);
+
 #endif // CROSS_REFERENCER_H
