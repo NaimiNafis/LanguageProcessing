@@ -1,25 +1,2 @@
-program TeaBreak;
-begin
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    writeln ( 'Say "BREAK!!" ' );
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    break
-end.
+Syntax error at line 10: Break statement must be inside a while loop (token: 49)
+Syntax error detected at line 10. Cannot pretty print.

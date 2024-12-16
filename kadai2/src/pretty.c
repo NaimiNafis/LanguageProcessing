@@ -170,7 +170,14 @@ static void print_token(const char *text) {
     } else {
         if (need_space) printf(" ");
     }
-    printf("%s", text);
+    
+    // Special handling for character literals
+    if (curr_token == TSTRING && strlen(text) == 1) {
+        printf("'%s'", text);  // Always wrap single characters in quotes
+    } else {
+        printf("%s", text);
+    }
+    
     need_space = 1;
     last_printed_newline = 0;
 }
@@ -441,8 +448,15 @@ void pretty_print_token(int token) {
             break;
 
         case TCOLON:
-            print_token(":");
-            need_space = 1;
+            if (prev_token == TSTRING || prev_token == TNUMBER) {
+                // Handle formatting specifier
+                print_token(":");
+                need_space = 1;
+            } else {
+                // Normal colon handling
+                print_token(":");
+                need_space = 1;
+            }
             break;
 
         case TDOT:
@@ -510,12 +524,16 @@ void pretty_print_token(int token) {
             // Loop through string and double any single quotes
             for (int i = 0; string_attr[i] != '\0'; i++) {
                 if (string_attr[i] == '\'') {
-                    printf("''");  // Double the quote
+                    printf("''");  // Print doubled single quote
                 } else {
                     printf("%c", string_attr[i]);
                 }
             }
             printf("'");
+            // Don't print formatting specifier for strings unless explicitly required
+            if (curr_token == TCOLON && prev_token == TNUMBER) {
+                printf(" : %d", num_attr);
+            }
             need_space = 1;
             last_printed_newline = 0;
             break;

@@ -220,7 +220,8 @@ int process_string_literal(void) {
             if (cbuf != '\'') {
                 tempbuf[i] = '\0';
                 strncpy(string_attr, tempbuf, MAXSTRSIZE);
-                return TSTRING;
+                // Keep original quotes for single characters
+                return TSTRING;  // Always return as string
             }
             tempbuf[i++] = '\'';  // Handle escaped quotes
         } else {

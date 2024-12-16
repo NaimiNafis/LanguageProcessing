@@ -38,6 +38,7 @@ void parse_error(const char* message);
 
 // Parser state
 static Parser parser;
+static int in_while_loop = 0;
 
 void init_parser(void) {
     parser.current_token = scan();
@@ -395,6 +396,10 @@ static int parse_statement(void) {
             return NORMAL;
             
         case TBREAK:
+            if (!in_while_loop) {
+                parse_error("Break statement must be inside a while loop");
+                return ERROR;
+            }
             if (match(TBREAK) == ERROR) return ERROR;
             return NORMAL;
             
@@ -518,6 +523,7 @@ static int parse_while_statement(void) {
                 parser.current_token, parser.previous_token, 
                 parser.previous_previous_token);
     
+    in_while_loop++;
     if (match(TWHILE) == ERROR) return ERROR;
     
     if (parse_condition() == ERROR) return ERROR;
@@ -546,6 +552,7 @@ static int parse_while_statement(void) {
     parser.previous_token = saved_prev;
     parser.previous_previous_token = saved_prev_prev;
     
+    in_while_loop--;
     debug_printf("=== Exiting parse_while_statement ===\n\n");
     return NORMAL;
 }
@@ -601,7 +608,12 @@ static int parse_write_statement(void) {
         
         // Parse first output specification
         if (parser.current_token == TSTRING) {
-            if (match(TSTRING) == ERROR) return ERROR;
+            if (strlen(string_attr) == 1) {
+                // Single character strings should be treated as expressions
+                if (parse_expression() == ERROR) return ERROR;
+            } else {
+                if (match(TSTRING) == ERROR) return ERROR;
+            }
             if (parser.current_token == TCOLON) {
                 if (match(TCOLON) == ERROR) return ERROR;
                 if (parser.current_token != TNUMBER) {
@@ -626,7 +638,12 @@ static int parse_write_statement(void) {
         while (parser.current_token == TCOMMA) {
             if (match(TCOMMA) == ERROR) return ERROR;
             if (parser.current_token == TSTRING) {
-                if (match(TSTRING) == ERROR) return ERROR;
+                if (strlen(string_attr) == 1) {
+                    // Single character strings should be treated as expressions
+                    if (parse_expression() == ERROR) return ERROR;
+                } else {
+                    if (match(TSTRING) == ERROR) return ERROR;
+                }
                 if (parser.current_token == TCOLON) {
                     if (match(TCOLON) == ERROR) return ERROR;
                     if (parser.current_token != TNUMBER) {
