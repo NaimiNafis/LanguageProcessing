@@ -167,18 +167,49 @@ static void print_newline_if_needed(void) {
 static void print_token(const char *text) {
     if (last_printed_newline) {
         print_indent();
-    } else {
-        if (need_space) printf(" ");
+    } else if (need_space) {
+        printf(" ");
     }
-    
-    // Special handling for character literals
-    if (curr_token == TSTRING && strlen(text) == 1) {
-        printf("'%s'", text);  // Always wrap single characters in quotes
+
+    if (curr_token == TSTRING) {
+        printf("'");
+        // Store string length for format specifier decision
+        int str_len = 0;
+        // Print string content, preserving original quotes
+        for (int i = 0; string_attr[i] != '\0'; i++) {
+            if (string_attr[i] == '\'') {
+                printf("''");  // Print doubled quotes for escaping
+            } else {
+                printf("%c", string_attr[i]);
+            }
+            str_len++;
+        }
+        printf("'");
+        
+        // Multi-character strings should NOT get format specifiers
+        // regardless of what follows in the source code
+        need_space = 1;
+        
+        // Important: Skip current format specifier tokens if this is a multi-char string
+        if (str_len > 1 && next_token == TCOLON) {
+            // Skip the format specifier tokens in the history
+            update_token_history(scan());  // Skip colon
+            update_token_history(scan());  // Skip number
+        }
+    } else if (curr_token == TCOLON && 
+              (prev_token == TNUMBER || 
+               (prev_token == TSTRING && strlen(string_attr) == 1))) {
+        // Format specifier handling only for expressions and single-char strings
+        printf(":");
+        need_space = 1;
+    } else if (curr_token == TNUMBER && prev_token == TCOLON) {
+        printf(" %d", num_attr);  // Single space after colon before number
+        need_space = 1;
     } else {
         printf("%s", text);
+        need_space = 1;
     }
     
-    need_space = 1;
     last_printed_newline = 0;
 }
 
@@ -384,23 +415,28 @@ void pretty_print_token(int token) {
             {
                 ContextType curr_type = current_context_type();
                 int if_indent;
-                
+
+                // Pop any existing ELSE_BLOCK contexts first
+                while (curr_type == CTX_ELSE_BLOCK) {
+                    pop_context();
+                    curr_type = current_context_type();
+                }
+
+                // Now handle IF_THEN context
                 if (curr_type == CTX_IF_THEN) {
-                    // Retrieve the if's indent level before popping
-                    if_indent = context_stack[context_top].base_indent_level - 1;  // Subtract 1 to match if level
-                    pop_context();  // Pop CTX_IF_THEN context
+                    if_indent = context_stack[context_top].base_indent_level - 1;
+                    pop_context();
                 } else {
-                    // If we're not in an if-then context, use current indent
                     if_indent = current_base_indent();
                 }
-                
-                // Push ELSE_BLOCK with proper indentation
+
+                // Push new ELSE_BLOCK with same indentation as its corresponding IF
                 push_context(CTX_ELSE_BLOCK, if_indent + 1, 0, 0);
+                print_newline_if_needed();
+                print_token("else");
+                need_space = 0;
+                print_newline();
             }
-            print_newline_if_needed();
-            print_token("else");
-            need_space = 0;
-            print_newline();
             break;
 
         case TWHILE:

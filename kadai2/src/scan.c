@@ -212,21 +212,24 @@ int process_number(const char *token_str) {
 int process_string_literal(void) {
     int i = 0;
     char tempbuf[MAXSTRSIZE];
-
+    
     while ((cbuf = fgetc(fp)) != EOF) {
         if (check_token_size(i + 1) == -1) return -1;
+        
         if (cbuf == '\'') {
             cbuf = fgetc(fp);
-            if (cbuf != '\'') {
-                tempbuf[i] = '\0';
-                strncpy(string_attr, tempbuf, MAXSTRSIZE);
-                // Keep original quotes for single characters
-                return TSTRING;  // Always return as string
+            if (cbuf == '\'') {
+                // Double single quote - store as single quote
+                tempbuf[i++] = '\'';
+                continue;
             }
-            tempbuf[i++] = '\'';  // Handle escaped quotes
-        } else {
-            tempbuf[i++] = cbuf;
+            // Single quote - end of string
+            tempbuf[i] = '\0';
+            strncpy(string_attr, tempbuf, MAXSTRSIZE - 1);
+            string_attr[MAXSTRSIZE - 1] = '\0';
+            return TSTRING;
         }
+        tempbuf[i++] = cbuf;
     }
     
     error("Unterminated string literal.");

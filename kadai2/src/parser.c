@@ -54,6 +54,9 @@ static int is_multiplicative_operator(int token);
 static Parser parser;
 static int in_while_loop = 0;
 
+// Add this global variable to track format specifier presence
+static int format_specifier_present = 0;
+
 void init_parser(void) {
     parser.current_token = scan();
     parser.line_number = get_linenum();
@@ -141,11 +144,23 @@ static int parse_array_type(void) {
 }
 
 static int parse_expression(void) {
+    // First simple expression
     if (parse_simple_expression() == ERROR) return ERROR;
     
-    while (is_relational_operator(parser.current_token)) {
-        if (match(parser.current_token) == ERROR) return ERROR;
+    // Handle relational operators with left associativity
+    if (is_relational_operator(parser.current_token)) {
+        int op = parser.current_token;
+        if (match(op) == ERROR) return ERROR;
+        
+        // Right operand
         if (parse_simple_expression() == ERROR) return ERROR;
+        
+        // Continue chaining for left associativity
+        while (is_relational_operator(parser.current_token)) {
+            op = parser.current_token;
+            if (match(op) == ERROR) return ERROR;
+            if (parse_simple_expression() == ERROR) return ERROR;
+        }
     }
     return NORMAL;
 }
@@ -793,12 +808,27 @@ static int parse_procedure_declaration(void) {
 
 // 1. Output Format Grammar Rule
 static int parse_output_format(void) {
-    // Handle string case first
+    debug_printf("Parsing output format, current token: %d\n", parser.current_token);
+    
     if (parser.current_token == TSTRING) {
-        // Always match string token first
+        // First get the string length before consuming the token
+        int str_len = strlen(string_attr);
         if (match(TSTRING) == ERROR) return ERROR;
         
-        // Handle format specifier if present
+        // For multi-character strings:
+        // - Parse but IGNORE any format specifier (according to grammar)
+        // - Don't treat them as expressions
+        if (str_len > 1) {
+            if (parser.current_token == TCOLON) {
+                // Skip the format specifier for multi-char strings
+                if (match(TCOLON) == ERROR) return ERROR;
+                if (match(TNUMBER) == ERROR) return ERROR;
+            }
+            return NORMAL;
+        }
+        
+        // Single-character strings are treated as expressions
+        // Keep any format specifiers
         if (parser.current_token == TCOLON) {
             if (match(TCOLON) == ERROR) return ERROR;
             if (parser.current_token != TNUMBER) {
@@ -810,7 +840,7 @@ static int parse_output_format(void) {
         return NORMAL;
     }
     
-    // Handle expression case
+    // Handle normal expressions
     if (parse_expression() == ERROR) return ERROR;
     if (parser.current_token == TCOLON) {
         if (match(TCOLON) == ERROR) return ERROR;
@@ -896,10 +926,12 @@ static int parse_iteration_statement(void) {
 
 // Exit statement implementation
 static int parse_exit_statement(void) {
+    // Enhanced break statement validation
     if (!in_while_loop) {
-        parse_error("Break statement must be inside a while loop");
+        parse_error("Break statement must be directly inside a while loop");
         return ERROR;
     }
+    
     return match(TBREAK);
 }
 
