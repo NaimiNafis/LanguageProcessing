@@ -1,2 +1,2 @@
-Syntax error at line 4: Missing semicolon between statements (token: -1)
+Syntax error at line 4: Expected token 7 but found -1 (token: -1)
 Syntax error detected at line 4. Cannot pretty print.

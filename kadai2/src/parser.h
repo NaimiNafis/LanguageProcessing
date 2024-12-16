@@ -7,18 +7,18 @@
 #define ERROR 0
 #define NORMAL 1
 
-// In parser.h
 typedef struct {
     int current_token;
     int line_number;
     int first_error_line;
     int previous_token;
-    int previous_previous_token;  // Add this field
+    int previous_previous_token;
     jmp_buf error_jmp;
 } Parser;
 
+// Public interface
 void init_parser(void);
-int parse_program(void);
 void parse_error(const char* message);
+int parse_program(void);  // Non-static since it's called from outside
 
 #endif
