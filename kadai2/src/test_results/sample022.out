@@ -1,1 +1,2 @@
 Syntax error at line 2: Expected token 45 but found 1 (token: 1)
+Syntax error detected at line 2. Cannot pretty print.

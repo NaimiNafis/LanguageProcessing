@@ -27,8 +27,8 @@ static int scan_number(void);  // Add this line with other forward declarations
 // Define the scanner variable
 Scanner scanner = {0};  // Initialize all fields to 0
 
-// Initialize file reading
-int init_scan(char *filename) {
+// Update function definition to match scan.h
+int init_scan(const char *filename) {
     scanner.has_error = 0;  // Reset error flag
     current_filename = filename;  // Store filename
     fp = fopen(filename, "r");

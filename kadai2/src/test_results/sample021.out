@@ -1,1 +1,2 @@
 Syntax error at line 2: semicolon expected (token: 3)
+Syntax error detected at line 2. Cannot pretty print.

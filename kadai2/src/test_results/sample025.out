@@ -1,1 +1,2 @@
 Syntax error at line 6: Expected token 7 but found 10 (token: 10)
+Syntax error detected at line 6. Cannot pretty print.

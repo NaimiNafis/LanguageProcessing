@@ -2,6 +2,7 @@
 #include "pretty.h"
 #include "scan.h"
 #include "token.h"
+#include "parser.h"  // Add parser header
 #include "debug_pretty.h"
 
 // For indentation
@@ -543,7 +544,20 @@ void pretty_print_token(int token) {
 void pretty_print_program(void) {
     debug_pretty_printf("Starting pretty_print_program\n");
     init_pretty_printer();
-    debug_pretty_printf("Scanning first token...\n");
+    init_parser();  // Initialize parser first
+    
+    // Parse the program first to validate syntax
+    int error_line = parse_program();
+    if (error_line != 0) {
+        fprintf(stderr, "Syntax error detected at line %d. Cannot pretty print.\n", error_line);
+        return;
+    }
+    
+    // Reset scanner to start of file for pretty printing
+    end_scan();
+    init_scan(get_current_file());
+    
+    debug_pretty_printf("Scanning first token for pretty printing...\n");
     next_token = scan();
     if (next_token > 0) {
         curr_token = next_token;
@@ -552,7 +566,6 @@ void pretty_print_program(void) {
     
     while (curr_token > 0) {
         debug_pretty_printf("Processing token %s (%d)\n", tokenstr[curr_token], curr_token);
-        // Handle var block endings before printing token
         handle_var_end_if_needed();
         pretty_print_token(curr_token);
         update_token_history(scan());
