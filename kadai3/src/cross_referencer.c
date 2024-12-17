@@ -232,10 +232,24 @@ void add_reference(char *name, int linenum) {
         if (scoped_name && strcmp(id->name, scoped_name) == 0) {
             Line *new_line = (Line *)malloc(sizeof(Line));
             new_line->reflinenum = linenum;
-            new_line->nextlinep = id->irefp;
-            id->irefp = new_line;
+            new_line->nextlinep = NULL;
+            
+            // Insert in sorted order
+            if (!id->irefp || id->irefp->reflinenum > linenum) {
+                // Insert at start
+                new_line->nextlinep = id->irefp;
+                id->irefp = new_line;
+            } else {
+                // Find insertion point
+                Line *current = id->irefp;
+                while (current->nextlinep && current->nextlinep->reflinenum < linenum) {
+                    current = current->nextlinep;
+                }
+                new_line->nextlinep = current->nextlinep;
+                current->nextlinep = new_line;
+            }
+            
             found = 1;
-            debug_printf("Added scoped reference for %s at line %d\n", scoped_name, linenum);
             break;
         }
         id = id->nextp;
@@ -248,10 +262,24 @@ void add_reference(char *name, int linenum) {
             if (strcmp(id->name, global_name) == 0) {
                 Line *new_line = (Line *)malloc(sizeof(Line));
                 new_line->reflinenum = linenum;
-                new_line->nextlinep = id->irefp;
-                id->irefp = new_line;
+                new_line->nextlinep = NULL;
+                
+                // Insert in sorted order
+                if (!id->irefp || id->irefp->reflinenum > linenum) {
+                    // Insert at start
+                    new_line->nextlinep = id->irefp;
+                    id->irefp = new_line;
+                } else {
+                    // Find insertion point
+                    Line *current = id->irefp;
+                    while (current->nextlinep && current->nextlinep->reflinenum < linenum) {
+                        current = current->nextlinep;
+                    }
+                    new_line->nextlinep = current->nextlinep;
+                    current->nextlinep = new_line;
+                }
+                
                 found = 1;
-                debug_printf("Added global reference for %s at line %d\n", global_name, linenum);
                 break;
             }
             id = id->nextp;
@@ -288,46 +316,99 @@ const char* get_current_procedure(void) {
     return current_procedure;
 }
 
-// Helper function to compare IDs
-int compare_ids(const void *a, const void *b) {
+// Forward declarations of helper functions
+static char* get_base_name(const char* full_name);
+static char* normalize_name(const char* name);
+static int compare_ids(const void *a, const void *b);
+static void sort_references(Line** head);
+
+// Modified compare_ids function to sort procedures first, then alphabetically
+static int compare_ids(const void *a, const void *b) {
     ID *id1 = *(ID **)a;
     ID *id2 = *(ID **)b;
-    return strcmp(id1->name, id2->name);
-}
-
-// Helper function to sort references by line number
-void sort_references(Line** head) {
-    if (*head == NULL || (*head)->nextlinep == NULL) return;
     
-    Line *sorted = NULL;
-    Line *current = *head;
+    // Get base names (without scope)
+    char *name1 = get_base_name(id1->name);
+    char *name2 = get_base_name(id2->name);
     
-    while (current != NULL) {
-        Line *next = current->nextlinep;
-        Line *scan = sorted;
-        Line *scan_prev = NULL;
-        
-        while (scan != NULL && scan->reflinenum < current->reflinenum) {
-            scan_prev = scan;
-            scan = scan->nextlinep;
-        }
-        
-        if (scan_prev == NULL) {
-            current->nextlinep = sorted;
-            sorted = current;
-        } else {
-            current->nextlinep = scan_prev->nextlinep;
-            scan_prev->nextlinep = current;
-        }
-        
-        current = next;
+    // First sort procedures before variables
+    int is_proc1 = (id1->itp->ttype == TPROCEDURE);
+    int is_proc2 = (id2->itp->ttype == TPROCEDURE);
+    
+    if (is_proc1 != is_proc2) {
+        free(name1);
+        free(name2);
+        return is_proc2 - is_proc1;  // Procedures come first
     }
     
+    // Then sort alphabetically
+    int result = strcmp(name1, name2);
+    free(name1);
+    free(name2);
+    return result;
+}
+
+// Fixed sort_references function to maintain ascending order
+static void sort_references(Line** head) {
+    if (!*head || !(*head)->nextlinep) return;  // Nothing to sort
+    
+    // Count references
+    int count = 0;
+    Line* current = *head;
+    while (current) {
+        count++;
+        current = current->nextlinep;
+    }
+    
+    // Create array of line numbers
+    int* numbers = malloc(count * sizeof(int));
+    current = *head;
+    for (int i = 0; i < count; i++) {
+        numbers[i] = current->reflinenum;
+        current = current->nextlinep;
+    }
+    
+    // Sort array in ascending order
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            if (numbers[j] > numbers[j + 1]) {
+                int temp = numbers[j];
+                numbers[j] = numbers[j + 1];
+                numbers[j + 1] = temp;
+            }
+        }
+    }
+    
+    // Rebuild list in correct order (forward, not reverse)
+    Line* sorted = NULL;
+    Line* tail = NULL;
+    for (int i = 0; i < count; i++) {  // Changed to forward iteration
+        Line* new_line = malloc(sizeof(Line));
+        new_line->reflinenum = numbers[i];
+        new_line->nextlinep = NULL;
+        
+        if (!sorted) {
+            sorted = new_line;
+            tail = new_line;
+        } else {
+            tail->nextlinep = new_line;
+            tail = new_line;
+        }
+    }
+    
+    // Clean up original list
+    while (*head) {
+        current = *head;
+        *head = (*head)->nextlinep;
+        free(current);
+    }
+    
+    free(numbers);
     *head = sorted;
 }
 
 // Helper function to remove procedure name from scoped variables
-char* get_base_name(const char* full_name) {
+static char* get_base_name(const char* full_name) {
     char *colon = strchr(full_name, ':');
     if (colon) {
         size_t base_len = colon - full_name;
@@ -367,23 +448,23 @@ int is_error_state(void) {
     return error_state;
 }
 
+// Modified print_cross_reference_table to handle procedure parameters
 void print_cross_reference_table(void) {
-    // Don't print table if there was a parse error or we're in error state
     if (scanner.has_error || error_state) {
         return;
     }
 
-    // Count symbols
+    // Count symbols and create array
     int count = 0;
-    ID *id = symbol_table;
-    while (id != NULL) {
+    for (ID *id = symbol_table; id != NULL; id = id->nextp) {
         count++;
-        id = id->nextp;
     }
-
-    // Create array of pointers to IDs
+    
     ID **id_array = (ID **)malloc(count * sizeof(ID *));
-    id = symbol_table;
+    if (!id_array) return;
+    
+    // Fill array
+    ID *id = symbol_table;
     for (int i = 0; i < count; i++) {
         id_array[i] = id;
         id = id->nextp;
@@ -392,47 +473,38 @@ void print_cross_reference_table(void) {
     // Sort array
     qsort(id_array, count, sizeof(ID *), compare_ids);
 
-    // Print header line that will be discarded
+    // Print header line
     printf("----------------------------------\n");
 
-    // Print sorted table - modified for scoped names
+    // Print sorted symbols
     for (int i = 0; i < count; i++) {
         id = id_array[i];
-        char* display_name = normalize_name(id->name);
+        char* display_name = get_base_name(id->name);
         
-        // Set the current symbol type before printing
         current_symbol_type = id->itp;
         
-        if (id->itp->ttype == TPROCEDURE && id->itp->paratp) {
-            // Print procedure with parameter types
-            char* param_str = get_param_string((struct ParamType*)id->itp->paratp);
-            printf("%s|%s%s|%d|", display_name, type_to_string(id->itp->ttype), 
-                   param_str, id->deflinenum);
-            free(param_str);
+        // Print symbol entry
+        if (id->itp->ttype == TPROCEDURE) {
+            printf("%s|%s|%d|", display_name, type_to_string(id->itp->ttype), 
+                   id->deflinenum);
         } else {
-            // Print normal symbol
             printf("%s|%s|%d|", display_name, type_to_string(id->itp->ttype), 
                    id->deflinenum);
         }
-        free(display_name);
         
-        // Reset the current symbol type
-        current_symbol_type = NULL;
-        
-        // Sort references before printing
-        sort_references(&id->irefp);
-        
-        // Print references with commas, no spaces
+        // Print references
         Line *line = id->irefp;
-        if (line != NULL) {
+        if (line) {
             printf("%d", line->reflinenum);
             line = line->nextlinep;
-            while (line != NULL) {
+            while (line) {
                 printf(",%d", line->reflinenum);
                 line = line->nextlinep;
             }
         }
         printf("\n");
+        
+        free(display_name);
     }
 
     free(id_array);

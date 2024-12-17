@@ -4,11 +4,9 @@
 #include <setjmp.h>
 #include <stdbool.h>
 
-// Parser result codes
 #define ERROR 0
 #define NORMAL 1
 
-// Parser state tracking structure for maintaining parsing context
 typedef struct {
     int current_token;
     int line_number;
@@ -18,9 +16,9 @@ typedef struct {
     jmp_buf error_jmp;
 } Parser;
 
-// Core parser interface
+// Public interface
 void init_parser(void);
-int parse_program(void);
 void parse_error(const char* message);
+int parse_program(void);
 
 #endif

@@ -22,7 +22,7 @@ extern char string_attr[MAXSTRSIZE];
 
 // Function declarations
 void error(const char *msg);
-int init_scan(char *filename);
+int init_scan(const char *filename);
 int scan(void);
 int get_linenum(void);
 void end_scan(void);

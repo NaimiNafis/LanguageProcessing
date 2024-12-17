@@ -8,51 +8,67 @@
 #include "debug.h"
 #include "cross_referencer.h"
 
-// Parser configuration
+// Define a constant for EOF
 #define EOF_TOKEN -1
 #define MAX_ERRORS 5
 #define SYNC_TOKENS_COUNT 6
 
-// Forward declarations for recursive descent parsing
+// Forward declarations for grammar rule functions
 static int parse_block(void);
-static int parse_variable_declaration(void);
-static int parse_name_list(void);
+static int parse_variable_declaration_section(void);
+static int parse_list_of_variable_names(void);
 static int parse_type(void);
-static int parse_procedure(void);
-static int parse_statement_list(void);
+static int parse_standard_type(void);
+static int parse_array_type(void);
+static int parse_subprogram_declaration(void);
+static int parse_formal_parameter_section(void);
+static int parse_compound_statement(void);
 static int parse_statement(void);
-static int parse_if_statement(void);
-static int parse_while_statement(void);
-static int parse_procedure_call(void);
-static int parse_read_statement(void);
-static int parse_write_statement(void);
+static int parse_assignment_statement(void);
+static int parse_conditional_statement(void);
+static int parse_iteration_statement(void);
+static int parse_exit_statement(void);
+static int parse_procedure_call_statement(void);
+static int parse_return_statement(void);
+static int parse_input_statement(void);
+static int parse_output_statement(void);
+static int parse_empty_statement(void);
 static int parse_variable(void);
 static int parse_expression(void);
+static int parse_simple_expression(void);
 static int parse_term(void);
 static int parse_factor(void);
-static int parse_comparison(void);
+static int parse_output_format(void);
+static int parse_list_of_expressions(void);
 static int parse_condition(void);
-static int parse_assignment(void);
-static int match(int expected_token);
+static int parse_statement_list(void);
+static int parse_left_hand_part(void);
 
-// Helper functions for error handling and validation
-static int check_recursive_call(const char* proc_name);
-static int check_malformed_declaration(int start_line);
+// Helper functions
+static int match(int expected_token);
+static int is_standard_type(int token);
+static int is_relational_operator(int token);
+static int is_additive_operator(int token);
+static int is_multiplicative_operator(int token);
 
 // Parser state
 static Parser parser;
+static int in_while_loop = 0;
+
+// Global variable to track format specifier presence
+static int format_specifier_present = 0;
 
 void init_parser(void) {
     parser.current_token = scan();
     parser.line_number = get_linenum();
     parser.first_error_line = 0;
     parser.previous_token = 0;
-    parser.previous_previous_token = 0;  // Initialize new field
+    parser.previous_previous_token = 0;
 }
 
 // Main program parsing
 int parse_program(void) {
-    parser.first_error_line = 0;
+    parser.first_error_line = 0;  // Reset error state
     
     // Set up error handling
     int error_line = setjmp(parser.error_jmp);
@@ -60,278 +76,256 @@ int parse_program(void) {
         return error_line;
     }
 
-    // Check for program keyword
-    if (parser.current_token != TPROGRAM) {
-        parse_error("program expected");
-    }
-    match(TPROGRAM);
+    // Program structure according to grammar:
+    // Program ::= "program" "name" ";" Block "."
+    if (match(TPROGRAM) == ERROR) return ERROR;
+    if (match(TNAME) == ERROR) return ERROR;
+    if (match(TSEMI) == ERROR) return ERROR;
+    if (parse_block() == ERROR) return ERROR;
+    if (match(TDOT) == ERROR) return ERROR;
 
-    // Check for program name (must be identifier)
-    if (parser.current_token != TNAME) {
-        parse_error("program name expected");
-    }
-    match(TNAME);
-
-    // Check for semicolon
-    if (parser.current_token != TSEMI) {
-        parse_error("semicolon expected");
-    }
-    match(TSEMI);
-
-    // Parse the rest of the program
-    parse_block();
-
-    // Check for ending dot
-    if (parser.current_token != TDOT) {
-        parse_error("period expected at end of program");
-    }
-    match(TDOT);
-
-    return 0;
+    return 0;  // Success
 }
 
 static int parse_block(void) {
-    debug_printf("\n=== Entering parse_block ===\n");
-    debug_printf("Current token: %d\n", parser.current_token);
-    debug_printf("Previous token: %d\n", parser.previous_token);
-    debug_printf("Previous-previous token: %d\n", parser.previous_previous_token);
-
-    // Keep existing debug print
-    debug_printf("Entering parse_block\n");
-
-    // Existing VAR and PROCEDURE handling stays exactly the same
+    // Block ::= { Variable declaration section | Subprogram declaration } Compound statement
+    
+    // Handle variable declarations and subprograms
     while (parser.current_token == TVAR || parser.current_token == TPROCEDURE) {
         if (parser.current_token == TVAR) {
-            match(TVAR);
+            if (parse_variable_declaration_section() == ERROR) return ERROR;
+        } else {
+            if (parse_subprogram_declaration() == ERROR) return ERROR;
+        }
+    }
+    
+    // Parse compound statement
+    return parse_compound_statement();
+}
 
-            // Process variable declarations
-            while (parser.current_token == TNAME) {
-                // Store the actual line number when we see the variable name
-                int var_declaration_line = get_linenum();
-                struct VarList {
-                    char *name;
-                    int line;  // Add line number to the structure
-                    struct VarList *next;
-                } *head = NULL;
-
-                // First variable
-                char *var_name = strdup(string_attr);
-                struct VarList *new_var = malloc(sizeof(struct VarList));
-                new_var->name = var_name;
-                new_var->line = var_declaration_line;  // Store the line number
-                new_var->next = head;
-                head = new_var;
-
-                match(TNAME);
-
-                // Additional variables after commas
-                while (parser.current_token == TCOMMA) {
-                    match(TCOMMA);
-                    var_declaration_line = get_linenum();  // Get line for each variable
-                    var_name = strdup(string_attr);
-                    new_var = malloc(sizeof(struct VarList));
-                    new_var->name = var_name;
-                    new_var->line = var_declaration_line;  // Store the line number
-                    new_var->next = head;
-                    head = new_var;
-                    match(TNAME);
-                }
-
-                // Process type declaration
-                match(TCOLON);
-                int var_type = parser.current_token;
-                parse_type();
-
-                // Now add all variables with their individual line numbers
-                while (head != NULL) {
-                    struct VarList *current = head;
-                    add_symbol(current->name, var_type, current->line, 1);  // Use stored line number
-                    head = head->next;
-                    free(current->name);
-                    free(current);
-                }
-
-                match(TSEMI);
-            }
+static int parse_variable_declaration_section(void) {
+    if (match(TVAR) == ERROR) return ERROR;
+    
+    do {
+        int line_num = get_linenum();
+        char* var_names[MAXSTRSIZE];  // Array to store variable names
+        int var_count = 0;
+        
+        // Store first variable name
+        var_names[var_count] = strdup(string_attr);
+        var_count++;
+        
+        if (match(TNAME) == ERROR) {
+            for (int i = 0; i < var_count; i++) free(var_names[i]);
+            return ERROR;
         }
         
-        if (parser.current_token == TPROCEDURE) {
-            if (parse_procedure() == ERROR) {
-                parse_error("Failed to parse procedure declaration");
+        // Handle additional variable names
+        while (parser.current_token == TCOMMA) {
+            if (match(TCOMMA) == ERROR) {
+                for (int i = 0; i < var_count; i++) free(var_names[i]);
+                return ERROR;
+            }
+            
+            // Store additional variable name
+            var_names[var_count] = strdup(string_attr);
+            var_count++;
+            
+            if (match(TNAME) == ERROR) {
+                for (int i = 0; i < var_count; i++) free(var_names[i]);
                 return ERROR;
             }
         }
-    }
-
-    // Add new debug print before BEGIN
-    debug_printf("Before BEGIN match in parse_block\n");
-    debug_printf("Current token: %d\n", parser.current_token);
-
-    if (match(TBEGIN) == ERROR) {
-        parse_error("Expected 'begin'");
-        return ERROR;
-    }
-    
-    // Add new check here for optional semicolon after BEGIN
-    if (parser.current_token == TSEMI) {
+        
+        if (match(TCOLON) == ERROR) {
+            for (int i = 0; i < var_count; i++) free(var_names[i]);
+            return ERROR;
+        }
+        
+        // Save the type before parsing it
+        int var_type = parser.current_token;
+        if (parse_type() == ERROR) {
+            for (int i = 0; i < var_count; i++) free(var_names[i]);
+            return ERROR;
+        }
+        
+        // Add all variables with their type
+        for (int i = 0; i < var_count; i++) {
+            add_symbol(var_names[i], var_type, line_num, 1);
+            free(var_names[i]);
+        }
+        
         if (match(TSEMI) == ERROR) return ERROR;
-    }
+    } while (parser.current_token == TNAME);
     
-    parser.previous_token = TBEGIN;
-
-    if (parse_statement_list() == ERROR) {
-        parse_error("Failed to parse statement list");
-        return ERROR;
-    }
-
-    debug_printf("Before END match in parse_block\n");
-    
-    if (match(TEND) == ERROR) {
-        parse_error("Expected 'end'");
-        return ERROR;
-    }
-
-    // Keep existing exit debug print
-    debug_printf("Exiting parse_block with token: %d at line: %d\n", 
-                parser.current_token, parser.line_number);
-    debug_printf("=== Exiting parse_block ===\n\n");
     return NORMAL;
 }
 
-// Also modify parse_statement_list to not treat the semicolon after BEGIN as an error
-static int parse_statement_list(void) {
-    debug_printf("Entering parse_statement_list with token: %d at line: %d\n", 
-                parser.current_token, parser.line_number);
+static int parse_type(void) {
+    if (is_standard_type(parser.current_token)) {
+        return parse_standard_type();
+    }
+    return parse_array_type();
+}
 
-    // Change this line
-    int in_procedure = (get_current_procedure() != NULL);
+static int parse_standard_type(void) {
+    switch (parser.current_token) {
+        case TINTEGER:
+        case TBOOLEAN:
+        case TCHAR:
+            return match(parser.current_token);
+        default:
+            parse_error("Expected standard type");
+            return ERROR;
+    }
+}
+
+static int parse_array_type(void) {
+    if (match(TARRAY) == ERROR) return ERROR;
+    if (match(TLSQPAREN) == ERROR) return ERROR;
+    if (match(TNUMBER) == ERROR) return ERROR;
+    if (match(TRSQPAREN) == ERROR) return ERROR;
+    if (match(TOF) == ERROR) return ERROR;
+    return parse_standard_type();
+}
+
+static int parse_expression(void) {
+    // First simple expression
+    if (parse_simple_expression() == ERROR) return ERROR;
     
-    int statement_count = 0;
-
-    while (parser.current_token != TEND && 
-           parser.current_token != TELSE && 
-           parser.current_token != -1) {
-           
-        // Skip any extra semicolons
-        while (parser.current_token == TSEMI) {
-            if (match(TSEMI) == ERROR) return ERROR;
-        }
+    // Handle relational operators with left associativity
+    if (is_relational_operator(parser.current_token)) {
+        int op = parser.current_token;
+        if (match(op) == ERROR) return ERROR;
         
-        int start_line = parser.line_number;
-        int statement_type = parser.current_token;
+        // Right operand
+        if (parse_simple_expression() == ERROR) return ERROR;
         
-        if (parser.current_token != TEND) {
-            if (parse_statement() == ERROR) return ERROR;
-            statement_count++;
-        }
-
-        // Semicolon handling
-        if (parser.current_token != TEND && parser.current_token != TELSE) {
-            if (statement_type == TIF) {
-                // Special handling for if statements
-                // Only require semicolon if not the last statement in a block
-                if (parser.current_token != TEND && 
-                    !(in_procedure && parser.current_token == TEND)) {
-                    if (parser.current_token != TSEMI) {
-                        parse_error("Missing semicolon between statements");
-                        return ERROR;
-                    }
-                    if (match(TSEMI) == ERROR) return ERROR;
-                }
-            } else {
-                // Normal statement handling
-                if (parser.current_token != TSEMI && 
-                    !(parser.current_token == TEND && statement_count > 0)) {
-                    parse_error("Missing semicolon between statements");
-                    return ERROR;
-                }
-                if (parser.current_token == TSEMI) {
-                    if (match(TSEMI) == ERROR) return ERROR;
-                }
-            }
+        // Continue chaining for left associativity
+        while (is_relational_operator(parser.current_token)) {
+            op = parser.current_token;
+            if (match(op) == ERROR) return ERROR;
+            if (parse_simple_expression() == ERROR) return ERROR;
         }
     }
     return NORMAL;
+}
+
+static int parse_simple_expression(void) {
+    if (parser.current_token == TPLUS || parser.current_token == TMINUS) {
+        if (match(parser.current_token) == ERROR) return ERROR;
+    }
+    
+    if (parse_term() == ERROR) return ERROR;
+    
+    while (is_additive_operator(parser.current_token)) {
+        if (match(parser.current_token) == ERROR) return ERROR;
+        if (parse_term() == ERROR) return ERROR;
+    }
+    return NORMAL;
+}
+
+static int parse_term(void) {
+    if (parse_factor() == ERROR) return ERROR;
+    
+    while (is_multiplicative_operator(parser.current_token)) {
+        if (match(parser.current_token) == ERROR) return ERROR;
+        if (parse_factor() == ERROR) return ERROR;
+    }
+    return NORMAL;
+}
+
+static int parse_statement(void) {
+    switch (parser.current_token) {
+        case TNAME:
+            return parse_assignment_statement();
+        case TIF:
+            return parse_conditional_statement();
+        case TWHILE:
+            return parse_iteration_statement();
+        case TBREAK:
+            return parse_exit_statement();
+        case TCALL:
+            return parse_procedure_call_statement();
+        case TRETURN:
+            return parse_return_statement();
+        case TREAD:
+        case TREADLN:
+            return parse_input_statement();
+        case TWRITE:
+        case TWRITELN:
+            return parse_output_statement();
+        case TBEGIN:
+            return parse_compound_statement();
+        case TSEMI:
+            return parse_empty_statement();
+        default:
+            parse_error("Invalid statement");
+            return ERROR;
+    }
 }
 
 static int parse_variable_declaration(void) {
+    // Match VAR keyword
     if (parser.current_token != TVAR) {
         parse_error("Expected 'var' keyword");
         return ERROR;
     }
-    
-    // Store the line number at the start of variable declaration
-    int var_section_line = get_linenum();
-    
     match(TVAR);
 
+    // Loop to handle multiple variable declarations
     do {
-        struct VarList {
-            char *name;
-            struct VarList *next;
-        } *head = NULL;
-        
-        // Process first variable
+        // Parse first variable name
         if (parser.current_token != TNAME) {
             parse_error("Variable name expected");
             return ERROR;
         }
-        
-        // Store first variable
-        char *var_name = strdup(string_attr);
-        struct VarList *new_var = malloc(sizeof(struct VarList));
-        new_var->name = var_name;
-        new_var->next = head;
-        head = new_var;
-        
         match(TNAME);
 
-        // Process additional variables
+        // Handle multiple variables separated by commas
         while (parser.current_token == TCOMMA) {
             match(TCOMMA);
             if (parser.current_token != TNAME) {
                 parse_error("Variable name expected after comma");
                 return ERROR;
             }
-            var_name = strdup(string_attr);
-            new_var = malloc(sizeof(struct VarList));
-            new_var->name = var_name;
-            new_var->next = head;
-            head = new_var;
             match(TNAME);
+            // Extra validation after each variable in the list
+            if (parser.current_token != TCOMMA && parser.current_token != TCOLON) {
+                parse_error("Expected comma or colon after variable name");
+                return ERROR;
+            }
         }
 
-        if (match(TCOLON) == ERROR) return ERROR;
-        
-        // Get variable type
-        int var_type = parser.current_token;
-        if (parse_type() == ERROR) return ERROR;
-        
-        // Add all variables using the stored line number
-        while (head != NULL) {
-            struct VarList *current = head;
-            add_symbol(current->name, var_type, var_section_line, 1);
-            head = head->next;
-            free(current->name);
-            free(current);
-        }
-
-        if (match(TSEMI) == ERROR) return ERROR;
-
-        // Add check for malformed declarations
-        if (get_linenum() - var_section_line > 1) {
-            set_error_state();
-            parse_error("Variable declaration must be on a single line");
+        // Stricter checking for colon
+        if (parser.current_token != TCOLON) {
+            parse_error("Expected ':' after variable names");
             return ERROR;
         }
+        match(TCOLON);
+
+        // More strict type checking
+        if (parser.current_token != TINTEGER && 
+            parser.current_token != TBOOLEAN && 
+            parser.current_token != TCHAR && 
+            parser.current_token != TARRAY) {
+            parse_error("Invalid type declaration");
+            return ERROR;
+        }
+
+        if (parse_type() == ERROR) {
+            return ERROR;
+        }
+
+        if (parser.current_token != TSEMI) {
+            parse_error("Expected semicolon after variable declaration");
+            return ERROR;
+        }
+        match(TSEMI);
 
     } while (parser.current_token == TNAME);
 
     return NORMAL;
-}
-
-static int check_malformed_declaration(int start_line) {
-    return (get_linenum() - start_line > 1);
 }
 
 static int parse_name_list(void) {
@@ -340,50 +334,6 @@ static int parse_name_list(void) {
         match(TCOMMA);
         match(TNAME);
     }
-}
-
-static int parse_type(void) {
-    if (parser.current_token == TINTEGER || parser.current_token == TBOOLEAN || 
-        parser.current_token == TCHAR) {
-        int type = parser.current_token;
-        match(parser.current_token);
-        return type;
-    }
-    else if (parser.current_token == TARRAY) {
-        match(TARRAY);
-        
-        if (match(TLSQPAREN) == ERROR) {
-            parse_error("Expected '[' after ARRAY");
-            return ERROR;
-        }
-
-        // Store array size before matching the number token
-        int array_size = num_attr;  // Get size from scanner's num_attr
-
-        if (parser.current_token != TNUMBER) {
-            parse_error("Expected number for array size");
-            return ERROR;
-        }
-        match(TNUMBER);
-
-        // Rest of array parsing
-        if (match(TRSQPAREN) == ERROR) return ERROR;
-        if (match(TOF) == ERROR) return ERROR;
-
-        int base_type = parser.current_token;
-        if (base_type != TINTEGER && base_type != TBOOLEAN && base_type != TCHAR) {
-            parse_error("Expected valid base type after OF");
-            return ERROR;
-        }
-        match(parser.current_token);
-        
-        // Set array info with the stored size
-        set_array_info(array_size, base_type);
-        return TARRAY;
-    }
-
-    parse_error("Invalid type");
-    return ERROR;
 }
 
 static int parse_parameter_list(void) {
@@ -398,104 +348,75 @@ static int parse_parameter_list(void) {
     }
 }
 
-// Modify the statement case for TNAME to use assignment parsing
-static int parse_statement(void) {
-    debug_printf("Entering parse_statement with token: %d at line: %d\n", 
-                parser.current_token, parser.line_number);
-                
-    if (parser.current_token == -1) {
-        parse_error("Unexpected end of file in statement");
-        return ERROR;
-    }
-
-    switch (parser.current_token) {
-        case TNAME:
-            if (parse_assignment() == ERROR) return ERROR;
-            return NORMAL;
-            
-        case TIF:
-            if (parse_if_statement() == ERROR) return ERROR;
-            return NORMAL;
-            
-        case TWHILE:
-            if (parse_while_statement() == ERROR) return ERROR;
-            return NORMAL;
-            
-        case TBREAK:
-            if (match(TBREAK) == ERROR) return ERROR;
-            return NORMAL;
-            
-        case TCALL:
-            if (parse_procedure_call() == ERROR) return ERROR;
-            return NORMAL;
-            
-        case TRETURN:
-            if (match(TRETURN) == ERROR) return ERROR;
-            return NORMAL;
-            
-        case TREAD:
-        case TREADLN:
-            debug_printf("Matched TREAD or TREADLN with token: %d at line: %d\n", 
-                        parser.current_token, parser.line_number);
-            if (parse_read_statement() == ERROR) return ERROR;
-            return NORMAL;
-            
-        case TWRITE:
-        case TWRITELN:
-            if (parse_write_statement() == ERROR) return ERROR;
-            return NORMAL;
-            
-        case TBEGIN:
-            if (match(TBEGIN) == ERROR) return ERROR;
-            if (parse_statement_list() == ERROR) return ERROR;
-            if (match(TEND) == ERROR) return ERROR;
-            return NORMAL;
-            
-        case TEND:
-            return NORMAL;
-            
-        default:
-            parse_error("Invalid statement");
-            return ERROR;
-    }
-
-    debug_printf("Exiting parse_statement with token: %d at line: %d\n", 
-                parser.current_token, parser.line_number);
-    return NORMAL;
-}
-
 static int parse_if_statement(void) {
     debug_printf("Entering parse_if_statement\n");
     
-    if (match(TIF) == ERROR) return ERROR;
-    
-    if (parse_condition() == ERROR) return ERROR;
-    
-    if (match(TTHEN) == ERROR) return ERROR;
-
-    // Parse then-clause
-    if (parser.current_token == TBEGIN) {
-        if (parse_block() == ERROR) return ERROR;
-    } else {
-        if (parse_statement() == ERROR) return ERROR;
+    /* Match 'if' keyword */
+    if (match(TIF) == ERROR) {
+        parse_error("Expected 'if' keyword");
+        return ERROR;
     }
 
-    // Handle optional else-clause
-    if (parser.current_token == TELSE) {
-        if (match(TELSE) == ERROR) return ERROR;
-        
-        if (parser.current_token == TBEGIN) {
-            if (parse_block() == ERROR) return ERROR;
-        } else {
-            if (parse_statement() == ERROR) return ERROR;
+    /* Parse condition */
+    if (parser.current_token == -1) {
+        parse_error("Unexpected end of file in condition");
+        return ERROR;
+    }
+    if (parse_condition() == ERROR) {
+        parse_error("Invalid condition in if statement");
+        return ERROR;
+    }
+
+    /* Match 'then' keyword */
+    if (parser.current_token == -1) {
+        parse_error("Unexpected end of file before 'then'");
+        return ERROR;
+    }
+    if (match(TTHEN) == ERROR) {
+        parse_error("Expected 'then' after condition"); 
+        return ERROR;
+    }
+
+    /* Parse then-clause */
+    if (parser.current_token == -1) {
+        parse_error("Unexpected end of file in then-clause");
+        return ERROR;
+    }
+    if (parser.current_token == TBEGIN) {
+        if (parse_block() == ERROR) {
+            parse_error("Invalid block in then-clause");
+            return ERROR;
+        }
+    } else {
+        if (parse_statement() == ERROR) {
+            parse_error("Invalid statement in then-clause");
+            return ERROR;
         }
     }
 
-    // Special handling for if statements
-    // Don't require semicolon if this is the last statement in a block
-    if (parser.current_token == TEND) {
-        debug_printf("If statement followed by END - no semicolon required\n");
-        return NORMAL;
+    /* Handle optional else-clause */
+    if (parser.current_token == TELSE) {
+        if (match(TELSE) == ERROR) {
+            parse_error("Error parsing else keyword");
+            return ERROR;
+        }
+        
+        if (parser.current_token == -1) {
+            parse_error("Unexpected end of file in else-clause");
+            return ERROR;
+        }
+        
+        if (parser.current_token == TBEGIN) {
+            if (parse_block() == ERROR) {
+                parse_error("Invalid block in else-clause");
+                return ERROR;
+            }
+        } else {
+            if (parse_statement() == ERROR) {
+                parse_error("Invalid statement in else-clause");
+                return ERROR;
+            }
+        }
     }
 
     debug_printf("Exiting parse_if_statement successfully\n");
@@ -508,6 +429,7 @@ static int parse_while_statement(void) {
                 parser.current_token, parser.previous_token, 
                 parser.previous_previous_token);
     
+    in_while_loop++;
     if (match(TWHILE) == ERROR) return ERROR;
     
     if (parse_condition() == ERROR) return ERROR;
@@ -536,152 +458,18 @@ static int parse_while_statement(void) {
     parser.previous_token = saved_prev;
     parser.previous_previous_token = saved_prev_prev;
     
+    in_while_loop--;
     debug_printf("=== Exiting parse_while_statement ===\n\n");
     return NORMAL;
 }
 
-static int parse_procedure(void) {
-    debug_printf("Entering parse_procedure\n");
-    
-    if (match(TPROCEDURE) == ERROR) {
-        parse_error("Expected 'procedure' keyword");
-        return ERROR;
-    }
-
-    // Store procedure name before matching
-    char *proc_name = strdup(string_attr);
-    int def_line = get_linenum();
-
-    if (parser.current_token != TNAME) {
-        parse_error("Procedure name expected");
-        free(proc_name);
-        return ERROR;
-    }
-    
-    // Add procedure definition to symbol table
-    add_symbol(proc_name, TPROCEDURE, def_line, 1);
-    
-    // Enter procedure scope
-    enter_procedure(proc_name);
-    free(proc_name);
-    match(TNAME);
-
-    // Handle parameter list
-    if (parser.current_token == TLPAREN) {
-        match(TLPAREN);
-        
-        do {
-            // Store all parameter names in this group
-            int param_count = 0;
-            char *param_names[10];  // Reasonable limit for parameters in one group
-            
-            // Parse first parameter name
-            if (parser.current_token != TNAME) {
-                parse_error("Parameter name expected");
-                return ERROR;
-            }
-            param_names[param_count++] = strdup(string_attr);
-            match(TNAME);
-
-            // Parse additional parameter names in this group
-            while (parser.current_token == TCOMMA) {
-                match(TCOMMA);
-                if (parser.current_token != TNAME) {
-                    parse_error("Parameter name expected after comma");
-                    return ERROR;
-                }
-                param_names[param_count++] = strdup(string_attr);
-                match(TNAME);
-            }
-
-            if (match(TCOLON) == ERROR) return ERROR;
-
-            // Store parameter type
-            int param_type = parser.current_token;
-            if (parse_type() == ERROR) return ERROR;
-            
-            // Add parameter type to procedure for each parameter in this group
-            for (int i = 0; i < param_count; i++) {
-                add_procedure_parameter(param_type);
-                // Add parameter as a scoped variable
-                add_symbol(param_names[i], param_type, def_line, 1);
-                free(param_names[i]);
-            }
-
-        } while (parser.current_token == TSEMI && match(TSEMI) == NORMAL);
-
-        if (match(TRPAREN) == ERROR) return ERROR;
-    }
-
-    // Parse procedure body
-    if (match(TSEMI) == ERROR) {
-        parse_error("Expected semicolon after procedure header");
-        return ERROR;
-    }
-
-    if (parse_block() == ERROR) {
-        parse_error("Invalid procedure body");
-        return ERROR;
-    }
-
-    if (match(TSEMI) == ERROR) {
-        parse_error("Expected semicolon after procedure body");
-        return ERROR;
-    }
-
-    // Exit procedure scope
-    exit_procedure();
-
-    debug_printf("Exiting parse_procedure successfully\n");
-    return NORMAL;
-}
-
-static int check_recursive_call(const char* proc_name) {
-    const char* current_proc = get_current_procedure();
-    if (current_proc && strcmp(proc_name, current_proc) == 0) {
-        set_error_state();
-        return 1;
-    }
-    return 0;
-}
-
-static int parse_procedure_call(void) {
+static int parse_procedure_call_statement(void) {
     if (match(TCALL) == ERROR) return ERROR;
-
-    // Store procedure name before matching
-    char *proc_name = strdup(string_attr);
-    int call_line = get_linenum();
-    
-    // Check for recursive call before doing anything else
-    if (check_recursive_call(proc_name)) {
-        free(proc_name);
-        parse_error("Direct recursive call detected");
-        return ERROR;
-    }
-    
-    if (match(TNAME) == ERROR) {
-        free(proc_name);
-        return ERROR;
-    }
-
-    // Add procedure reference
-    if (check_recursive_call(proc_name)) {
-        free(proc_name);
-        parse_error("Direct recursive call detected");
-        return ERROR;
-    }
-    add_symbol(proc_name, TPROCEDURE, call_line, 0);
-    free(proc_name);
+    if (match(TNAME) == ERROR) return ERROR;
     
     if (parser.current_token == TLPAREN) {
         if (match(TLPAREN) == ERROR) return ERROR;
-        if (parse_expression() == ERROR) return ERROR;
-        
-        while (parser.current_token == TCOMMA) {
-            if (match(TCOMMA) == ERROR) return ERROR;
-            if (parse_expression() == ERROR) return ERROR;
-        }
-        
+        if (parse_list_of_expressions() == ERROR) return ERROR;
         if (match(TRPAREN) == ERROR) return ERROR;
     }
     return NORMAL;
@@ -720,7 +508,12 @@ static int parse_write_statement(void) {
         
         // Parse first output specification
         if (parser.current_token == TSTRING) {
-            if (match(TSTRING) == ERROR) return ERROR;
+            if (strlen(string_attr) == 1) {
+                // Single character strings should be treated as expressions
+                if (parse_expression() == ERROR) return ERROR;
+            } else {
+                if (match(TSTRING) == ERROR) return ERROR;
+            }
             if (parser.current_token == TCOLON) {
                 if (match(TCOLON) == ERROR) return ERROR;
                 if (parser.current_token != TNUMBER) {
@@ -745,7 +538,12 @@ static int parse_write_statement(void) {
         while (parser.current_token == TCOMMA) {
             if (match(TCOMMA) == ERROR) return ERROR;
             if (parser.current_token == TSTRING) {
-                if (match(TSTRING) == ERROR) return ERROR;
+                if (strlen(string_attr) == 1) {
+                    // Single character strings should be treated as expressions
+                    if (parse_expression() == ERROR) return ERROR;
+                } else {
+                    if (match(TSTRING) == ERROR) return ERROR;
+                }
                 if (parser.current_token == TCOLON) {
                     if (match(TCOLON) == ERROR) return ERROR;
                     if (parser.current_token != TNUMBER) {
@@ -777,150 +575,41 @@ static int parse_write_statement(void) {
 } 
 
 static int parse_variable(void) {
-    char *var_name = strdup(string_attr);
-    int current_line = get_linenum();
-    debug_printf("Processing variable reference: %s at line %d\n", var_name, current_line);
+    // Add reference for variable usage
+    char* var_name = strdup(string_attr);
+    int line_num = get_linenum();
     
-    if (match(TNAME) == ERROR) {
-        free(var_name);
-        return ERROR;
-    }
+    if (match(TNAME) == ERROR) return ERROR;
     
-    // Try to add reference - it will handle scoping internally
-    add_symbol(var_name, TINTEGER, current_line, 0);
-    
-    // Store the name before freeing it
-    char *stored_name = strdup(var_name);
-    free(var_name);
-    
-    // Handle array indexing
+    // Optional array indexing
     if (parser.current_token == TLSQPAREN) {
-        if (match(TLSQPAREN) == ERROR) {
-            free(stored_name);
-            return ERROR;
-        }
-        if (parse_expression() == ERROR) {
-            free(stored_name);
-            return ERROR;
-        }
-        if (match(TRSQPAREN) == ERROR) {
-            free(stored_name);
-            return ERROR;
-        }
+        if (match(TLSQPAREN) == ERROR) return ERROR;
+        if (parse_expression() == ERROR) return ERROR;
+        if (match(TRSQPAREN) == ERROR) return ERROR;
     }
     
-    free(stored_name);
+    add_reference(var_name, line_num);
+    free(var_name);
     return NORMAL;
 }
 
-static int parse_expression(void) {
-    debug_printf("Entering parse_expression with token: %d\n", parser.current_token);
-    
-    if (parse_term() == ERROR) return ERROR;
-    
-    while (parser.current_token == TPLUS || 
-           parser.current_token == TMINUS || 
-           parser.current_token == TEQUAL) {  // Add TEQUAL here
-        if (match(parser.current_token) == ERROR) return ERROR;
-        if (parse_term() == ERROR) return ERROR;
-    }
-    
-    debug_printf("Exiting parse_expression\n");
-    return NORMAL;
+// Helper functions to check operator types
+static int is_relational_operator(int token) {
+    return token == TEQUAL || token == TNOTEQ || 
+           token == TLE || token == TLEEQ || 
+           token == TGR || token == TGREQ;
 }
 
-// Add this new function to handle assignment expressions
-static int parse_assignment(void) {
-    if (parse_variable() == ERROR) return ERROR;
-    
-    if (parser.current_token != TASSIGN) {
-        parse_error("Expected ':=' in assignment");
-        return ERROR;
-    }
-    if (match(TASSIGN) == ERROR) return ERROR;
-    
-    // Now parse the right side of the assignment which could be a comparison
-    if (parse_expression() == ERROR) return ERROR;
-    
-    return NORMAL;
+static int is_additive_operator(int token) {
+    return token == TPLUS || token == TMINUS || token == TOR;
 }
 
-static int parse_term(void) {
-    debug_printf("Entering parse_term with token: %d\n", parser.current_token);
-    
-    if (parse_factor() == ERROR) return ERROR;
-    
-    while (parser.current_token == TSTAR || parser.current_token == TDIV) {
-        if (match(parser.current_token) == ERROR) return ERROR;
-        if (parse_factor() == ERROR) return ERROR;
-    }
-    
-    debug_printf("Exiting parse_term\n");
-    return NORMAL;
+static int is_multiplicative_operator(int token) {
+    return token == TSTAR || token == TDIV || token == TAND;
 }
 
-static int parse_factor(void) {
-    debug_printf("Entering parse_factor with token: %d\n", parser.current_token);
-    int type;
-    
-    switch (parser.current_token) {
-        case TLPAREN:
-            if (match(TLPAREN) == ERROR) return ERROR;
-            if (parse_expression() == ERROR) return ERROR;
-            if (match(TRPAREN) == ERROR) return ERROR;
-            break;
-            
-        case TNOT:
-            if (match(TNOT) == ERROR) return ERROR;
-            if (parse_factor() == ERROR) return ERROR;
-            break;
-            
-        case TMINUS:
-            if (match(TMINUS) == ERROR) return ERROR;
-            if (parse_factor() == ERROR) return ERROR;
-            break;
-            
-        case TINTEGER:
-        case TCHAR:
-        case TBOOLEAN:
-            type = parser.current_token;
-            if (match(parser.current_token) == ERROR) return ERROR;
-            if (match(TLPAREN) == ERROR) return ERROR;
-            if (parse_expression() == ERROR) return ERROR;
-            if (match(TRPAREN) == ERROR) return ERROR;
-            break;
-            
-        case TNAME:
-            if (parse_variable() == ERROR) return ERROR;
-            // Handle function calls
-            if (parser.current_token == TLPAREN) {
-                if (match(TLPAREN) == ERROR) return ERROR;
-                // Handle arguments if present
-                if (parser.current_token != TRPAREN) {
-                    if (parse_expression() == ERROR) return ERROR;
-                    while (parser.current_token == TCOMMA) {
-                        if (match(TCOMMA) == ERROR) return ERROR;
-                        if (parse_expression() == ERROR) return ERROR;
-                    }
-                }
-                if (match(TRPAREN) == ERROR) return ERROR;
-            }
-            break;
-            
-        case TNUMBER:
-        case TSTRING:
-        case TTRUE:
-        case TFALSE:
-            if (match(parser.current_token) == ERROR) return ERROR;
-            break;
-            
-        default:
-            parse_error("Invalid factor");
-            return ERROR;
-    }
-    
-    debug_printf("Exiting parse_factor\n");
-    return NORMAL;
+static int is_standard_type(int token) {
+    return token == TINTEGER || token == TBOOLEAN || token == TCHAR;
 }
 
 static int parse_comparison(void) {
@@ -952,7 +641,7 @@ static int parse_comparison(void) {
             // No comparison operator found, just match closing paren
             if (match(TRPAREN) == ERROR) return ERROR;
             
-            // Add support for operations after parenthesis
+            // Support for operations after parenthesis
             if (parser.current_token == TSTAR || parser.current_token == TDIV) {
                 if (match(parser.current_token) == ERROR) return ERROR;
                 if (parse_expression() == ERROR) return ERROR;
@@ -1010,6 +699,8 @@ static int parse_condition(void) {
 }
 
 void parse_error(const char* message) {
+    set_error_state();  // Notify cross-referencer of error
+    
     int current_line = get_linenum();
     
     // Only store the first error line number
@@ -1057,6 +748,42 @@ static int match(int expected_token) {
     return NORMAL;
 }
 
+static int parse_procedure(void) {
+    debug_printf("Entering parse_procedure\n");
+    
+    if (match(TPROCEDURE) == ERROR) {
+        parse_error("Expected 'procedure' keyword");
+        return ERROR;
+    }
+
+    // Parse procedure name
+    char* proc_name = strdup(string_attr);
+    int line_num = get_linenum();
+    
+    if (match(TNAME) == ERROR) return ERROR;
+    
+    // Add procedure to symbol table
+    add_symbol(proc_name, TPROCEDURE, line_num, 1);
+    
+    // Enter procedure scope
+    enter_procedure(proc_name);
+    free(proc_name);
+    
+    // Parse parameters and body
+    if (parser.current_token == TLPAREN) {
+        if (parse_formal_parameter_section() == ERROR) return ERROR;
+    }
+    
+    if (match(TSEMI) == ERROR) return ERROR;
+    if (parse_block() == ERROR) return ERROR;
+    if (match(TSEMI) == ERROR) return ERROR;
+    
+    // Exit procedure scope
+    exit_procedure();
+    
+    return NORMAL;
+}
+
 static int parse_procedure_declaration(void) {
     // Match PROCEDURE keyword
     if (parser.current_token != TPROCEDURE) {
@@ -1089,5 +816,314 @@ static int parse_procedure_declaration(void) {
     }
     parser.current_token = scan();
 
+    return NORMAL;
+}
+
+// 1. Output Format Grammar Rule
+static int parse_output_format(void) {
+    debug_printf("Parsing output format, current token: %d\n", parser.current_token);
+    
+    if (parser.current_token == TSTRING) {
+        // Get string length
+        int str_len = strlen(string_attr);
+        debug_printf("String length: %d\n", str_len);
+        
+        if (match(TSTRING) == ERROR) return ERROR;
+        
+        // Multi-character strings cannot have format specifiers according to grammar
+        if (str_len > 1) {
+            debug_printf("Multi-char string - format specifier not allowed\n");
+            return NORMAL;  // Early return for multi-char strings
+        }
+        
+        // Single-character strings can have format specifiers
+        if (parser.current_token == TCOLON) {
+            if (match(TCOLON) == ERROR) return ERROR;
+            if (match(TNUMBER) == ERROR) return ERROR;
+        }
+        return NORMAL;
+    }
+    
+    // Handle normal expressions
+    if (parse_expression() == ERROR) return ERROR;
+    if (parser.current_token == TCOLON) {
+        if (match(TCOLON) == ERROR) return ERROR;
+        if (match(TNUMBER) == ERROR) return ERROR;
+    }
+    return NORMAL;
+}
+
+// List of variable names implementation
+static int parse_list_of_variable_names(void) {
+    if (parser.current_token != TNAME) {
+        parse_error("Expected variable name");
+        return ERROR;
+    }
+    if (match(TNAME) == ERROR) return ERROR;
+
+    while (parser.current_token == TCOMMA) {
+        if (match(TCOMMA) == ERROR) return ERROR;
+        if (parser.current_token != TNAME) {
+            parse_error("Expected variable name after comma");
+            return ERROR;
+        }
+        if (match(TNAME) == ERROR) return ERROR;
+    }
+    return NORMAL;
+}
+
+// Fix compound statement to properly handle empty blocks
+static int parse_compound_statement(void) {
+    if (match(TBEGIN) == ERROR) return ERROR;
+    
+    // Handle optional statement list
+    if (parser.current_token != TEND) {
+        if (parse_statement_list() == ERROR) return ERROR;
+    }
+    
+    return match(TEND);
+}
+
+// Assignment statement implementation
+static int parse_assignment_statement(void) {
+    if (parse_left_hand_part() == ERROR) return ERROR;
+    if (match(TASSIGN) == ERROR) return ERROR;
+    return parse_expression();
+}
+
+// Left-hand part implementation
+static int parse_left_hand_part(void) {
+    return parse_variable();
+}
+
+// Conditional statement implementation
+static int parse_conditional_statement(void) {
+    if (match(TIF) == ERROR) return ERROR;
+    if (parse_expression() == ERROR) return ERROR;
+    if (match(TTHEN) == ERROR) return ERROR;
+    
+    // Parse the then-statement
+    if (parse_statement() == ERROR) return ERROR;
+    
+    // Handle else part - associates with closest if
+    if (parser.current_token == TELSE) {
+        if (match(TELSE) == ERROR) return ERROR;
+        return parse_statement();
+    }
+    return NORMAL;
+}
+
+// Iteration statement implementation
+static int parse_iteration_statement(void) {
+    if (match(TWHILE) == ERROR) return ERROR;
+    if (parse_expression() == ERROR) return ERROR;
+    if (match(TDO) == ERROR) return ERROR;
+    in_while_loop++;
+    int result = parse_statement();
+    in_while_loop--;
+    return result;
+}
+
+// Exit statement implementation
+static int parse_exit_statement(void) {
+    // Enhanced break statement validation
+    if (!in_while_loop) {
+        parse_error("Break statement must be directly inside a while loop");
+        return ERROR;
+    }
+    
+    return match(TBREAK);
+}
+
+// Return statement implementation
+static int parse_return_statement(void) {
+    return match(TRETURN);
+}
+
+// Empty statement implementation
+static int parse_empty_statement(void) {
+    return NORMAL;  // Empty statement is ε (epsilon)
+}
+
+// Input statement implementation
+static int parse_input_statement(void) {
+    // Handle both read and readln
+    if (parser.current_token != TREAD && parser.current_token != TREADLN) {
+        parse_error("Expected read or readln");
+        return ERROR;
+    }
+    if (match(parser.current_token) == ERROR) return ERROR;
+    
+    if (parser.current_token == TLPAREN) {
+        if (match(TLPAREN) == ERROR) return ERROR;
+        if (parse_variable() == ERROR) return ERROR;
+        
+        while (parser.current_token == TCOMMA) {
+            if (match(TCOMMA) == ERROR) return ERROR;
+            if (parse_variable() == ERROR) return ERROR;
+        }
+        
+        return match(TRPAREN);
+    }
+    return NORMAL;
+}
+
+// Output statement implementation
+static int parse_output_statement(void) {
+    // Handle both write and writeln
+    if (parser.current_token != TWRITE && parser.current_token != TWRITELN) {
+        parse_error("Expected write or writeln");
+        return ERROR;
+    }
+    if (match(parser.current_token) == ERROR) return ERROR;
+    
+    if (parser.current_token == TLPAREN) {
+        if (match(TLPAREN) == ERROR) return ERROR;
+        if (parse_output_format() == ERROR) return ERROR;
+        
+        while (parser.current_token == TCOMMA) {
+            if (match(TCOMMA) == ERROR) return ERROR;
+            if (parse_output_format() == ERROR) return ERROR;
+        }
+        
+        return match(TRPAREN);
+    }
+    return NORMAL;
+}
+
+// Subprogram declaration implementation
+static int parse_subprogram_declaration(void) {
+    if (match(TPROCEDURE) == ERROR) return ERROR;
+    if (parser.current_token != TNAME) {
+        parse_error("Expected procedure name");
+        return ERROR;
+    }
+    if (match(TNAME) == ERROR) return ERROR;
+    
+    // Handle optional formal parameter section
+    if (parser.current_token == TLPAREN) {
+        if (parse_formal_parameter_section() == ERROR) return ERROR;
+    }
+    
+    if (match(TSEMI) == ERROR) return ERROR;
+    if (parse_block() == ERROR) return ERROR;
+    return match(TSEMI);
+}
+
+// Formal parameter section implementation
+static int parse_formal_parameter_section(void) {
+    if (match(TLPAREN) == ERROR) return ERROR;
+    
+    do {
+        int param_line = get_linenum();
+        char* param_names[MAXSTRSIZE];
+        int param_count = 0;
+        
+        // Store parameter names
+        param_names[param_count] = strdup(string_attr);
+        param_count++;
+        if (match(TNAME) == ERROR) {
+            for (int i = 0; i < param_count; i++) free(param_names[i]);
+            return ERROR;
+        }
+        
+        while (parser.current_token == TCOMMA) {
+            if (match(TCOMMA) == ERROR) {
+                for (int i = 0; i < param_count; i++) free(param_names[i]);
+                return ERROR;
+            }
+            param_names[param_count] = strdup(string_attr);
+            param_count++;
+            if (match(TNAME) == ERROR) {
+                for (int i = 0; i < param_count; i++) free(param_names[i]);
+                return ERROR;
+            }
+        }
+        
+        if (match(TCOLON) == ERROR) {
+            for (int i = 0; i < param_count; i++) free(param_names[i]);
+            return ERROR;
+        }
+        
+        // Get parameter type
+        int param_type = parser.current_token;
+        if (parse_type() == ERROR) {
+            for (int i = 0; i < param_count; i++) free(param_names[i]);
+            return ERROR;
+        }
+        
+        // Add parameters to symbol table
+        for (int i = 0; i < param_count; i++) {
+            add_symbol(param_names[i], param_type, param_line, 1);
+            add_procedure_parameter(param_type);
+            free(param_names[i]);
+        }
+        
+    } while (parser.current_token == TSEMI && match(TSEMI) == NORMAL);
+    
+    return match(TRPAREN);
+}
+
+static int parse_factor(void) {
+    switch (parser.current_token) {
+        case TNAME:
+            return parse_variable();
+            
+        case TNUMBER:
+        case TTRUE:
+        case TFALSE:
+        case TSTRING:
+            return match(parser.current_token);
+            
+        case TLPAREN:
+            if (match(TLPAREN) == ERROR) return ERROR;
+            if (parse_expression() == ERROR) return ERROR;
+            return match(TRPAREN);
+            
+        case TNOT:
+            if (match(TNOT) == ERROR) return ERROR;
+            return parse_factor();
+            
+        case TINTEGER:
+        case TBOOLEAN:
+        case TCHAR:
+            // Standard type "(" Expression ")"
+            if (match(parser.current_token) == ERROR) return ERROR;
+            if (match(TLPAREN) == ERROR) return ERROR;
+            if (parse_expression() == ERROR) return ERROR;
+            return match(TRPAREN);
+            
+        default:
+            parse_error("Invalid factor");
+            return ERROR;
+    }
+}
+
+// List of expressions implementation
+static int parse_list_of_expressions(void) {
+    if (parse_expression() == ERROR) return ERROR;
+    
+    while (parser.current_token == TCOMMA) {
+        if (match(TCOMMA) == ERROR) return ERROR;
+        if (parse_expression() == ERROR) return ERROR;
+    }
+    return NORMAL;
+}
+
+// Fix statement list to handle empty blocks correctly
+static int parse_statement_list(void) {
+    // Allow empty statement list (begin end)
+    if (parser.current_token == TEND) {
+        return NORMAL;
+    }
+    
+    if (parse_statement() == ERROR) return ERROR;
+    
+    while (parser.current_token == TSEMI) {
+        if (match(TSEMI) == ERROR) return ERROR;
+        if (parser.current_token == TEND) break;  // Allow for empty statement after semicolon
+        if (parse_statement() == ERROR) return ERROR;
+    }
+    
     return NORMAL;
 }

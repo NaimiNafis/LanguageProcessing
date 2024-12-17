@@ -1,1 +1,1 @@
-Syntax error at line 1: program expected (token: 1)
+Syntax error at line 1: Expected token 2 but found 1 (token: 1)

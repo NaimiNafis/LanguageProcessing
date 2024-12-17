@@ -5,14 +5,13 @@
 #include "scan.h"
 #include "token.h"
 #include "debug.h" 
-#include "cross_referencer.h"
 
-FILE *fp;  // File pointer to handle input
-char string_attr[MAXSTRSIZE];  // Store string attributes
-int num_attr;  // Store numerical attributes
-char cbuf = '\0';  // Buffer for the current character being read
-int linenum = 1;  // Line number tracker
-extern keyword key[KEYWORDSIZE];  // Keyword array
+FILE *fp;
+char string_attr[MAXSTRSIZE];
+int num_attr;
+char cbuf = '\0';
+int linenum = 1;
+extern keyword key[KEYWORDSIZE];
 static const char* current_filename = NULL;
 
 // Helper function declarations
@@ -23,21 +22,19 @@ int process_number(const char *token_str);
 int process_string_literal(void);
 int skip_whitespace_and_comments(void);
 int check_token_size(int length);
-static int scan_number(void);  // Add this line with other forward declarations
+static int scan_number(void);
 
-// Define the scanner variable
 Scanner scanner = {0};  // Initialize all fields to 0
 
-// Initialize file reading
-int init_scan(char *filename) {
-    scanner.has_error = 0;  // Reset error flag
-    current_filename = filename;  // Store filename
+int init_scan(const char *filename) {
+    scanner.has_error = 0;
+    current_filename = filename;
     fp = fopen(filename, "r");
     if (fp == NULL) {
         error("Unable to open file.");
         return -1;
     }
-    linenum = 1;  // Start from line 1
+    linenum = 1;
     cbuf = (char) fgetc(fp);
     return 0;
 }
@@ -130,25 +127,17 @@ int scan(void) {
 int skip_whitespace_and_comments(void) {
     while (1) {
         while (isspace(cbuf)) {
-            if (cbuf == '\n') {
-                debug_printf("Line number incremented to %d (whitespace)\n", linenum);
-                linenum++;  // Increment before reading next char
-            }
+            if (cbuf == '\n') linenum++;  // Track line breaks
             cbuf = (char) fgetc(fp);
         }
 
         // Handle block comments
         if (cbuf == '{') {
-            while ((cbuf = (char) fgetc(fp)) != EOF) {
-                if (cbuf == '\n') {
-                    debug_printf("Line number incremented to %d (block comment)\n", linenum);
-                    linenum++;  // Increment before reading next char
-                }
-                if (cbuf == '}') {
-                    cbuf = (char) fgetc(fp);
-                    break;
-                }
+            while (cbuf != '}' && cbuf != EOF) {
+                cbuf = (char) fgetc(fp);
+                if (cbuf == '\n') linenum++;
             }
+            if (cbuf == '}') cbuf = (char) fgetc(fp);
             continue;
         }
 
@@ -156,41 +145,30 @@ int skip_whitespace_and_comments(void) {
         if (cbuf == '/') {
             cbuf = (char) fgetc(fp);
             if (cbuf == '/') {
-                while (cbuf != '\n' && cbuf != EOF) {
-                    cbuf = (char) fgetc(fp);
-                }
-                if (cbuf == '\n') {
-                    debug_printf("Line number incremented to %d (single line comment)\n", linenum);
-                    linenum++;  // Increment before reading next char
-                }
+                while (cbuf != '\n' && cbuf != EOF) cbuf = (char) fgetc(fp);
+                linenum++;
                 cbuf = (char) fgetc(fp);
                 continue;
             }
 
             // Handle multi-line comments
             if (cbuf == '*') {
-                cbuf = (char) fgetc(fp);
-                while (cbuf != EOF) {
-                    if (cbuf == '\n') {
-                        linenum++;
-                        debug_printf("Line number incremented to %d (multi-line comment)\n", linenum);
-                    }
-                    if (cbuf == '*') {
-                        cbuf = (char) fgetc(fp);
-                        if (cbuf == '/') {
-                            cbuf = (char) fgetc(fp);
-                            break;
-                        }
-                        continue;
-                    }
+                while (1) {
                     cbuf = (char) fgetc(fp);
+                    if (cbuf == '*' && (cbuf = (char) fgetc(fp)) == '/') {
+                        cbuf = (char) fgetc(fp);
+                        break;
+                    }
+                    if (cbuf == '\n') linenum++; debug_printf("Line number incremented to: %d\n", linenum);
+                    if (cbuf == EOF) {
+                        debug_printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
+                        return 1;
+                    }
                 }
                 continue;
+            } else {
+                break;  // Not a comment, return control to scan
             }
-            
-            // Not a comment, put back the '/'
-            cbuf = '/';
-            break;
         }
         break;
     }
@@ -232,20 +210,25 @@ int process_number(const char *token_str) {
 int process_string_literal(void) {
     int i = 0;
     char tempbuf[MAXSTRSIZE];
-
+    
     while ((cbuf = fgetc(fp)) != EOF) {
         if (check_token_size(i + 1) == -1) return -1;
+        
         if (cbuf == '\'') {
             cbuf = fgetc(fp);
-            if (cbuf != '\'') {
-                tempbuf[i] = '\0';
-                strncpy(string_attr, tempbuf, MAXSTRSIZE);
-                return TSTRING;
+            if (cbuf == '\'') {
+                // Double single quote - store as single quote
+                tempbuf[i++] = '\'';
+                continue;
             }
-            tempbuf[i++] = '\'';  // Handle escaped quotes
-        } else {
-            tempbuf[i++] = cbuf;
+            // Single quote - end of string
+            tempbuf[i] = '\0';
+            strncpy(string_attr, tempbuf, MAXSTRSIZE - 1);
+            string_attr[MAXSTRSIZE - 1] = '\0';
+            debug_printf("Processed string literal: '%s' (length: %d)\n", string_attr, (int)strlen(string_attr));
+            return TSTRING;
         }
+        tempbuf[i++] = cbuf;
     }
     
     error("Unterminated string literal.");
@@ -313,36 +296,27 @@ void end_scan(void) {
 }
 
 int scan_number() {
-    char num_buffer[MAXSTRSIZE] = {0};
+    char num_buffer[MAXSTRSIZE] = {0};  // Use MAXSTRSIZE instead of 256
     int num_len = 0;
     num_attr = 0;
-    long temp_num = 0;  // Use long for overflow checking
 
     // Store the original format while parsing with bounds checking
-    while (isdigit(cbuf) && num_len < MAXSTRSIZE - 1) {
-        num_buffer[num_len++] = cbuf;
-        
-        // Check for numeric overflow
-        temp_num = temp_num * 10 + (cbuf - '0');
-        if (temp_num > 32767) {  // Max value for 16-bit integer
-            error("Number too large");
-            return -1;
-        }
-        
-        num_attr = (int)temp_num;
-        cbuf = (char)fgetc(fp);
+    while (isdigit(cbuf) && num_len < MAXSTRSIZE - 1) {  // Leave room for null terminator
+        num_buffer[num_len++] = cbuf;  // Store original character
+        num_attr = num_attr * 10 + (cbuf - '0');
+        cbuf = (char) fgetc(fp);
     }
     num_buffer[num_len] = '\0';
     
     // Check for buffer overflow
     if (isdigit(cbuf)) {
-        error("Number too long");
+        error("Number too long");  // Use the existing error function
         return -1;
     }
     
-    // Store original format in string_attr
+    // Store original format in string_attr using strncpy for safety
     strncpy(string_attr, num_buffer, MAXSTRSIZE - 1);
-    string_attr[MAXSTRSIZE - 1] = '\0';
+    string_attr[MAXSTRSIZE - 1] = '\0';  // Ensure null termination
     
     return TNUMBER;
 }
