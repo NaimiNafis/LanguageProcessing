@@ -225,11 +225,44 @@ void add_procedure_parameter(int type) {
 }
 
 void add_reference(char *name, int linenum) {
+    // First check if this reference is to a variable in current scope
+    ID *id = symbol_table;
+    char *scoped_name = NULL;
+    int found_as_variable = 0;
+    
+    if (current_procedure) {
+        // First try to find it as a variable in current scope
+        size_t len = strlen(name) + strlen(current_procedure) + 2;
+        scoped_name = malloc(len);
+        snprintf(scoped_name, len, "%s:%s", name, current_procedure);
+        
+        // Look for scoped variable first
+        while (id != NULL) {
+            if (strcmp(id->name, scoped_name) == 0 && id->itp->ttype != TPROCEDURE) {
+                found_as_variable = 1;
+                break;
+            }
+            id = id->nextp;
+        }
+    }
+
+    // Now check for recursion only if it's not a variable reference
+    if (!found_as_variable && current_procedure && strcmp(name, current_procedure) == 0) {
+        fprintf(stderr, "Recursive procedure call at line %d\n", linenum);
+        scanner.has_error = 1;  // Signal an error
+        error_state = 1;  // Set error state
+        if (scoped_name) free(scoped_name);
+        return;  // Return immediately, don't try to add reference
+    }
+
+    // Reset id for normal reference handling
+    id = symbol_table;
+    if (scoped_name) free(scoped_name);  // Fixed missing parenthesis
+    
+    // Rest of existing add_reference code...
     debug_printf("add_reference: name=%s, line=%d, current_proc=%s\n", 
                 name, linenum, current_procedure ? current_procedure : "global");
     
-    ID *id = symbol_table;
-    char *scoped_name = NULL;
     char *global_name = strdup(name);
     int found = 0;
 
@@ -473,6 +506,7 @@ static char* get_display_name(const ID* id) {
 
 // Modified print_cross_reference_table to handle procedure parameters
 void print_cross_reference_table(void) {
+    // Don't print anything if there was an error
     if (scanner.has_error || error_state) {
         return;
     }

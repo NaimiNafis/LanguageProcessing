@@ -73,6 +73,11 @@ int parse_program(void) {
     // Set up error handling
     int error_line = setjmp(parser.error_jmp);
     if (error_line != 0) {
+        // If error was due to recursion, don't output syntax error
+        if (!scanner.has_error) {
+            fprintf(stderr, "Syntax error at line %d: Expected token %d but found %d\n", 
+                    error_line, parser.current_token, -1);
+        }
         return error_line;
     }
 
@@ -491,8 +496,17 @@ static int parse_procedure_call_statement(void) {
     
     // Add reference to called procedure
     add_reference(proc_name, line_num);
+    
+    // Check if recursion was detected
+    if (scanner.has_error || is_error_state()) {
+        free(proc_name);
+        // Don't try to match more tokens or print syntax error
+        return ERROR;
+    }
+    
     free(proc_name);
     
+    // Continue with parameter parsing
     if (parser.current_token == TLPAREN) {
         if (match(TLPAREN) == ERROR) return ERROR;
         if (parse_list_of_expressions() == ERROR) return ERROR;
