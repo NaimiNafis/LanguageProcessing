@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    pretty_print_program();  // This now handles both parsing and printing
+    pretty_print_program();
     end_scan();
 
     return 0;

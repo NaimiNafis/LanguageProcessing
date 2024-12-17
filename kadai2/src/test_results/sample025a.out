@@ -1,10 +1,2 @@
-program ifst;
-    var
-        ch : char;
-begin
-    readln ( ch );
-    if ch = 'a' then
-        writeln ( 'It is ''a'' ' : 10 )
-    else
-        writeln ( 'It is not ''a'' ' )
-end.
+Syntax error at line 8: Expected token 39 but found 45 (token: 45)
+Syntax error detected at line 8. Cannot pretty print.

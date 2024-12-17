@@ -54,7 +54,7 @@ static int is_multiplicative_operator(int token);
 static Parser parser;
 static int in_while_loop = 0;
 
-// Add this global variable to track format specifier presence
+// Global variable to track format specifier presence
 static int format_specifier_present = 0;
 
 void init_parser(void) {
@@ -244,7 +244,7 @@ static int parse_variable_declaration(void) {
                 return ERROR;
             }
             match(TNAME);
-            // Add extra validation after each variable in the list
+            // Extra validation after each variable in the list
             if (parser.current_token != TCOMMA && parser.current_token != TCOLON) {
                 parse_error("Expected comma or colon after variable name");
                 return ERROR;
@@ -556,7 +556,6 @@ static int is_multiplicative_operator(int token) {
     return token == TSTAR || token == TDIV || token == TAND;
 }
 
-// Add implementation of is_standard_type
 static int is_standard_type(int token) {
     return token == TINTEGER || token == TBOOLEAN || token == TCHAR;
 }
@@ -590,7 +589,7 @@ static int parse_comparison(void) {
             // No comparison operator found, just match closing paren
             if (match(TRPAREN) == ERROR) return ERROR;
             
-            // Add support for operations after parenthesis
+            // Support for operations after parenthesis
             if (parser.current_token == TSTAR || parser.current_token == TDIV) {
                 if (match(parser.current_token) == ERROR) return ERROR;
                 if (parse_expression() == ERROR) return ERROR;
@@ -811,30 +810,21 @@ static int parse_output_format(void) {
     debug_printf("Parsing output format, current token: %d\n", parser.current_token);
     
     if (parser.current_token == TSTRING) {
-        // First get the string length before consuming the token
+        // Get string length
         int str_len = strlen(string_attr);
+        debug_printf("String length: %d\n", str_len);
+        
         if (match(TSTRING) == ERROR) return ERROR;
         
-        // For multi-character strings:
-        // - Parse but IGNORE any format specifier (according to grammar)
-        // - Don't treat them as expressions
+        // Multi-character strings cannot have format specifiers according to grammar
         if (str_len > 1) {
-            if (parser.current_token == TCOLON) {
-                // Skip the format specifier for multi-char strings
-                if (match(TCOLON) == ERROR) return ERROR;
-                if (match(TNUMBER) == ERROR) return ERROR;
-            }
-            return NORMAL;
+            debug_printf("Multi-char string - format specifier not allowed\n");
+            return NORMAL;  // Early return for multi-char strings
         }
         
-        // Single-character strings are treated as expressions
-        // Keep any format specifiers
+        // Single-character strings can have format specifiers
         if (parser.current_token == TCOLON) {
             if (match(TCOLON) == ERROR) return ERROR;
-            if (parser.current_token != TNUMBER) {
-                parse_error("Expected unsigned integer after colon");
-                return ERROR;
-            }
             if (match(TNUMBER) == ERROR) return ERROR;
         }
         return NORMAL;
@@ -844,11 +834,7 @@ static int parse_output_format(void) {
     if (parse_expression() == ERROR) return ERROR;
     if (parser.current_token == TCOLON) {
         if (match(TCOLON) == ERROR) return ERROR;
-        if (parser.current_token != TNUMBER) {
-            parse_error("Expected unsigned integer after colon");
-            return ERROR;
-        }
-        return match(TNUMBER);
+        if (match(TNUMBER) == ERROR) return ERROR;
     }
     return NORMAL;
 }

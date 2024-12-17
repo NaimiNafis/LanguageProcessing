@@ -2,7 +2,7 @@
 #include "pretty.h"
 #include "scan.h"
 #include "token.h"
-#include "parser.h"  // Add parser header
+#include "parser.h"
 #include "debug_pretty.h"
 
 // For indentation
@@ -51,7 +51,7 @@ static void update_token_history(int new_token);
 static void handle_var_end_if_needed(void);
 static int current_base_indent(void);
 static void print_context_stack(const char* action);
-static const char* context_type_name(ContextType type);  // Add this line
+static const char* context_type_name(ContextType type);
 
 void init_pretty_printer(void) {
     debug_pretty_printf("Initializing pretty printer\n");
@@ -173,30 +173,42 @@ static void print_token(const char *text) {
 
     if (curr_token == TSTRING) {
         printf("'");
-        // Store string length for format specifier decision
         int str_len = 0;
-        // Print string content, preserving original quotes
         for (int i = 0; string_attr[i] != '\0'; i++) {
+            str_len++;
+        }
+        debug_pretty_printf("String length: %d, next token: %d\n", str_len, next_token);
+
+        // Print string content
+        for (int i = 0; i < str_len; i++) {
             if (string_attr[i] == '\'') {
-                printf("''");  // Print doubled quotes for escaping
+                printf("''");
             } else {
                 printf("%c", string_attr[i]);
             }
-            str_len++;
         }
         printf("'");
-        
-        // Multi-character strings should NOT get format specifiers
-        // regardless of what follows in the source code
         need_space = 1;
-        
-        // Important: Skip current format specifier tokens if this is a multi-char string
-        if (str_len > 1 && next_token == TCOLON) {
-            // Skip the format specifier tokens in the history
-            update_token_history(scan());  // Skip colon
-            update_token_history(scan());  // Skip number
+
+        // For multi-character strings:
+        // Look ahead to check for format specifiers and skip them
+        if (str_len > 1) {
+            int format_specifier = 0;
+            int temp_token = next_token;
+            if (temp_token == TCOLON) {
+                format_specifier = 1;
+            }
+            
+            if (format_specifier) {
+                debug_pretty_printf("Skipping format specifier for multi-char string\n");
+                update_token_history(scan());  // Skip colon
+                update_token_history(scan());  // Skip number
+            }
         }
-    } else if (curr_token == TCOLON && 
+        return;  // Important: return here after handling string
+    }
+
+    if (curr_token == TCOLON && 
               (prev_token == TNUMBER || 
                (prev_token == TSTRING && strlen(string_attr) == 1))) {
         // Format specifier handling only for expressions and single-char strings

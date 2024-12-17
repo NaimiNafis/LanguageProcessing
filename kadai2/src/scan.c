@@ -6,12 +6,12 @@
 #include "token.h"
 #include "debug.h" 
 
-FILE *fp;  // File pointer to handle input
-char string_attr[MAXSTRSIZE];  // Store string attributes
-int num_attr;  // Store numerical attributes
-char cbuf = '\0';  // Buffer for the current character being read
-int linenum = 1;  // Line number tracker
-extern keyword key[KEYWORDSIZE];  // Keyword array
+FILE *fp;
+char string_attr[MAXSTRSIZE];
+int num_attr;
+char cbuf = '\0';
+int linenum = 1;
+extern keyword key[KEYWORDSIZE];
 static const char* current_filename = NULL;
 
 // Helper function declarations
@@ -22,15 +22,13 @@ int process_number(const char *token_str);
 int process_string_literal(void);
 int skip_whitespace_and_comments(void);
 int check_token_size(int length);
-static int scan_number(void);  // Add this line with other forward declarations
+static int scan_number(void);
 
-// Define the scanner variable
 Scanner scanner = {0};  // Initialize all fields to 0
 
-// Update function definition to match scan.h
 int init_scan(const char *filename) {
-    scanner.has_error = 0;  // Reset error flag
-    current_filename = filename;  // Store filename
+    scanner.has_error = 0;
+    current_filename = filename;
     fp = fopen(filename, "r");
     if (fp == NULL) {
         error("Unable to open file.");
@@ -227,6 +225,7 @@ int process_string_literal(void) {
             tempbuf[i] = '\0';
             strncpy(string_attr, tempbuf, MAXSTRSIZE - 1);
             string_attr[MAXSTRSIZE - 1] = '\0';
+            debug_printf("Processed string literal: '%s' (length: %d)\n", string_attr, (int)strlen(string_attr));
             return TSTRING;
         }
         tempbuf[i++] = cbuf;

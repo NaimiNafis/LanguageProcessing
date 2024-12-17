@@ -73,7 +73,7 @@ typedef struct {
 extern keyword key[KEYWORDSIZE];
 extern char* tokenstr[NUMOFTOKEN + 1];
 
-// Add new declarations for parser
+// Declarations for parser
 extern Token current_token;
 extern int token;  // Holds current token kind
 
