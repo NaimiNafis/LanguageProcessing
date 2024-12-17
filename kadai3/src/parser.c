@@ -107,12 +107,14 @@ static int parse_variable_declaration_section(void) {
     if (match(TVAR) == ERROR) return ERROR;
     
     do {
-        int line_num = get_linenum();
+        int line_num;
         char* var_names[MAXSTRSIZE];  // Array to store variable names
+        int var_line_nums[MAXSTRSIZE];  // Array to store line numbers
         int var_count = 0;
         
-        // Store first variable name
+        // Store first variable name and its line number
         var_names[var_count] = strdup(string_attr);
+        var_line_nums[var_count] = get_linenum();
         var_count++;
         
         if (match(TNAME) == ERROR) {
@@ -127,8 +129,9 @@ static int parse_variable_declaration_section(void) {
                 return ERROR;
             }
             
-            // Store additional variable name
+            // Store additional variable name with its line number
             var_names[var_count] = strdup(string_attr);
+            var_line_nums[var_count] = get_linenum();
             var_count++;
             
             if (match(TNAME) == ERROR) {
@@ -149,9 +152,9 @@ static int parse_variable_declaration_section(void) {
             return ERROR;
         }
         
-        // Add all variables with their type
+        // Add all variables with their type and individual line numbers
         for (int i = 0; i < var_count; i++) {
-            add_symbol(var_names[i], var_type, line_num, 1);
+            add_symbol(var_names[i], var_type, var_line_nums[i], 1);
             free(var_names[i]);
         }
         
@@ -183,10 +186,21 @@ static int parse_standard_type(void) {
 static int parse_array_type(void) {
     if (match(TARRAY) == ERROR) return ERROR;
     if (match(TLSQPAREN) == ERROR) return ERROR;
+    
+    // Save array size before matching
+    int size = num_attr;
     if (match(TNUMBER) == ERROR) return ERROR;
     if (match(TRSQPAREN) == ERROR) return ERROR;
     if (match(TOF) == ERROR) return ERROR;
-    return parse_standard_type();
+    
+    // Save base type
+    int base_type = parser.current_token;
+    int result = parse_standard_type();
+    
+    // Set array info for cross-referencer
+    set_array_info(size, base_type);
+    
+    return result;
 }
 
 static int parse_expression(void) {
@@ -465,7 +479,19 @@ static int parse_while_statement(void) {
 
 static int parse_procedure_call_statement(void) {
     if (match(TCALL) == ERROR) return ERROR;
-    if (match(TNAME) == ERROR) return ERROR;
+    
+    // Save procedure name and line number before matching
+    char* proc_name = strdup(string_attr);
+    int line_num = get_linenum();
+    
+    if (match(TNAME) == ERROR) {
+        free(proc_name);
+        return ERROR;
+    }
+    
+    // Add reference to called procedure
+    add_reference(proc_name, line_num);
+    free(proc_name);
     
     if (parser.current_token == TLPAREN) {
         if (match(TLPAREN) == ERROR) return ERROR;
@@ -756,20 +782,21 @@ static int parse_procedure(void) {
         return ERROR;
     }
 
-    // Parse procedure name
+    // Save procedure name before matching
     char* proc_name = strdup(string_attr);
-    int line_num = get_linenum();
+    int def_line = get_linenum();  // Get the definition line
     
-    if (match(TNAME) == ERROR) return ERROR;
+    if (match(TNAME) == ERROR) {
+        free(proc_name);
+        return ERROR;
+    }
     
-    // Add procedure to symbol table
-    add_symbol(proc_name, TPROCEDURE, line_num, 1);
-    
-    // Enter procedure scope
+    // Add procedure to symbol table before entering its scope
+    add_symbol(proc_name, TPROCEDURE, def_line, 1);
     enter_procedure(proc_name);
     free(proc_name);
-    
-    // Parse parameters and body
+
+    // Parse parameters if present
     if (parser.current_token == TLPAREN) {
         if (parse_formal_parameter_section() == ERROR) return ERROR;
     }
@@ -778,9 +805,7 @@ static int parse_procedure(void) {
     if (parse_block() == ERROR) return ERROR;
     if (match(TSEMI) == ERROR) return ERROR;
     
-    // Exit procedure scope
-    exit_procedure();
-    
+    exit_procedure();  // Exit procedure scope
     return NORMAL;
 }
 
@@ -994,11 +1019,20 @@ static int parse_output_statement(void) {
 // Subprogram declaration implementation
 static int parse_subprogram_declaration(void) {
     if (match(TPROCEDURE) == ERROR) return ERROR;
-    if (parser.current_token != TNAME) {
-        parse_error("Expected procedure name");
+
+    // Save procedure name and line number before matching
+    char* proc_name = strdup(string_attr);
+    int def_line = get_linenum();
+
+    if (match(TNAME) == ERROR) {
+        free(proc_name);
         return ERROR;
     }
-    if (match(TNAME) == ERROR) return ERROR;
+    
+    // Add procedure to symbol table and enter its scope
+    add_symbol(proc_name, TPROCEDURE, def_line, 1);
+    enter_procedure(proc_name);
+    free(proc_name);
     
     // Handle optional formal parameter section
     if (parser.current_token == TLPAREN) {
@@ -1007,6 +1041,8 @@ static int parse_subprogram_declaration(void) {
     
     if (match(TSEMI) == ERROR) return ERROR;
     if (parse_block() == ERROR) return ERROR;
+    
+    exit_procedure();  // Exit procedure scope
     return match(TSEMI);
 }
 

@@ -49,9 +49,6 @@ Type* create_array_type(int size, int base_type) {
     array_type->etp->etp = NULL;
     array_type->paratp = NULL;
     
-    debug_printf("Created array type: size=%d, base_type=%d\n", 
-                size, base_type);
-    
     return array_type;
 }
 
@@ -66,20 +63,36 @@ const char* type_to_string(int type) {
         case TINTEGER: return "integer";
         case TBOOLEAN: return "boolean";
         case TCHAR: return "char";
-        case TPROCEDURE: return "procedure";
+        case TPROCEDURE: {
+            if (current_symbol_type && current_symbol_type->paratp) {
+                // Start with "procedure"
+                strcpy(array_type, "procedure(");
+                
+                // Add parameter types
+                struct ParamType *param = current_symbol_type->paratp;
+                while (param) {
+                    strcat(array_type, type_to_string(param->type));
+                    if (param->next) {
+                        strcat(array_type, ",");
+                    }
+                    param = param->next;
+                }
+                strcat(array_type, ")");
+                return array_type;
+            }
+            return "procedure";
+        }
         case TARRAY: {
             // Get array info from symbol being processed
             Type* array_type_info = current_symbol_type;
-            if (array_type_info) {
+            if (array_type_info && array_type_info->etp) {
                 snprintf(array_type, sizeof(array_type), "array[%d]of%s",
                         array_type_info->arraysize,
                         type_to_string(array_type_info->etp->ttype));
-            } else {
-                snprintf(array_type, sizeof(array_type), "array[%d]of%s",
-                        current_array_size,
-                        type_to_string(current_base_type));
+                return array_type;
             }
-            return array_type;
+            // Fallback for incomplete array info
+            return "array[0]ofunknown";
         }
         default: return "unknown";
     }
@@ -322,30 +335,26 @@ static char* normalize_name(const char* name);
 static int compare_ids(const void *a, const void *b);
 static void sort_references(Line** head);
 
-// Modified compare_ids function to sort procedures first, then alphabetically
+// Fix compare_ids function to properly sort symbols
 static int compare_ids(const void *a, const void *b) {
     ID *id1 = *(ID **)a;
     ID *id2 = *(ID **)b;
-    
-    // Get base names (without scope)
-    char *name1 = get_base_name(id1->name);
-    char *name2 = get_base_name(id2->name);
-    
-    // First sort procedures before variables
-    int is_proc1 = (id1->itp->ttype == TPROCEDURE);
-    int is_proc2 = (id2->itp->ttype == TPROCEDURE);
-    
-    if (is_proc1 != is_proc2) {
-        free(name1);
-        free(name2);
-        return is_proc2 - is_proc1;  // Procedures come first
+
+    // Procedures must come before variables
+    if (id1->itp->ttype == TPROCEDURE && id2->itp->ttype != TPROCEDURE) {
+        return -1;
     }
-    
-    // Then sort alphabetically
-    int result = strcmp(name1, name2);
-    free(name1);
-    free(name2);
-    return result;
+    if (id1->itp->ttype != TPROCEDURE && id2->itp->ttype == TPROCEDURE) {
+        return 1;
+    }
+
+    // If both are procedures, sort by name
+    if (id1->itp->ttype == TPROCEDURE && id2->itp->ttype == TPROCEDURE) {
+        return strcmp(id1->name, id2->name);
+    }
+
+    // If both are variables, sort by definition line number
+    return id1->deflinenum - id2->deflinenum;
 }
 
 // Fixed sort_references function to maintain ascending order
@@ -448,6 +457,20 @@ int is_error_state(void) {
     return error_state;
 }
 
+// Helper function to get display name for symbol
+static char* get_display_name(const ID* id) {
+    if (!id->procname || id->itp->ttype == TPROCEDURE) {
+        return get_base_name(id->name);
+    }
+    
+    // For variables in procedures, show as "name:procedure"
+    char* base = get_base_name(id->name);
+    char* result = malloc(strlen(base) + strlen(id->procname) + 2);
+    sprintf(result, "%s:%s", base, id->procname);
+    free(base);
+    return result;
+}
+
 // Modified print_cross_reference_table to handle procedure parameters
 void print_cross_reference_table(void) {
     if (scanner.has_error || error_state) {
@@ -479,18 +502,13 @@ void print_cross_reference_table(void) {
     // Print sorted symbols
     for (int i = 0; i < count; i++) {
         id = id_array[i];
-        char* display_name = get_base_name(id->name);
+        char* display_name = get_display_name(id);
         
         current_symbol_type = id->itp;
         
         // Print symbol entry
-        if (id->itp->ttype == TPROCEDURE) {
-            printf("%s|%s|%d|", display_name, type_to_string(id->itp->ttype), 
-                   id->deflinenum);
-        } else {
-            printf("%s|%s|%d|", display_name, type_to_string(id->itp->ttype), 
-                   id->deflinenum);
-        }
+        printf("%s|%s|%d|", display_name, type_to_string(id->itp->ttype), 
+               id->deflinenum);
         
         // Print references
         Line *line = id->irefp;
