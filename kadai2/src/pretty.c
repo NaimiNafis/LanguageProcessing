@@ -415,18 +415,24 @@ void pretty_print_token(int token) {
             {
                 ContextType curr_type = current_context_type();
                 int if_indent;
+                int matched_if = 0;  // Flag to track if we found matching if
 
-                // Pop any existing ELSE_BLOCK contexts first
-                while (curr_type == CTX_ELSE_BLOCK) {
-                    pop_context();
-                    curr_type = current_context_type();
+                // Search for matching IF_THEN context
+                for (int i = context_top; i >= 0; i--) {
+                    if (context_stack[i].type == CTX_IF_THEN) {
+                        if_indent = context_stack[i].base_indent_level - 1;
+                        matched_if = 1;
+                        // Pop contexts until we reach this IF_THEN
+                        while (context_top > i) {
+                            pop_context();
+                        }
+                        pop_context();  // Pop the IF_THEN itself
+                        break;
+                    }
                 }
 
-                // Now handle IF_THEN context
-                if (curr_type == CTX_IF_THEN) {
-                    if_indent = context_stack[context_top].base_indent_level - 1;
-                    pop_context();
-                } else {
+                if (!matched_if) {
+                    // Fallback if no matching if found
                     if_indent = current_base_indent();
                 }
 
