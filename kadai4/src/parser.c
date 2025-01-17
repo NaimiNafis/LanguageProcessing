@@ -1314,7 +1314,3 @@ static int parse_statement_list(void) {
     
     return NORMAL;
 }
-
-// ...existing code...
-
-// ...rest of existing code...

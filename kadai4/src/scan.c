@@ -269,7 +269,7 @@ int process_symbol(char *token_str) {
 // Check if token size exceeds limits
 int check_token_size(int length) {
     if (length >= MAXSTRSIZE) {
-        error("Token exceeds maximum size.");
+        fprintf(stderr, "Error: Token exceeds maximum size at line %d\n", linenum);
         return -1;
     }
     return 1;
@@ -304,7 +304,7 @@ int scan_number() {
     
     // Check for buffer overflow
     if (isdigit(cbuf)) {
-        error("Number too long");  // Use the existing error function
+        fprintf(stderr, "Error: Number too long at line %d\n", linenum);
         return -1;
     }
     

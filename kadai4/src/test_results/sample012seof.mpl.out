@@ -1,1 +1,2 @@
-Error: Token exceeds maximum size.
+Error: Token exceeds maximum size at line 1
+Syntax error at line 1: Expected token 2 but found -1 (token: -1)
