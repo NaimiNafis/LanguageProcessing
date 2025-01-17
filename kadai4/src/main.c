@@ -18,9 +18,17 @@ int main(int argc, char *argv[]) {
 
     // Convert input filename to its absolute path
     char fullpath[PATH_MAX];
-    if (!realpath(argv[1], fullpath)) {
-        fprintf(stderr, "Error: Invalid path %s\n", argv[1]);
-        return 1;
+    // Get absolute path even if input is already absolute
+    if (argv[1][0] == '/') {
+        // Input is already absolute path
+        strncpy(fullpath, argv[1], PATH_MAX - 1);
+        fullpath[PATH_MAX - 1] = '\0';
+    } else {
+        // Convert relative path to absolute path
+        if (!realpath(argv[1], fullpath)) {
+            fprintf(stderr, "Error: Invalid path %s\n", argv[1]);
+            return 1;
+        }
     }
 
     // Check file extension
@@ -30,11 +38,11 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Create output filename (replace .mpl with .cas)
+    // Create output filename (replace .mpl with .csl)
     char outfile[MAXSTRSIZE];
     strncpy(outfile, fullpath, dot - fullpath);
     outfile[dot - fullpath] = '\0';
-    strcat(outfile, ".cas");
+    strcat(outfile, ".csl");
 
     // Open output file
     caslfp = fopen(outfile, "w");
