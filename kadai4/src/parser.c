@@ -8,7 +8,6 @@
 #include "debug.h"
 #include "cross_referencer.h"
 #include "compiler.h"
-#include "code_generator.h"  // Add this include
 
 // Define a constant for EOF
 #define EOF_TOKEN -1

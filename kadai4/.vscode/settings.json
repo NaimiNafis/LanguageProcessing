@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "cross_referencer.h": "c",
+        "compiler.h": "c"
+    }
+}

@@ -70,8 +70,16 @@ int scan(void) {
     while (skip_whitespace_and_comments()) {
         if (cbuf == EOF) {
             debug_printf("End of file reached at line %d\n", linenum);
+            fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
             return -1;
         }
+    }
+
+    // Handle EOF
+    if (cbuf == EOF) {
+        debug_printf("End of file reached at line %d\n", linenum);
+        fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
+        return -1;
     }
 
     debug_printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
@@ -120,6 +128,7 @@ int scan(void) {
 
             // Handle unexpected tokens
             debug_printf("Unexpected token: %c at line %d\n", cbuf, linenum);
+            fprintf(stderr, "Error: Unexpected token at line %d\n", linenum);
             return -1;
     }
 }
@@ -127,9 +136,19 @@ int scan(void) {
 // Skip over whitespace and comments
 int skip_whitespace_and_comments(void) {
     while (1) {
+        // Handle EOF in whitespace check
+        if (cbuf == EOF) {
+            fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
+            return 1;
+        }
+
         while (isspace(cbuf)) {
             if (cbuf == '\n') linenum++;  // Track line breaks
             cbuf = (char) fgetc(fp);
+            if (cbuf == EOF) {
+                fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
+                return 1;
+            }
         }
 
         // Handle block comments
@@ -202,6 +221,7 @@ int process_number(const char *token_str) {
         num_attr = (int) value;
     } else {
         error("Number exceeds maximum allowable value.");
+        fprintf(stderr, "Error: Number exceeds maximum allowable value at line %d\n", linenum);
         return -1;
     }
     return TNUMBER;
@@ -232,7 +252,13 @@ int process_string_literal(void) {
         tempbuf[i++] = cbuf;
     }
     
+    if (cbuf == EOF) {
+        fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
+        return -1;
+    }
+
     error("Unterminated string literal.");
+    fprintf(stderr, "Error: Unterminated string literal at line %d\n", linenum);
     return -1;
 }
 
@@ -262,6 +288,7 @@ int process_symbol(char *token_str) {
         case ';': return TSEMI;
         default:
             error("Unrecognized symbol.");
+            fprintf(stderr, "Error: Invalid character at line %d\n", linenum);
             return -1;
     }
 }

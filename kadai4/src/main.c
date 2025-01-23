@@ -5,9 +5,12 @@
 #include "scan.h"
 #include "parser.h"
 #include "cross_referencer.h"
-#include "code_generator.h"
 #include "compiler.h"
 #include "debug.h"
+
+#ifndef PATH_MAX
+#define PATH_MAX 260
+#endif
 
 int main(int argc, char *argv[]) {
     // Validate input and handle debug mode
