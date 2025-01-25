@@ -111,6 +111,11 @@ int parse_program(void) {
     if (match(TDOT) == ERROR) return ERROR;
     gen_program_end();
 
+    // Don't treat EOF as error after successful parse
+    if (parser.current_token == -1) {
+        return 0;  // Successful end of program
+    }
+
     return 0;  // Success
 }
 

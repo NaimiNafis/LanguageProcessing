@@ -45,8 +45,15 @@ const char* get_current_file(void) {
 }
 
 static void update_line_number(char c) {
-    if (c == '\n') {
+    if (c == '\n' || c == '\r') {  // Handle both CR and LF
         linenum++;
+        if (c == '\r') {
+            // Check for CRLF
+            int next = fgetc(fp);
+            if (next != '\n') {
+                ungetc(next, fp);  // Put back if not CRLF
+            }
+        }
     }
 }
 
@@ -69,17 +76,15 @@ int scan(void) {
     // Skip whitespace and comments
     while (skip_whitespace_and_comments()) {
         if (cbuf == EOF) {
-            debug_printf("End of file reached at line %d\n", linenum);
-            fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
-            return -1;
+            // Don't treat EOF as an error if we're at the end of valid input
+            return -1;  // Changed from error handling to simple return
         }
     }
 
     // Handle EOF
     if (cbuf == EOF) {
-        debug_printf("End of file reached at line %d\n", linenum);
-        fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
-        return -1;
+        // Don't treat EOF as an error if we're at the end of valid input
+        return -1;  // Changed from error handling to simple return
     }
 
     debug_printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
@@ -136,63 +141,87 @@ int scan(void) {
 // Skip over whitespace and comments
 int skip_whitespace_and_comments(void) {
     while (1) {
-        // Handle EOF in whitespace check
+        // Handle EOF check without error
         if (cbuf == EOF) {
-            fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
-            return 1;
+            return 1;  // Return 1 to indicate EOF, but don't treat as error
         }
 
+        // Skip whitespace
         while (isspace(cbuf)) {
-            if (cbuf == '\n') linenum++;  // Track line breaks
+            if (cbuf == '\n' || cbuf == '\r') {
+                update_line_number(cbuf);
+            }
             cbuf = (char) fgetc(fp);
             if (cbuf == EOF) {
-                fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
+                return 1;  // Return 1 to indicate EOF
+            }
+        }
+
+        // Handle block comments { ... }
+        if (cbuf == '{') {
+            int start_line = linenum;  // Remember where comment started
+            int found_end = 0;
+            
+            while ((cbuf = (char) fgetc(fp)) != EOF) {
+                if (cbuf == '\n' || cbuf == '\r') {
+                    update_line_number(cbuf);
+                }
+                if (cbuf == '}') {
+                    found_end = 1;
+                    cbuf = (char) fgetc(fp);
+                    break;
+                }
+            }
+            
+            if (!found_end) {
+                scanner.has_error = 1;  // Set error state
+                fprintf(stderr, "Error: Unterminated comment at line %d\n", start_line);
                 return 1;
             }
+            continue;  // Continue to process any following whitespace
         }
 
-        // Handle block comments
-        if (cbuf == '{') {
-            while (cbuf != '}' && cbuf != EOF) {
-                cbuf = (char) fgetc(fp);
-                if (cbuf == '\n') linenum++;
-            }
-            if (cbuf == '}') cbuf = (char) fgetc(fp);
-            continue;
-        }
-
-        // Handle single-line comments
+        // Handle C-style comments /* ... */
         if (cbuf == '/') {
             cbuf = (char) fgetc(fp);
-            if (cbuf == '/') {
-                while (cbuf != '\n' && cbuf != EOF) cbuf = (char) fgetc(fp);
-                linenum++;
-                cbuf = (char) fgetc(fp);
-                continue;
-            }
-
-            // Handle multi-line comments
             if (cbuf == '*') {
-                while (1) {
-                    cbuf = (char) fgetc(fp);
-                    if (cbuf == '*' && (cbuf = (char) fgetc(fp)) == '/') {
+                int start_line = linenum;  // Remember where comment started
+                int found_end = 0;
+                
+                while ((cbuf = (char) fgetc(fp)) != EOF) {
+                    if (cbuf == '\n' || cbuf == '\r') {
+                        update_line_number(cbuf);
+                    }
+                    if (cbuf == '*') {
                         cbuf = (char) fgetc(fp);
-                        break;
+                        if (cbuf == '/') {
+                            found_end = 1;
+                            cbuf = (char) fgetc(fp);
+                            break;
+                        }
+                        if (cbuf == EOF) break;
+                        if (cbuf == '\n' || cbuf == '\r') {
+                            update_line_number(cbuf);
+                        }
                     }
-                    if (cbuf == '\n') linenum++; debug_printf("Line number incremented to: %d\n", linenum);
-                    if (cbuf == EOF) {
-                        debug_printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
-                        return 1;
-                    }
+                }
+                
+                if (!found_end) {
+                    scanner.has_error = 1;  // Set error state
+                    fprintf(stderr, "Error: Unterminated comment at line %d\n", start_line);
+                    return 1;
                 }
                 continue;
             } else {
-                break;  // Not a comment, return control to scan
+                ungetc(cbuf, fp);  // Put back the character if not a comment
+                cbuf = '/';
+                break;
             }
         }
-        break;
+
+        break;  // No more whitespace or comments to skip
     }
-    return (cbuf == EOF) ? 1 : 0;
+    return 0;  // Return 0 to indicate no EOF
 }
 
 // Match keywords in the source

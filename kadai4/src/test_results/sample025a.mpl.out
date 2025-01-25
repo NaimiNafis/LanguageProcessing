@@ -1,1 +1,1 @@
-Error: Type mismatch
+Syntax error at line 3: Expected token 6 but found 1 (token: 1)
