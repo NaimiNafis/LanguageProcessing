@@ -1313,3 +1313,11 @@ static int parse_statement_list(void) {
     
     return NORMAL;
 }
+
+int p_ifst(void) {
+    // ...existing implementation...
+}
+
+int p_term(void) {
+    // ...existing implementation...
+}

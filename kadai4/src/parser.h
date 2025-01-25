@@ -43,4 +43,11 @@ int is_current_procedure(const char* name);
 int get_procedure_param_count(const char* name);
 int* get_procedure_param_types(const char* name);
 
+// Add these declarations
+int p_ifst(void);
+int p_term(void);
+int p_exp(void);
+int p_st(void);
+int p_factor(void);
+
 #endif
