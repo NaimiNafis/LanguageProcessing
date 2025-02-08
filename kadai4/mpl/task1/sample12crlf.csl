@@ -1,0 +1,59 @@
+EDIVZ	DC	'Division by zero error'
+	CALL	ERRPRT
+	SVC	1
+EBOUND	DC	'Array index out of bounds error'
+	CALL	ERRPRT
+	SVC	1
+EOVF	DC	'Arithmetic overflow error'
+	CALL	ERRPRT
+	SVC	1
+EDIVZ	DC	'Division by zero error'
+	CALL	ERRPRT
+	SVC	1
+EBOUND	DC	'Array index out of bounds error'
+	CALL	ERRPRT
+	SVC	1
+EOVF	DC	'Arithmetic overflow error'
+	CALL	ERRPRT
+	SVC	1
+; Program start: S
+MAIN	START
+	LAD	GR7,0	; Initialize base register
+	PUSH	0,GR1
+	PUSH	0,GR2
+	PUSH	0,GR3
+	LAD	GR6,LIBBUF	; Set up library buffer
+; Data section start
+	START
+LIBBUF	DS	256
+; Data section end
+	END
+; Program end
+	POP	GR3
+	POP	GR2
+	POP	GR1
+	RET
+	END
+; Standard library routines
+WRITESTR	START
+	RET
+	END
+WRITEINT	START
+	RET
+	END
+WRITELINE	START
+	OUT	DC,='
+'
+	RET
+	END
+READINT	START
+	IN	,GR1
+	RET
+	END
+READLINE	START
+	IN	,GR1
+	RET
+	END
+ERRPRT	START
+	RET
+	END

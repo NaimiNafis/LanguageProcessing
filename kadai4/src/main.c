@@ -2,6 +2,11 @@
 #include <string.h>
 #include <limits.h>
 #include <stdlib.h>
+#ifdef _WIN32
+#include <direct.h>
+#else
+#include <sys/stat.h>
+#endif
 #include "scan.h"
 #include "parser.h"
 #include "cross_referencer.h"
@@ -61,7 +66,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Create output filename (replace .mpl with .csl)
-    char *outfile = (char*)malloc(strlen(fullpath) + 1);
+    char *outfile = (char*)malloc(strlen(fullpath) + 5); // +5 for .csl and null terminator
     if (!outfile) {
         fprintf(stderr, "Error: Memory allocation failed\n");
         free(fullpath);
@@ -69,7 +74,21 @@ int main(int argc, char *argv[]) {
     }
     
     strcpy(outfile, fullpath);
-    strcpy(outfile + (dot - fullpath), ".csl");
+    char *ext = strrchr(outfile, '.');
+    if (ext) *ext = '\0';
+    strcat(outfile, ".csl");
+
+    // Create directories if they don't exist
+    char *last_slash = strrchr(outfile, PATH_SEPARATOR);
+    if (last_slash) {
+        *last_slash = '\0';
+        #ifdef _WIN32
+        _mkdir(outfile);
+        #else
+        mkdir(outfile, 0777);
+        #endif
+        *last_slash = PATH_SEPARATOR;
+    }
 
     // Open output file
     caslfp = fopen(outfile, "w");
@@ -97,8 +116,12 @@ int main(int argc, char *argv[]) {
     // Execute parsing and code generation
     int parse_result = parse_program();
     
-    // Only print cross reference if no errors
-    if (parse_result == 0) {
+    // Log error to CASL file if parsing fails
+    if (parse_result != 0) {
+        fprintf(caslfp, "/* Compilation failed: no valid CASL code generated. */\n");
+    }
+    else {
+        // Only print cross reference if no errors
         print_cross_reference_table();
     }
 

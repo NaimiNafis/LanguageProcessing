@@ -1,2 +1,1 @@
-Error: Unexpected end of file at line 1
-Syntax error at line 1: Expected token 2 but found -1 (token: -1)
+Error: Unterminated string literal. at line 1

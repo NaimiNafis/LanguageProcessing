@@ -5,7 +5,7 @@
 #include "codegenerator.h"
 
 // Error handling
-int error(const char* message);
+void error(const char* message);
 
 // Type checking and semantic validation
 void check_type_compatibility(int left_type, int right_type);

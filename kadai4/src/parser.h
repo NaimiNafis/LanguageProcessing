@@ -3,6 +3,7 @@
 
 #include <setjmp.h>
 #include <stdbool.h>
+#include "codegenerator.h"  // Add this include
 
 #define ERROR 0
 #define NORMAL 1
@@ -19,6 +20,7 @@ typedef struct {
     int param_types[MAX_PARAMS]; // Added for procedure parameters
 } SymbolEntry;
 
+// Make Parser structure definition public
 typedef struct {
     int current_token;
     int line_number;
@@ -27,6 +29,9 @@ typedef struct {
     int previous_previous_token;
     jmp_buf error_jmp;
 } Parser;
+
+// Expose the parser instance
+extern Parser parser;
 
 // Add these declarations
 extern int current_array_size;  // For array size tracking
@@ -49,5 +54,23 @@ int p_term(void);
 int p_exp(void);
 int p_st(void);
 int p_factor(void);
+
+// Add these declarations for code generation functions
+void gen_code(const char* opc, const char* opr);
+void gen_push(void);
+void gen_add(void);
+void gen_subtract(void);
+void gen_or(void);
+void gen_div_check(void);
+void gen_multiply(void);
+void gen_overflow_check(void);
+void gen_and(void);
+void gen_push_address(const char* var_name);
+void gen_push_expression_address(void);
+void gen_procedure_call(const char* proc_name, int param_count);
+void gen_array_access(const char* array_name, const char* index_reg);
+void gen_bounds_check(void);
+void gen_load(const char* var_name);
+void gen_store(const char* var_name);
 
 #endif

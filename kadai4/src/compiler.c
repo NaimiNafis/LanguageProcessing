@@ -3,23 +3,29 @@
 #include <string.h>
 #include "compiler.h"
 #include "token.h"
-#include "parser.h"
+#include "parser.h"  // This now gives access to Parser structure
 #include "debug.h"
 #include "scan.h"
 #include "codegenerator.h"
+#include "error.h"
 
 // Error handling
-int error(const char* message) {
-    fprintf(stderr, "Error: %s\n", message);
+void error(const char* message) {
+    fprintf(stderr, "Error: %s at line %d\n", message, get_linenum());
     exit(1);
-    return -1;
 }
 
 void check_type_compatibility(int left_type, int right_type) {
+    // Allow readln/writeln to work with any type by skipping type check
+    if (parser.previous_token == TREADLN || parser.previous_token == TWRITELN) {
+        return;
+    }
+    
     if (left_type != right_type) {
         // Allow certain implicit conversions based on semantics
         if ((left_type == TINTEGER && right_type == TCHAR) ||
-            (left_type == TBOOLEAN && right_type == TINTEGER)) {
+            (left_type == TBOOLEAN && right_type == TINTEGER) ||
+            (left_type == TINTEGER && right_type == TBOOLEAN)) {
             return;
         }
         error("Type mismatch");
@@ -109,4 +115,22 @@ int convert_type(int value, int from_type, int to_type) {
     }
     // Add other conversions as needed
     return value;
+}
+
+// Add code to handle arithmetic expressions
+void gen_arithmetic(int op, const char* left, const char* right) {
+    fprintf(caslfp, "    LD GR1, %s\n", left);
+    fprintf(caslfp, "    PUSH 0, GR1\n");
+    fprintf(caslfp, "    LD GR1, %s\n", right);
+    
+    switch(op) {
+        case TPLUS:
+            fprintf(caslfp, "    POP GR2\n");
+            fprintf(caslfp, "    ADDA GR1, GR2\n");
+            fprintf(caslfp, "    JOV EOVF\n");
+            break;
+        case TMINUS:
+            // Similar for other operators
+            break;
+    }
 }

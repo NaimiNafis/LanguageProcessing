@@ -53,7 +53,7 @@ static int is_additive_operator(int token);
 static int is_multiplicative_operator(int token);
 
 // Parser state
-static Parser parser;
+extern Parser parser;  // Make this a global variable
 static int in_while_loop = 0;
 
 // Global variable to track format specifier presence
@@ -70,6 +70,9 @@ static void set_array_size(int size) {
 static int get_array_size(void) {
     return current_array_size;
 }
+
+// Define the global parser instance
+Parser parser;
 
 void init_parser(void) {
     parser.current_token = scan();
@@ -559,6 +562,7 @@ static int parse_procedure_call_statement(void) {
     
     char* proc_name = strdup(string_attr);
     int line_num = get_linenum();
+    int param_count = 0;  // Add parameter counting
     
     if (match(TNAME) == ERROR) {
         free(proc_name);
@@ -579,6 +583,7 @@ static int parse_procedure_call_statement(void) {
         // Handle parameters
         if (parser.current_token != TRPAREN) {
             do {
+                param_count++;  // Count parameters
                 // For each parameter
                 char is_variable = (parser.current_token == TNAME);
                 if (is_variable) {
@@ -601,8 +606,8 @@ static int parse_procedure_call_statement(void) {
         if (match(TRPAREN) == ERROR) return ERROR;
     }
     
-    // Generate procedure call
-    gen_procedure_call(proc_name);
+    // Generate procedure call with parameter count
+    gen_procedure_call(proc_name, param_count);
     
     add_reference(proc_name, line_num);
     free(proc_name);
