@@ -1,4 +1,3 @@
-
 #ifndef CODEGENERATOR_H
 #define CODEGENERATOR_H
 
@@ -8,8 +7,6 @@
 
 // File pointer for CASL output
 extern FILE* caslfp;
-
-// ...existing code...
 
 // Declare function prototypes moved from compiler.c
 void gen_save_registers(void);
@@ -55,5 +52,10 @@ void gen_div_check(void);
 void gen_overflow_check(void);
 void gen_type_conversion(int from_type, int to_type);
 void gen_lib_subroutines(void);
+
+// Register allocation optimization
+void gen_optimize_registers(void);
+void gen_free_register(int reg);
+int  gen_alloc_register(void);
 
 #endif

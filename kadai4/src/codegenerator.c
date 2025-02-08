@@ -84,12 +84,15 @@ void gen_data_section_end(void) {
 void gen_program_start(const char* name) {
     fprintf(caslfp, "; Program start: %s\n", name);
     fprintf(caslfp, "%s\tSTART\n", name);
+    fprintf(caslfp, "\tLAD\tGR7,0\t; Initialize base register\n");
     gen_save_registers();
+    fprintf(caslfp, "\tLAD\tGR6,LIBBUF\t; Set up library buffer\n");
 }
 
 void gen_program_end(void) {
     fprintf(caslfp, "; Program end\n");
     gen_restore_registers();
+    fprintf(caslfp, "\tSVC\t0\t; Normal program termination\n");
     fprintf(caslfp, "\tRET\n");
     fprintf(caslfp, "\tEND\n");
 }
