@@ -1,10 +1,17 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include <stdarg.h>
+// Debug flags for different modules
+extern int debug_scanner;
+extern int debug_parser;
+extern int debug_cross_referencer;
+extern int debug_compiler;
 
-extern int debug_mode;
+// Debug modes can be enabled via command line arguments:
+// --debug-scan
+// --debug-parse
+// --debug-xref
+// --debug-compile
+// --debug-all
 
-void debug_printf(const char *format, ...);
-
-#endif // DEBUG_H
+#endif

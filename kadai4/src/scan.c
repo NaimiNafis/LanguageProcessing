@@ -2,10 +2,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include "scan.h"
 #include "token.h"
-#include "debug.h" 
-#include "compiler.h"
+#include "error.h"
+#include "debug.h"  // Add this include
+
+extern int debug_scanner;
+
+static void debug_scan_printf(const char *format, ...) {
+    if (debug_scanner) {  // Changed from debug_mode to debug_scanner
+        va_list args;
+        va_start(args, format);
+        vprintf(format, args);
+        va_end(args);
+    }
+}
 
 FILE *fp;
 char string_attr[MAXSTRSIZE];
@@ -45,15 +57,8 @@ const char* get_current_file(void) {
 }
 
 static void update_line_number(char c) {
-    if (c == '\n' || c == '\r') {  // Handle both CR and LF
+    if (c == '\n') {
         linenum++;
-        if (c == '\r') {
-            // Check for CRLF
-            int next = fgetc(fp);
-            if (next != '\n') {
-                ungetc(next, fp);  // Put back if not CRLF
-            }
-        }
     }
 }
 
@@ -76,18 +81,12 @@ int scan(void) {
     // Skip whitespace and comments
     while (skip_whitespace_and_comments()) {
         if (cbuf == EOF) {
-            // Don't treat EOF as an error if we're at the end of valid input
-            return -1;  // Changed from error handling to simple return
+            debug_scan_printf("End of file reached at line %d\n", linenum);
+            return -1;
         }
     }
 
-    // Handle EOF
-    if (cbuf == EOF) {
-        // Don't treat EOF as an error if we're at the end of valid input
-        return -1;  // Changed from error handling to simple return
-    }
-
-    debug_printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
+    debug_scan_printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
 
     switch (cbuf) {
         // Handle symbols directly
@@ -99,7 +98,7 @@ int scan(void) {
 
         // Handle string literals
         case '\'':
-            debug_printf("Processing string literal starting at line %d\n", get_linenum());
+            debug_scan_printf("Processing string literal starting at line %d\n", get_linenum());
             return process_string_literal();
 
         // Handle keywords, identifiers, and numbers
@@ -115,11 +114,11 @@ int scan(void) {
                     }
                 }
                 buffer[i] = '\0';  // Null-terminate the buffer
-                debug_printf("Processing identifier/keyword: %s at line %d\n", buffer, get_linenum());
+                debug_scan_printf("Processing identifier/keyword: %s at line %d\n", buffer, get_linenum());
                 int temp = match_keyword(buffer);
                 if (temp != -1) {
                     // Keyword matched
-                    debug_printf("DEBUG: Keyword token: %d\n", temp);
+                    debug_scan_printf("DEBUG: Keyword token: %d\n", temp);
                     return temp;
                 } else {
                     // Not a keyword, process as identifier
@@ -132,8 +131,7 @@ int scan(void) {
             }
 
             // Handle unexpected tokens
-            debug_printf("Unexpected token: %c at line %d\n", cbuf, linenum);
-            fprintf(stderr, "Error: Unexpected token at line %d\n", linenum);
+            debug_scan_printf("Unexpected token: %c at line %d\n", cbuf, linenum);
             return -1;
     }
 }
@@ -141,98 +139,64 @@ int scan(void) {
 // Skip over whitespace and comments
 int skip_whitespace_and_comments(void) {
     while (1) {
-        // Handle EOF check without error
-        if (cbuf == EOF) {
-            return 1;  // Return 1 to indicate EOF, but don't treat as error
-        }
-
-        // Skip whitespace
         while (isspace(cbuf)) {
-            if (cbuf == '\n' || cbuf == '\r') {
-                update_line_number(cbuf);
-            }
+            if (cbuf == '\n') linenum++;  // Track line breaks
             cbuf = (char) fgetc(fp);
-            if (cbuf == EOF) {
-                return 1;  // Return 1 to indicate EOF
-            }
         }
 
-        // Handle block comments { ... }
+        // Handle block comments
         if (cbuf == '{') {
-            int start_line = linenum;  // Remember where comment started
-            int found_end = 0;
-            
-            while ((cbuf = (char) fgetc(fp)) != EOF) {
-                if (cbuf == '\n' || cbuf == '\r') {
-                    update_line_number(cbuf);
-                }
-                if (cbuf == '}') {
-                    found_end = 1;
-                    cbuf = (char) fgetc(fp);
-                    break;
-                }
+            while (cbuf != '}' && cbuf != EOF) {
+                cbuf = (char) fgetc(fp);
+                if (cbuf == '\n') linenum++;
             }
-            
-            if (!found_end) {
-                scanner.has_error = 1;  // Set error state
-                fprintf(stderr, "Error: Unterminated comment at line %d\n", start_line);
-                return 1;
-            }
-            continue;  // Continue to process any following whitespace
+            if (cbuf == '}') cbuf = (char) fgetc(fp);
+            continue;
         }
 
-        // Handle C-style comments /* ... */
+        // Handle single-line comments
         if (cbuf == '/') {
             cbuf = (char) fgetc(fp);
+            if (cbuf == '/') {
+                while (cbuf != '\n' && cbuf != EOF) cbuf = (char) fgetc(fp);
+                linenum++;
+                cbuf = (char) fgetc(fp);
+                continue;
+            }
+
+            // Handle multi-line comments
             if (cbuf == '*') {
-                int start_line = linenum;  // Remember where comment started
-                int found_end = 0;
-                
-                while ((cbuf = (char) fgetc(fp)) != EOF) {
-                    if (cbuf == '\n' || cbuf == '\r') {
-                        update_line_number(cbuf);
-                    }
-                    if (cbuf == '*') {
+                while (1) {
+                    cbuf = (char) fgetc(fp);
+                    if (cbuf == '*' && (cbuf = (char) fgetc(fp)) == '/') {
                         cbuf = (char) fgetc(fp);
-                        if (cbuf == '/') {
-                            found_end = 1;
-                            cbuf = (char) fgetc(fp);
-                            break;
-                        }
-                        if (cbuf == EOF) break;
-                        if (cbuf == '\n' || cbuf == '\r') {
-                            update_line_number(cbuf);
-                        }
+                        break;
                     }
-                }
-                
-                if (!found_end) {
-                    scanner.has_error = 1;  // Set error state
-                    fprintf(stderr, "Error: Unterminated comment at line %d\n", start_line);
-                    return 1;
+                    if (cbuf == '\n') linenum++; debug_scan_printf("Line number incremented to: %d\n", linenum);
+                    if (cbuf == EOF) {
+                        debug_scan_printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
+                        return 1;
+                    }
                 }
                 continue;
             } else {
-                ungetc(cbuf, fp);  // Put back the character if not a comment
-                cbuf = '/';
-                break;
+                break;  // Not a comment, return control to scan
             }
         }
-
-        break;  // No more whitespace or comments to skip
+        break;
     }
-    return 0;  // Return 0 to indicate no EOF
+    return (cbuf == EOF) ? 1 : 0;
 }
 
 // Match keywords in the source
 int match_keyword(const char *token_str) {
     for (int i = 0; i < KEYWORDSIZE; i++) {
         if (strcmp(token_str, key[i].keyword) == 0) {
-            debug_printf("DEBUG: Matched keyword: %s with token: %d\n", token_str, key[i].keytoken);
+            debug_scan_printf("DEBUG: Matched keyword: %s with token: %d\n", token_str, key[i].keytoken);
             return key[i].keytoken;
         }
     }
-    debug_printf("DEBUG: No match for keyword: %s\n", token_str);
+    debug_scan_printf("DEBUG: No match for keyword: %s\n", token_str);
     return -1;  // Return -1 if not a keyword
 }
 
@@ -250,7 +214,6 @@ int process_number(const char *token_str) {
         num_attr = (int) value;
     } else {
         error("Number exceeds maximum allowable value.");
-        fprintf(stderr, "Error: Number exceeds maximum allowable value at line %d\n", linenum);
         return -1;
     }
     return TNUMBER;
@@ -275,19 +238,13 @@ int process_string_literal(void) {
             tempbuf[i] = '\0';
             strncpy(string_attr, tempbuf, MAXSTRSIZE - 1);
             string_attr[MAXSTRSIZE - 1] = '\0';
-            debug_printf("Processed string literal: '%s' (length: %d)\n", string_attr, (int)strlen(string_attr));
+            debug_scan_printf("Processed string literal: '%s' (length: %d)\n", string_attr, (int)strlen(string_attr));
             return TSTRING;
         }
         tempbuf[i++] = cbuf;
     }
     
-    if (cbuf == EOF) {
-        fprintf(stderr, "Error: Unexpected end of file at line %d\n", linenum);
-        return -1;
-    }
-
     error("Unterminated string literal.");
-    fprintf(stderr, "Error: Unterminated string literal at line %d\n", linenum);
     return -1;
 }
 
@@ -317,7 +274,6 @@ int process_symbol(char *token_str) {
         case ';': return TSEMI;
         default:
             error("Unrecognized symbol.");
-            fprintf(stderr, "Error: Invalid character at line %d\n", linenum);
             return -1;
     }
 }
@@ -325,15 +281,22 @@ int process_symbol(char *token_str) {
 // Check if token size exceeds limits
 int check_token_size(int length) {
     if (length >= MAXSTRSIZE) {
-        fprintf(stderr, "Error: Token exceeds maximum size at line %d\n", linenum);
+        error("Token exceeds maximum size.");
         return -1;
     }
     return 1;
 }
 
+// Error handling
+// void error(const char *msg) {
+//     fprintf(stderr, "Error: %s at line %d\n", msg, linenum);
+//     debug_printf("Error reported at line: %d\n", linenum);
+//     exit(EXIT_FAILURE);
+// }
+
 // Used for error-reporting function (parser or error handler)
 int get_linenum(void) {
-    debug_printf("get_linenum called, returning: %d\n", linenum);
+    debug_scan_printf("get_linenum called, returning: %d\n", linenum);
     return linenum;
 }
 
@@ -360,7 +323,7 @@ int scan_number() {
     
     // Check for buffer overflow
     if (isdigit(cbuf)) {
-        fprintf(stderr, "Error: Number too long at line %d\n", linenum);
+        error("Number too long");  // Use the existing error function
         return -1;
     }
     

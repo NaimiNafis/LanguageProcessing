@@ -53,7 +53,7 @@ static int is_additive_operator(int token);
 static int is_multiplicative_operator(int token);
 
 // Parser state
-static Parser parser;
+extern Parser parser;  // Make this a global variable
 static int in_while_loop = 0;
 
 // Global variable to track format specifier presence
@@ -70,6 +70,9 @@ static void set_array_size(int size) {
 static int get_array_size(void) {
     return current_array_size;
 }
+
+// Define the global parser instance
+Parser parser;
 
 void init_parser(void) {
     parser.current_token = scan();
@@ -440,7 +443,7 @@ static int parse_parameter_list(void) {
 }
 
 static int parse_if_statement(void) {
-    debug_printf("Entering parse_if_statement\n");
+    debug_parser_printf("Entering parse_if_statement\n");
     
     /* Match 'if' keyword */
     if (match(TIF) == ERROR) {
@@ -510,13 +513,13 @@ static int parse_if_statement(void) {
         }
     }
 
-    debug_printf("Exiting parse_if_statement successfully\n");
+    debug_parser_printf("Exiting parse_if_statement successfully\n");
     return NORMAL;
 }
 
 static int parse_while_statement(void) {
-    debug_printf("\n=== Entering parse_while_statement ===\n");
-    debug_printf("Token state: current=%d, prev=%d, prev_prev=%d\n",
+    debug_parser_printf("\n=== Entering parse_while_statement ===\n");
+    debug_parser_printf("Token state: current=%d, prev=%d, prev_prev=%d\n",
                 parser.current_token, parser.previous_token, 
                 parser.previous_previous_token);
     
@@ -526,7 +529,7 @@ static int parse_while_statement(void) {
     if (parse_condition() == ERROR) return ERROR;
     
     if (match(TDO) == ERROR) return ERROR;
-    debug_printf("After DO: token=%d, prev=%d, prev_prev=%d\n",
+    debug_parser_printf("After DO: token=%d, prev=%d, prev_prev=%d\n",
                 parser.current_token, parser.previous_token,
                 parser.previous_previous_token);
     
@@ -536,7 +539,7 @@ static int parse_while_statement(void) {
     parser.previous_token = TDO;
     
     if (parser.current_token == TBEGIN) {
-        debug_printf("Found BEGIN after DO, tokens: current=%d, prev=%d\n",
+        debug_parser_printf("Found BEGIN after DO, tokens: current=%d, prev=%d\n",
                     parser.current_token, parser.previous_token);
         
         // No need to update token state here
@@ -550,7 +553,7 @@ static int parse_while_statement(void) {
     parser.previous_previous_token = saved_prev_prev;
     
     in_while_loop--;
-    debug_printf("=== Exiting parse_while_statement ===\n\n");
+    debug_parser_printf("=== Exiting parse_while_statement ===\n\n");
     return NORMAL;
 }
 
@@ -559,6 +562,7 @@ static int parse_procedure_call_statement(void) {
     
     char* proc_name = strdup(string_attr);
     int line_num = get_linenum();
+    int param_count = 0;  // Add parameter counting
     
     if (match(TNAME) == ERROR) {
         free(proc_name);
@@ -579,6 +583,7 @@ static int parse_procedure_call_statement(void) {
         // Handle parameters
         if (parser.current_token != TRPAREN) {
             do {
+                param_count++;  // Count parameters
                 // For each parameter
                 char is_variable = (parser.current_token == TNAME);
                 if (is_variable) {
@@ -601,8 +606,8 @@ static int parse_procedure_call_statement(void) {
         if (match(TRPAREN) == ERROR) return ERROR;
     }
     
-    // Generate procedure call
-    gen_procedure_call(proc_name);
+    // Generate procedure call with parameter count
+    gen_procedure_call(proc_name, param_count);
     
     add_reference(proc_name, line_num);
     free(proc_name);
@@ -631,7 +636,7 @@ static int parse_read_statement(void) {
 }
 
 static int parse_write_statement(void) {
-    debug_printf("Entering parse_write_statement with token: %d\n", parser.current_token);
+    debug_parser_printf("Entering parse_write_statement with token: %d\n", parser.current_token);
     
     // Handle both write and writeln
     int is_writeln = (parser.current_token == TWRITELN);
@@ -702,7 +707,7 @@ static int parse_write_statement(void) {
         if (match(TRPAREN) == ERROR) return ERROR;
     }
 
-    debug_printf("Checking for semicolon after writeln, current token: %d\n", parser.current_token);
+    debug_parser_printf("Checking for semicolon after writeln, current token: %d\n", parser.current_token);
     
     // Let parse_statement_list handle semicolons
     return NORMAL;
@@ -768,7 +773,7 @@ static int is_standard_type(int token) {
 }
 
 static int parse_comparison(void) {
-    debug_printf("Entering parse_comparison with token: %d\n", parser.current_token);
+    debug_parser_printf("Entering parse_comparison with token: %d\n", parser.current_token);
     
     // Keep existing parentheses handling
     if (parser.current_token == TLPAREN) {
@@ -833,12 +838,12 @@ static int parse_comparison(void) {
         }
     }
     
-    debug_printf("Exiting parse_comparison with token: %d\n", parser.current_token);
+    debug_parser_printf("Exiting parse_comparison with token: %d\n", parser.current_token);
     return NORMAL;
 }
 
 static int parse_condition(void) {
-    debug_printf("Entering parse_condition with token: %d\n", parser.current_token);
+    debug_parser_printf("Entering parse_condition with token: %d\n", parser.current_token);
 
     // Parse first comparison
     if (parse_comparison() == ERROR) return ERROR;
@@ -849,7 +854,7 @@ static int parse_condition(void) {
         if (parse_comparison() == ERROR) return ERROR;
     }
 
-    debug_printf("Exiting parse_condition with token: %d\n", parser.current_token);
+    debug_parser_printf("Exiting parse_condition with token: %d\n", parser.current_token);
     return NORMAL;
 }
 
@@ -876,7 +881,7 @@ void parse_error(const char* message) {
 }
 
 static int match(int expected_token) {
-    debug_printf("Matching token: %d, expected: %d at line: %d\n", 
+    debug_parser_printf("Matching token: %d, expected: %d at line: %d\n", 
                 parser.current_token, expected_token, parser.line_number);
     
     if (parser.current_token != expected_token) {
@@ -897,14 +902,14 @@ static int match(int expected_token) {
     parser.current_token = next_token;
     parser.line_number = get_linenum();
     
-    debug_printf("After match: current=%d, prev=%d, prev_prev=%d\n",
+    debug_parser_printf("After match: current=%d, prev=%d, prev_prev=%d\n",
                 parser.current_token, parser.previous_token,
                 parser.previous_previous_token);
     return NORMAL;
 }
 
 static int parse_procedure(void) {
-    debug_printf("Entering parse_procedure\n");
+    debug_parser_printf("Entering parse_procedure\n");
     
     if (match(TPROCEDURE) == ERROR) {
         parse_error("Expected 'procedure' keyword");
@@ -975,18 +980,18 @@ static int parse_procedure_declaration(void) {
 
 // 1. Output Format Grammar Rule
 static int parse_output_format(void) {
-    debug_printf("Parsing output format, current token: %d\n", parser.current_token);
+    debug_parser_printf("Parsing output format, current token: %d\n", parser.current_token);
     
     if (parser.current_token == TSTRING) {
         // Get string length
         int str_len = strlen(string_attr);
-        debug_printf("String length: %d\n", str_len);
+        debug_parser_printf("String length: %d\n", str_len);
         
         if (match(TSTRING) == ERROR) return ERROR;
         
         // Multi-character strings cannot have format specifiers according to grammar
         if (str_len > 1) {
-            debug_printf("Multi-char string - format specifier not allowed\n");
+            debug_parser_printf("Multi-char string - format specifier not allowed\n");
             return NORMAL;  // Early return for multi-char strings
         }
         
@@ -1325,4 +1330,15 @@ int p_ifst(void) {
 
 int p_term(void) {
     // ...existing implementation...
+}
+
+extern int debug_mode;
+
+static void debug_parser_printf(const char *format, ...) {
+    if (debug_parser) {  // Changed from debug_mode to debug_parser
+        va_list args;
+        va_start(args, format);
+        vprintf(format, args);
+        va_end(args);
+    }
 }

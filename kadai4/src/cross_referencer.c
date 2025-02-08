@@ -1,10 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include "cross_referencer.h"
-#include "compiler.h"  // Add this include for error function
-#include "debug.h"
+#include "compiler.h"
 #include "scan.h"
+#include "debug.h"  // Add this include
+
+extern int debug_mode;
+
+static void debug_xref_printf(const char *format, ...) {
+    if (debug_cross_referencer) {  // Changed from debug_mode to debug_cross_referencer
+        va_list args;
+        va_start(args, format);
+        vprintf(format, args);
+        va_end(args);
+    }
+}
 
 // Global state management for symbol processing
 static ID *symbol_table = NULL;
@@ -24,7 +36,7 @@ extern int current_array_size;  // Declare it here as extern
 static int current_base_type = 0;
 
 void set_array_info(int size, int base_type) {
-    debug_printf("Setting array info: size=%d, base_type=%d\n", size, base_type);
+    debug_xref_printf("Setting array info: size=%d, base_type=%d\n", size, base_type);
     current_array_size = size;
     current_base_type = base_type;
 }
@@ -127,7 +139,7 @@ void add_symbol(char *name, int type, int linenum, int is_definition) {
         return;
     }
 
-    debug_printf("add_symbol: name=%s, type=%d, line=%d, is_def=%d, proc=%s\n", 
+    debug_xref_printf("add_symbol: name=%s, type=%d, line=%d, is_def=%d, proc=%s\n", 
                 name, type, linenum, is_definition, 
                 current_procedure ? current_procedure : "global");
 
@@ -261,7 +273,7 @@ void add_reference(char *name, int linenum) {
     if (scoped_name) free(scoped_name);  // Fixed missing parenthesis
     
     // Rest of existing add_reference code...
-    debug_printf("add_reference: name=%s, line=%d, current_proc=%s\n", 
+    debug_xref_printf("add_reference: name=%s, line=%d, current_proc=%s\n", 
                 name, linenum, current_procedure ? current_procedure : "global");
     
     char *global_name = strdup(name);
@@ -334,7 +346,7 @@ void add_reference(char *name, int linenum) {
     }
 
     if (!found) {
-        debug_printf("Warning: No symbol found for reference: %s (scoped: %s)\n", 
+        debug_xref_printf("Warning: No symbol found for reference: %s (scoped: %s)\n", 
                     name, scoped_name ? scoped_name : "none");
     }
 
@@ -346,12 +358,12 @@ void add_reference(char *name, int linenum) {
 void enter_procedure(const char *name) {
     if (current_procedure) free(current_procedure);
     current_procedure = strdup(name);
-    debug_printf("Entering procedure scope: %s\n", name);
+    debug_xref_printf("Entering procedure scope: %s\n", name);
 }
 
 void exit_procedure(void) {
     if (current_procedure) {
-        debug_printf("Exiting procedure scope: %s\n", current_procedure);
+        debug_xref_printf("Exiting procedure scope: %s\n", current_procedure);
         free(current_procedure);
         current_procedure = NULL;
         current_procedure_id = NULL; // Reset current procedure ID

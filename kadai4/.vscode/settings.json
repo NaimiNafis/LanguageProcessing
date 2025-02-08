@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "cross_referencer.h": "c",
-        "compiler.h": "c"
+        "compiler.h": "c",
+        "codegenerator.h": "c",
+        "scan.h": "c"
     }
 }
