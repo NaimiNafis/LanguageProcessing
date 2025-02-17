@@ -2,7 +2,11 @@
     "files.associations": {
         "cross_referencer.h": "c",
         "compiler.h": "c",
+<<<<<<< HEAD
         "codegenerator.h": "c",
         "scan.h": "c"
+=======
+        "codegenerator.h": "c"
+>>>>>>> b36bac43882647e6c54b2fadc11aa57de190b740
     }
 }

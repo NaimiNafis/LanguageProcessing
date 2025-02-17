@@ -1,0 +1,49 @@
+%GCMLCM START L0001
+
+; program GCMLCM;
+
+$m  DC 0
+; m : integer;
+
+$n  DC 0
+; n : integer;
+
+$a  DC 0
+; a : integer;
+
+$b  DC 0
+; b : integer;
+
+$r  DC 0
+; r : integer;
+
+$gcm  DC 0
+; gcm : integer;
+
+$lcm  DC 0
+; lcm : integer;
+
+or: Overflow *****'
+
+; Zero-Divide error handling
+E0DIV
+    JNZ EOVF
+    CALL WRITELINE
+    LAD GR1, E0DIV1
+    LD GR2, GR0
+    CALL WRITESTR
+    CALL WRITELINE
+    SVC 2
+E0DIV1  DC '***** Run-Time Error: Zero-Divide *****'
+
+; Range-Over error handling
+EROV
+    CALL WRITELINE
+    LAD GR1, EROV1
+    LD GR2, GR0
+    CALL WRITESTR
+    CALL WRITELINE
+    SVC 3
+EROV1  DC '***** Run-Time Error: Range-Over in Array Index *****'
+
+END

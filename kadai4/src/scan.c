@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include "scan.h"
 #include "token.h"
+<<<<<<< HEAD
 #include "error.h"
 #include "debug.h"  // Add this include
 
@@ -18,6 +19,10 @@ static void debug_scan_printf(const char *format, ...) {
         va_end(args);
     }
 }
+=======
+#include "debug.h" 
+#include "error.h"
+>>>>>>> b36bac43882647e6c54b2fadc11aa57de190b740
 
 FILE *fp;
 char string_attr[MAXSTRSIZE];
@@ -81,12 +86,20 @@ int scan(void) {
     // Skip whitespace and comments
     while (skip_whitespace_and_comments()) {
         if (cbuf == EOF) {
+<<<<<<< HEAD
             debug_scan_printf("End of file reached at line %d\n", linenum);
+=======
+            debug_printf("End of file reached at line %d\n", linenum);
+>>>>>>> b36bac43882647e6c54b2fadc11aa57de190b740
             return -1;
         }
     }
 
+<<<<<<< HEAD
     debug_scan_printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
+=======
+    debug_printf("Current character: %c (Line: %d)\n", cbuf, get_linenum());
+>>>>>>> b36bac43882647e6c54b2fadc11aa57de190b740
 
     switch (cbuf) {
         // Handle symbols directly
@@ -131,7 +144,11 @@ int scan(void) {
             }
 
             // Handle unexpected tokens
+<<<<<<< HEAD
             debug_scan_printf("Unexpected token: %c at line %d\n", cbuf, linenum);
+=======
+            debug_printf("Unexpected token: %c at line %d\n", cbuf, linenum);
+>>>>>>> b36bac43882647e6c54b2fadc11aa57de190b740
             return -1;
     }
 }
@@ -172,9 +189,15 @@ int skip_whitespace_and_comments(void) {
                         cbuf = (char) fgetc(fp);
                         break;
                     }
+<<<<<<< HEAD
                     if (cbuf == '\n') linenum++; debug_scan_printf("Line number incremented to: %d\n", linenum);
                     if (cbuf == EOF) {
                         debug_scan_printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
+=======
+                    if (cbuf == '\n') linenum++; debug_printf("Line number incremented to: %d\n", linenum);
+                    if (cbuf == EOF) {
+                        debug_printf("Warning: Unterminated multi-line comment at line %d, skipping...\n", linenum);
+>>>>>>> b36bac43882647e6c54b2fadc11aa57de190b740
                         return 1;
                     }
                 }
