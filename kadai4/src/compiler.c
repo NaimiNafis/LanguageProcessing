@@ -3,7 +3,7 @@
 #include <string.h>
 #include "compiler.h"
 #include "token.h"
-#include "parser.h"  // This now gives access to Parser structure
+#include "parser.h"
 #include "debug.h"
 #include "scan.h"
 #include "codegenerator.h"

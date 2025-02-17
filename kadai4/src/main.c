@@ -12,14 +12,12 @@
 #include "cross_referencer.h"
 #include "compiler.h"
 
-// Global debug mode variable accessible by all modules
-int debug_mode = 0;  // 0 off 1 on
-
-// Define debug flags
+// Global debug flags
 int debug_scanner = 0;
 int debug_parser = 0;
 int debug_cross_referencer = 0;
 int debug_compiler = 0;
+int debug_pretty = 0;
 
 #ifndef PATH_MAX
 #define PATH_MAX 4096
@@ -117,13 +115,11 @@ int main(int argc, char *argv[]) {
             debug_cross_referencer = 1;
         } else if (strcmp(argv[i], "--debug-compile") == 0) {
             debug_compiler = 1;
+        } else if (strcmp(argv[i], "--debug-pretty") == 0) {
+            debug_pretty = 1;
         } else if (strcmp(argv[i], "--debug-all") == 0) {
-            debug_scanner = debug_parser = debug_cross_referencer = debug_compiler = 1;
+            debug_scanner = debug_parser = debug_cross_referencer = debug_pretty = debug_compiler = 1;
         }
-    }
-
-    if (argc == 3 && strcmp(argv[2], "--debug") == 0) {
-        debug_mode = 1;
     }
 
     // Initialize components

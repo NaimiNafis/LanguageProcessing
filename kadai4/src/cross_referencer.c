@@ -7,10 +7,10 @@
 #include "scan.h"
 #include "debug.h"  // Add this include
 
-extern int debug_mode;
+extern int debug_cross_referencer;
 
 static void debug_xref_printf(const char *format, ...) {
-    if (debug_cross_referencer) {  // Changed from debug_mode to debug_cross_referencer
+    if (debug_cross_referencer) {
         va_list args;
         va_start(args, format);
         vprintf(format, args);
