@@ -52,6 +52,22 @@ static int is_relational_operator(int token);
 static int is_additive_operator(int token);
 static int is_multiplicative_operator(int token);
 
+// Forward declarations at the top
+static void debug_parser_printf(const char *format, ...);
+
+// Global variables
+extern int debug_parser;
+
+// Define debug_parser_printf early
+static void debug_parser_printf(const char *format, ...) {
+    if (debug_parser) {
+        va_list args;
+        va_start(args, format);
+        vprintf(format, args);
+        va_end(args);
+    }
+}
+
 // Parser state
 extern Parser parser;  // Make this a global variable
 static int in_while_loop = 0;
@@ -1330,15 +1346,4 @@ int p_ifst(void) {
 
 int p_term(void) {
     // ...existing implementation...
-}
-
-extern int debug_mode;
-
-static void debug_parser_printf(const char *format, ...) {
-    if (debug_parser) {  // Changed from debug_mode to debug_parser
-        va_list args;
-        va_start(args, format);
-        vprintf(format, args);
-        va_end(args);
-    }
 }

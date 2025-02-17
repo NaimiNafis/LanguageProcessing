@@ -1,21 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include "compiler.h"
 #include "token.h"
-#include "parser.h"  // This now gives access to Parser structure
+#include "parser.h"
 #include "debug.h"
 #include "scan.h"
 #include "codegenerator.h"
 #include "error.h"
 
+// Add debug print function at the top
+static void debug_compiler_printf(const char *format, ...) {
+    if (debug_compiler) {
+        va_list args;
+        va_start(args, format);
+        printf("[COMPILER] ");
+        vprintf(format, args);
+        va_end(args);
+    }
+}
+
 // Error handling
 void error(const char* message) {
+    debug_compiler_printf("Error encountered: %s at line %d\n", message, get_linenum());
     fprintf(stderr, "Error: %s at line %d\n", message, get_linenum());
     exit(1);
 }
 
 void check_type_compatibility(int left_type, int right_type) {
+    debug_compiler_printf("Checking type compatibility: left=%d, right=%d\n", left_type, right_type);
     // Allow readln/writeln to work with any type by skipping type check
     if (parser.previous_token == TREADLN || parser.previous_token == TWRITELN) {
         return;
@@ -33,6 +47,7 @@ void check_type_compatibility(int left_type, int right_type) {
 }
 
 void check_array_bounds(int index, int size) {
+    debug_compiler_printf("Checking array bounds: index=%d, size=%d\n", index, size);
     if (index < 0 || index >= size) {
         error("Array index out of bounds");
     }

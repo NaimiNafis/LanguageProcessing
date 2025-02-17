@@ -1,14 +1,27 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stdarg.h>
 #include "codegenerator.h"
 #include "compiler.h"
 #include "token.h"
+#include "debug.h"
 
 // Define caslfp here (not just declare)
 FILE* caslfp = NULL;
 static int temp_var_count = 0;
 static int label_counter = 1;
 static char current_proc[256] = "";
+
+static void debug_codegen_printf(const char *format, ...) {
+    if (debug_codegen) {
+        va_list args;
+        va_start(args, format);
+        printf("[CODEGEN] ");
+        vprintf(format, args);
+        va_end(args);
+    }
+}
 
 int get_label_num(void) {
     return label_counter++;
@@ -82,14 +95,17 @@ void gen_data_section(void) {
 
 // Implement proper memory sections
 void gen_data_section_start(void) {
+    debug_codegen_printf("Starting data section\n");
     // Empty implementation - don't generate START and LIBBUF
 }
 
 void gen_data_section_end(void) {
+    debug_codegen_printf("Ending data section\n");
     // Empty implementation - don't generate END
 }
 
 void gen_program_start(const char* name) {
+    debug_codegen_printf("Generating program start for '%s'\n", name);
     // Clear any existing content in the file by seeking to start
     fseek(caslfp, 0, SEEK_SET);
     fprintf(caslfp, "%%%s START L0001\n\n", name);

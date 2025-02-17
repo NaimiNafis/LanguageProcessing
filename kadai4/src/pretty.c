@@ -4,10 +4,10 @@
 #include "token.h"
 #include "parser.h"
 
-extern int debug_mode;
+extern int debug_pretty;
 
 static void debug_pretty_printf(const char *format, ...) {
-    if (debug_mode) {
+    if (debug_pretty) {
         va_list args;
         va_start(args, format);
         vprintf(format, args);
