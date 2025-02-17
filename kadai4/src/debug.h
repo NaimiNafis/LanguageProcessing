@@ -14,8 +14,8 @@ extern int debug_codegen;
 // --debug-parse
 // --debug-xref
 // --debug-compile
-// --debug-codegen
 // --debug-pretty
+// --debug-codegen
 // --debug-all
 
 #endif
