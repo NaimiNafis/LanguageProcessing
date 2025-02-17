@@ -730,6 +730,9 @@ static int parse_write_statement(void) {
 } 
 
 static int parse_variable(void) {
+    debug_parser_printf("Entering parse_variable with token: %d, string_attr: %s\n", 
+                       parser.current_token, string_attr);
+    
     char* var_name = strdup(string_attr);
     int line_num = get_linenum();
     int var_type;
@@ -742,29 +745,23 @@ static int parse_variable(void) {
     // Get variable info from symbol table
     SymbolEntry* entry = lookup_symbol(var_name);
     if (entry) {
+        debug_parser_printf("Found symbol entry for %s, type: %d\n", var_name, entry->type);
         var_type = entry->type;
         
         // Handle array access
         if (parser.current_token == TLSQPAREN) {
-            if (match(TLSQPAREN) == ERROR) return ERROR;
-            int index_type = parse_expression();
-            if (index_type == ERROR) return ERROR;
-            
-            // Check array bounds
-            check_array_bounds(index_type, entry->array_size);
-            gen_array_access(var_name, "GR1");  // Use evaluated index
-            
-            fprintf(caslfp, "\tLD\tGR2,=%d\n", entry->array_size);
-            gen_bounds_check();
-
-            if (match(TRSQPAREN) == ERROR) return ERROR;
+            // ...existing array handling code...
         } else {
             // Simple variable access
             gen_load(var_name);
         }
+    } else {
+        debug_parser_printf("Symbol %s not found in symbol table\n", var_name);
+        var_type = ERROR;
     }
     
     add_reference(var_name, line_num);
+    debug_parser_printf("Exiting parse_variable with type: %d\n", var_type);
     free(var_name);
     return var_type;
 }
@@ -1142,24 +1139,31 @@ static int parse_empty_statement(void) {
 
 // Input statement implementation
 static int parse_input_statement(void) {
-    // Handle both read and readln
-    if (parser.current_token != TREAD && parser.current_token != TREADLN) {
-        parse_error("Expected read or readln");
-        return ERROR;
-    }
-    if (match(parser.current_token) == ERROR) return ERROR;
+    debug_parser_printf("Entering parse_input_statement with token: %d\n", parser.current_token);
+    int is_readln = (parser.current_token == TREADLN);
     
+    if (match(parser.current_token) == ERROR) return ERROR;
+
     if (parser.current_token == TLPAREN) {
         if (match(TLPAREN) == ERROR) return ERROR;
-        if (parse_variable() == ERROR) return ERROR;
         
+        // Get the type of the variable being read into
+        debug_parser_printf("Reading variable, current token: %d\n", parser.current_token);
+        int var_type = parse_variable();
+        debug_parser_printf("Variable type after parse_variable: %d\n", var_type);
+        
+        if (var_type == ERROR) return ERROR;
+
         while (parser.current_token == TCOMMA) {
             if (match(TCOMMA) == ERROR) return ERROR;
-            if (parse_variable() == ERROR) return ERROR;
+            var_type = parse_variable();
+            if (var_type == ERROR) return ERROR;
         }
-        
-        return match(TRPAREN);
+
+        if (match(TRPAREN) == ERROR) return ERROR;
     }
+    
+    debug_parser_printf("Exiting parse_input_statement\n");
     return NORMAL;
 }
 

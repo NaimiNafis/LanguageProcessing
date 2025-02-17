@@ -14,8 +14,8 @@
 
 // Global debug flags
 int debug_scanner = 0;
-int debug_parser = 0;
-int debug_cross_referencer = 0;
+int debug_parser = 1;
+int debug_cross_referencer = 1;
 int debug_pretty = 0;
 int debug_compiler = 1;
 int debug_codegen = 1;

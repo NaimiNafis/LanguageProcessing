@@ -106,13 +106,11 @@ void gen_data_section_end(void) {
 
 void gen_program_start(const char* name) {
     debug_codegen_printf("Generating program start for '%s'\n", name);
-    // Clear any existing content in the file by seeking to start
-    fseek(caslfp, 0, SEEK_SET);
     fprintf(caslfp, "%%%s START L0001\n\n", name);
     fprintf(caslfp, "; program %s;\n\n", name);
-
-    // Move runtime error handlers to the very end
-    // Remove any call to gen_runtime_error_handlers here
+    
+    // Add start label
+    fprintf(caslfp, "L0001\n");
 }
 
 void gen_program_end(void) {
@@ -138,7 +136,11 @@ void gen_restore_registers(void) {
 
 // Arithmetic operations
 void gen_load(const char* var) {
-    fprintf(caslfp, "\tLD\tGR1,$%s\n", var);
+    if (var[0] == '=') {
+        fprintf(caslfp, "    LAD GR1, %s\n", var);
+    } else {
+        fprintf(caslfp, "    LD GR1, $%s\n", var);
+    }
 }
 
 void gen_store(const char* var) {
@@ -278,20 +280,16 @@ void gen_write_string(const char* msg) {
 
 // Runtime error handlers
 void gen_runtime_error_handlers(void) {
-    fprintf(caslfp, "; ------------------------\n");
-    fprintf(caslfp, "; Utility functions\n");
-    fprintf(caslfp, "; ------------------------\n\n");
-
+    fprintf(caslfp, "\n; Error handlers\n");
+    
     // Overflow handler
-    fprintf(caslfp, "; Overflow error handling\n");
     fprintf(caslfp, "EOVF\n");
     fprintf(caslfp, "    CALL WRITELINE\n");
     fprintf(caslfp, "    LAD GR1, EOVF1\n");
-    fprintf(caslfp, "    LD GR2, GR0\n");
     fprintf(caslfp, "    CALL WRITESTR\n");
     fprintf(caslfp, "    CALL WRITELINE\n");
     fprintf(caslfp, "    SVC 1\n");
-    fprintf(caslfp, "EOVF1  DC '***** Run-Time Error: Overflow *****'\n\n");
+    fprintf(caslfp, "EOVF1    DC    '***** Run-Time Error: Overflow *****'\n\n");
 
     // Zero-Divide handler
     fprintf(caslfp, "; Zero-Divide error handling\n");
@@ -423,4 +421,10 @@ void gen_comment(const char* comment) {
 
 void gen_pascal_comment(const char* comment) {
     fprintf(caslfp, "; %s\n", comment);
+}
+
+// Add this new function
+void gen_string_constant(const char* str) {
+    fprintf(caslfp, "    LAD GR1, ='%s'\n", str);
+    fprintf(caslfp, "    CALL WRITESTR\n");
 }

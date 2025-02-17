@@ -1,22 +1,12 @@
-%sample11 START L0001
 
-; program sample11;
-
-$n  DC 0
-; n : integer;
-
-$sum  DC 0
-; sum : integer;
-
-$data  DC 0
-; data : integer;
-
-1, EOVF1
-    LD GR2, GR0
+; Error handlers
+EOVF
+    CALL WRITELINE
+    LAD GR1, EOVF1
     CALL WRITESTR
     CALL WRITELINE
     SVC 1
-EOVF1  DC '***** Run-Time Error: Overflow *****'
+EOVF1    DC    '***** Run-Time Error: Overflow *****'
 
 ; Zero-Divide error handling
 E0DIV
@@ -40,3 +30,17 @@ EROV
 EROV1  DC '***** Run-Time Error: Range-Over in Array Index *****'
 
 END
+%sample11 START L0001
+
+; program sample11;
+
+L0001
+$n  DC 0
+; n : integer;
+
+$sum  DC 0
+; sum : integer;
+
+$data  DC 0
+; data : integer;
+

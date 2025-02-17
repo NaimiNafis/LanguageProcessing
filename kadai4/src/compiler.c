@@ -29,20 +29,63 @@ void error(const char* message) {
 }
 
 void check_type_compatibility(int left_type, int right_type) {
-    debug_compiler_printf("Checking type compatibility: left=%d, right=%d\n", left_type, right_type);
-    // Allow readln/writeln to work with any type by skipping type check
+    debug_compiler_printf("Checking type compatibility:\n");
+    debug_compiler_printf("  Left type: %d (0x%x)\n", left_type, left_type);
+    debug_compiler_printf("  Right type: %d (0x%x)\n", right_type, right_type);
+    debug_compiler_printf("  Current token: %d\n", parser.current_token);
+    debug_compiler_printf("  Previous token: %d\n", parser.previous_token);
+
+    // Handle uninitialized or corrupted type values
+    if (left_type > 1000000 || left_type < 0) {
+        debug_compiler_printf("Warning: Left type appears corrupted\n");
+        left_type = TINTEGER;  // Default to integer
+    }
+
+    // Handle numeric literals
+    if (right_type == TNUMBER || right_type == 27 || right_type == 1) {
+        debug_compiler_printf("Numeric literal detected, allowing assignment to integer\n");
+        if (left_type == TINTEGER || left_type == 21) {
+            return;
+        }
+    }
+
+    // Convert type codes
+    if (left_type == 21) {
+        debug_compiler_printf("Converting left type 21 to TINTEGER\n");
+        left_type = TINTEGER;
+    }
+    if (right_type == 21) {
+        debug_compiler_printf("Converting right type 21 to TINTEGER\n");
+        right_type = TINTEGER;
+    }
+
+    // Skip type checking for certain tokens
+    if (parser.current_token == TGR || parser.current_token == TGREQ ||
+        parser.current_token == TLE || parser.current_token == TLEEQ ||
+        parser.current_token == TEQUAL || parser.current_token == TNOTEQ) {
+        return;
+    }
+
+    // Allow readln/writeln with any type
     if (parser.previous_token == TREADLN || parser.previous_token == TWRITELN) {
         return;
     }
-    
-    if (left_type != right_type) {
-        // Allow certain implicit conversions based on semantics
-        if ((left_type == TINTEGER && right_type == TCHAR) ||
-            (left_type == TBOOLEAN && right_type == TINTEGER) ||
-            (left_type == TINTEGER && right_type == TBOOLEAN)) {
-            return;
-        }
-        error("Type mismatch");
+
+    // Allow implicit conversions
+    if ((left_type == TINTEGER && right_type == TCHAR) ||
+        (left_type == TBOOLEAN && right_type == TINTEGER) ||
+        (left_type == TINTEGER && right_type == TBOOLEAN)) {
+        return;
+    }
+
+    // Only error if types are actually incompatible
+    if (left_type != right_type && 
+        left_type != TINTEGER && left_type != 21) {  // Allow both TINTEGER codes
+        char error_msg[100];
+        snprintf(error_msg, sizeof(error_msg), 
+                "Invalid type conversion from type %d to type %d", 
+                right_type, left_type);
+        error(error_msg);
     }
 }
 

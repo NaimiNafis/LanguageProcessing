@@ -5,7 +5,7 @@
 #include "cross_referencer.h"
 #include "compiler.h"
 #include "scan.h"
-#include "debug.h"  // Add this include
+#include "debug.h"
 
 extern int debug_cross_referencer;
 
